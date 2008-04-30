@@ -3,7 +3,7 @@
 
 # path to pd
 ## change this according to your setup!
-PDROOT?=../../pd
+PDROOT?=../../../../pd
 #PDROOT=/home/zmoelnig/src/pd/
 
 # here we find the sources of pd (and evtl. the pd.lib)
