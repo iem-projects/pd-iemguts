@@ -52,7 +52,7 @@ static void canvasindex_bang(t_canvasindex *x)
 
   //  index=glist_getindex(c0, c);
   //  index=glist_getindex(c0, (t_gobj*)c);
-  outlet_float(x->xoutlet, (t_float)(glist_getindex(c0, 0)));
+  outlet_float(x->youtlet, (t_float)(glist_getindex(c0, 0)));
   outlet_float(x->xoutlet, (t_float)(glist_getindex(c0, (t_gobj*)c)));
 }
 
