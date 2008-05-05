@@ -62,7 +62,7 @@ TARGETS=$(SOURCES:.c=.$(EXTENSION))
 
 pd_linux: $(TARGETS)
 
-LINUXCFLAGS = -DPD -O2 -funroll-loops -fomit-frame-pointer -fPIC \
+LINUXCFLAGS = -DPD -g -O2 -funroll-loops -fomit-frame-pointer -fPIC \
     -Wall -W -Wshadow -Wstrict-prototypes \
     -Wno-unused -Wno-parentheses -Wno-switch
 
@@ -70,9 +70,11 @@ LINUXLDFLAGS =  -export_dynamic -shared  -lc -lm
 
 LINUXINCLUDE =  -I$(PDSRCDIR)
 
+STRIP?=strip
+
 %.pd_linux: %.c
 	$(CC) $(LINUXLDFLAGS) $(LINUXCFLAGS) $(LINUXINCLUDE) -o $*.pd_linux $*.c
-	strip --strip-unneeded $*.pd_linux
+	$(STRIP) --strip-unneeded $*.pd_linux
 
 
 
