@@ -34,9 +34,11 @@ typedef struct _parentposition
 {
   t_object  x_obj;
   t_canvas  *x_canvas;
+  t_glist  *x_glist;
 
   t_outlet*xoutlet, *youtlet;
 } t_parentposition;
+
 
 static void parentposition_bang(t_parentposition *x)
 {
@@ -67,7 +69,36 @@ static void parentposition_bang(t_parentposition *x)
   SETFLOAT(alist, (t_float)x1);
   SETFLOAT(alist+1, (t_float)y1);
   outlet_list(x->xoutlet, 0, 2, alist);
+}
 
+static void parentposition_list(t_parentposition *x, t_symbol*s, int argc, t_atom*argv)
+{
+  t_canvas*c=x->x_canvas;
+  t_canvas*c0=0;
+  int dx, dy;
+
+  if(!c) return;
+  c0=c->gl_owner;
+
+  if(argc==0){
+    parentposition_bang(x);
+    return;
+  }
+
+  if(argc!=2 || (A_FLOAT != (argv+0)->a_type) || (A_FLOAT != (argv+1)->a_type)) {
+    pd_error(x, "expected <x> <y> as new position");
+    return;
+  }
+  dx = atom_getint(argv+0) - c->gl_obj.te_xpix;
+  dy = atom_getint(argv+1) - c->gl_obj.te_ypix;
+
+  if(c0&&glist_isvisible(c0))  {
+    gobj_displace((t_gobj*)c, c0, dx, dy);
+    canvas_fixlinesfor(c0, (t_text*)c);
+  } else {
+    c->gl_obj.te_xpix+=dx;
+    c->gl_obj.te_ypix+=dy;
+  }
 }
 
 static void parentposition_free(t_parentposition *x)
@@ -83,6 +114,7 @@ static void *parentposition_new(void)
   t_canvas *canvas=(t_canvas*)glist_getcanvas(glist);
 
   x->x_canvas = canvas;
+  x->x_glist  = glist;
 
   x->xoutlet=outlet_new(&x->x_obj, &s_list);
   x->youtlet=outlet_new(&x->x_obj, &s_list);
@@ -95,4 +127,5 @@ void parentposition_setup(void)
   parentposition_class = class_new(gensym("parentposition"), (t_newmethod)parentposition_new,
     (t_method)parentposition_free, sizeof(t_parentposition), 0, 0);
   class_addbang(parentposition_class, (t_method)parentposition_bang);
+  class_addlist(parentposition_class, (t_method)parentposition_list);
 }
