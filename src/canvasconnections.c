@@ -1,7 +1,7 @@
 
 /******************************************************
  *
- * canvasconnection - implementation file
+ * canvasconnections - implementation file
  *
  * copyleft (c) IOhannes m zmölnig
  *
@@ -20,7 +20,7 @@
  * this object provides a way to send messages to upstream canvases
  * by default it sends messages to the containing canvas, but you can give the
  * "depth" as argument;
- * e.g. [canvasconnection 1] will send messages to the parent of the containing canvas
+ * e.g. [canvasconnections 1] will send messages to the parent of the containing canvas
  */
 
 #include "m_pd.h"
@@ -29,19 +29,19 @@
 
 int glist_getindex(t_glist *x, t_gobj *y);
 
-/* ------------------------- canvasconnection ---------------------------- */
+/* ------------------------- canvasconnections ---------------------------- */
 
-static t_class *canvasconnection_class;
+static t_class *canvasconnections_class;
 
-typedef struct _canvasconnection
+typedef struct _canvasconnections
 {
   t_object  x_obj;
   t_canvas  *x_parent;
   t_object  *x_object;
   t_outlet  *x_out;
-} t_canvasconnection;
+} t_canvasconnections;
 
-static void canvasconnection_outlets(t_canvasconnection *x)
+static void canvasconnections_outlets(t_canvasconnections *x)
 {
   int noutlets=0;
   int nout=0;
@@ -81,22 +81,22 @@ static void canvasconnection_outlets(t_canvasconnection *x)
   }
 }
 
-static void canvasconnection_bang(t_canvasconnection *x)
+static void canvasconnections_bang(t_canvasconnections *x)
 {
-  canvasconnection_outlets(x);
+  canvasconnections_outlets(x);
 }
 
 
-static void canvasconnection_free(t_canvasconnection *x)
+static void canvasconnections_free(t_canvasconnections *x)
 {
   x->x_object=0;
   outlet_free(x->x_out);
   x->x_out=0;
 }
 
-static void *canvasconnection_new(t_floatarg f)
+static void *canvasconnections_new(t_floatarg f)
 {
-  t_canvasconnection *x = (t_canvasconnection *)pd_new(canvasconnection_class);
+  t_canvasconnections *x = (t_canvasconnections *)pd_new(canvasconnections_class);
   t_glist *glist=(t_glist *)canvas_getcurrent();
   t_canvas *canvas=(t_canvas*)glist_getcanvas(glist);
   int depth=(int)f;
@@ -121,9 +121,9 @@ static void *canvasconnection_new(t_floatarg f)
   return (x);
 }
 
-void canvasconnection_setup(void)
+void canvasconnections_setup(void)
 {
-  canvasconnection_class = class_new(gensym("canvasconnection"), (t_newmethod)canvasconnection_new,
-                               (t_method)canvasconnection_free, sizeof(t_canvasconnection), 0, A_DEFFLOAT, 0);
-  class_addbang(canvasconnection_class, (t_method)canvasconnection_bang);
+  canvasconnections_class = class_new(gensym("canvasconnections"), (t_newmethod)canvasconnections_new,
+                               (t_method)canvasconnections_free, sizeof(t_canvasconnections), 0, A_DEFFLOAT, 0);
+  class_addbang(canvasconnections_class, (t_method)canvasconnections_bang);
 }

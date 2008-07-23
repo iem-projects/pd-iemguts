@@ -1,4 +1,22 @@
 
+/******************************************************
+ *
+ * oreceive - implementation file
+ *
+ * copyleft (c) IOhannes m zmölnig
+ *
+ *   2307:forum::für::umläute:2008
+ *
+ *   institute of electronic music and acoustics (iem)
+ *   unsiversity of music and dramatic arts graz (kug)
+ *
+ ******************************************************
+ *
+ * license: GNU General Public License v.2
+ *
+ ******************************************************/
+
+
 #include "m_pd.h"
 
 #if 0
@@ -11,7 +29,12 @@ static t_class *oreceive_class, *oreceive_proxy_class, *oreceive_guts_class;
 
 
 /* ------------------------------------------------------------- */
-/* there come the guts: our own bind/unbind mechanism that
+
+/* 
+ * [oreceive] : ordered receive
+ *
+ *
+ * there come the guts: our own bind/unbind mechanism that
  * includes priorities
  *
  * the plan is as follows:
@@ -249,7 +272,6 @@ static void *oreceive_new(t_symbol *s, t_float priority)
     x->x_sym = s;
     x->x_priority = priority;
     pd_bind_priority(&x->x_obj.ob_pd, s, priority);
-    //    pd_bind(&x->x_obj.ob_pd, s);
     outlet_new(&x->x_obj, 0);
     return (x);
 }
