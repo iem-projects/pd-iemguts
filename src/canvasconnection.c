@@ -103,16 +103,18 @@ static void *canvasconnection_new(t_floatarg f)
   if(depth<0)depth=0;
 
   x->x_parent=0;
+  x->x_object=0;
 
   while(depth && canvas) {
     canvas=canvas->gl_owner;
     depth--;
   }
 
-  x->x_object = pd_checkobject((t_pd*)canvas);
 
-  if(canvas)
+  if(canvas) {
+    x->x_object = pd_checkobject((t_pd*)canvas);
     x->x_parent = canvas->gl_owner;
+  }
 
   x->x_out=outlet_new(&x->x_obj, 0);
 
