@@ -17,8 +17,14 @@
 
 
 /* 
- * this object provides a way to get the position of the containing abstraction
- * within the parent-patch
+ * this object provides a way to get and set the position of the containing
+ * abstraction within the parent-patch
+ *
+ * by default the position of the containing abstraction within the parent-patch is 
+ * queried
+ * you can give the "depth" as argument;
+ * e.g. [parentposition 1] will set/get the position of the abstraction containing the
+ * abstraction within its canvas.
  */
 
 #include "m_pd.h"
@@ -34,7 +40,6 @@ typedef struct _parentposition
 {
   t_object  x_obj;
   t_canvas  *x_canvas;
-  t_glist  *x_glist;
 
   t_outlet*xoutlet, *youtlet;
 } t_parentposition;
@@ -107,14 +112,20 @@ static void parentposition_free(t_parentposition *x)
   outlet_free(x->youtlet);
 }
 
-static void *parentposition_new(void)
+static void *parentposition_new(t_floatarg f)
 {
   t_parentposition *x = (t_parentposition *)pd_new(parentposition_class);
   t_glist *glist=(t_glist *)canvas_getcurrent();
   t_canvas *canvas=(t_canvas*)glist_getcanvas(glist);
+  int depth=(int)f;
+
+  if(depth<0)depth=0;
+  while(depth && canvas) {
+    canvas=canvas->gl_owner;
+    depth--;
+  }
 
   x->x_canvas = canvas;
-  x->x_glist  = glist;
 
   x->xoutlet=outlet_new(&x->x_obj, &s_list);
   x->youtlet=outlet_new(&x->x_obj, &s_list);
@@ -124,8 +135,10 @@ static void *parentposition_new(void)
 
 void parentposition_setup(void)
 {
-  parentposition_class = class_new(gensym("parentposition"), (t_newmethod)parentposition_new,
-    (t_method)parentposition_free, sizeof(t_parentposition), 0, 0);
+  parentposition_class = class_new(gensym("parentposition"), 
+                                   (t_newmethod)parentposition_new, (t_method)parentposition_free, 
+                                   sizeof(t_parentposition), 0,
+                                   A_DEFFLOAT, 0);
   class_addbang(parentposition_class, (t_method)parentposition_bang);
   class_addlist(parentposition_class, (t_method)parentposition_list);
 }

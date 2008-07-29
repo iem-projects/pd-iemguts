@@ -110,7 +110,6 @@ static void *canvasconnections_new(t_floatarg f)
     depth--;
   }
 
-
   if(canvas) {
     x->x_object = pd_checkobject((t_pd*)canvas);
     x->x_parent = canvas->gl_owner;
@@ -123,7 +122,9 @@ static void *canvasconnections_new(t_floatarg f)
 
 void canvasconnections_setup(void)
 {
-  canvasconnections_class = class_new(gensym("canvasconnections"), (t_newmethod)canvasconnections_new,
-                               (t_method)canvasconnections_free, sizeof(t_canvasconnections), 0, A_DEFFLOAT, 0);
+  canvasconnections_class = class_new(gensym("canvasconnections"), 
+                                      (t_newmethod)canvasconnections_new, (t_method)canvasconnections_free, 
+                                      sizeof(t_canvasconnections), 0, 
+                                      A_DEFFLOAT, 0);
   class_addbang(canvasconnections_class, (t_method)canvasconnections_bang);
 }

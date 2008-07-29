@@ -48,15 +48,21 @@ static void propertybang_free(t_propertybang *x)
   pd_unbind(&x->x_obj.ob_pd, x->x_d0name);
 }
 
-static void propertybang_anything(t_propertybang *x, t_symbol*s, int argc, t_atom*argv) {
-  if(s==&s_bang && argc==0) {
-    outlet_bang(x->x_obj.ob_outlet);
-  }
+static void propertybang_bang(t_propertybang *x) {
+  outlet_bang(x->x_obj.ob_outlet);
 }
-
 static void propertybang_properties(t_gobj*z, t_glist*owner) {
-  // argh: z is the abstraction! but we need to access ourselfs!
-  // we handle this by binding to a special symbol. e.g. "$0-propertybang"
+  /* argh: z is the abstraction! but we need to access ourselfs!
+   * we handle this by binding to a special symbol. e.g. "$0 propertybang"
+   * (we use the space between in order to make it hard for the ordinary user 
+   * to use this symbol for other things...
+   */
+
+  /* alternatively we could just search the abstraction for all instances of propertybang_class
+   * and bang these;
+   * but using the pd_bind-trick is simpler for now
+   * though not as sweet, as somebody could use our bind-symbol for other things...
+   */
 
   t_symbol*s_d0name=canvas_realizedollar((t_canvas*)z, gensym("$0 propertybang"));
     pd_bang(s_d0name->s_thing);
@@ -82,5 +88,5 @@ void propertybang_setup(void)
 {
   propertybang_class = class_new(gensym("propertybang"), (t_newmethod)propertybang_new,
     (t_method)propertybang_free, sizeof(t_propertybang), CLASS_NOINLET, 0);
-  class_addanything(propertybang_class, propertybang_anything);
+  class_addbang(propertybang_class, propertybang_bang);
 }
