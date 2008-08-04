@@ -46,7 +46,7 @@ auto:
 
 # just a stupid fallback
 help: 
-	@echo "choose one command:  make pd_linux (linux), make pd_darwin (osX), make pd_irix5 (IRIX5), make pd_irix6 (IRIX6), make dll (MSVC), make pd_nt (MinWG)"
+	@echo "choose one command:  make pd_linux, make l_i386, make l_ia64 (linux), make pd_darwin, make d_fat, make d_ppc (osX), make pd_irix5 (IRIX5), make pd_irix6 (IRIX6), make dll (MSVC), make pd_nt (MinWG)"
 
 # delete old build files
 clean:
@@ -60,7 +60,7 @@ TARGETS=$(SOURCES:.c=.$(EXTENSION))
 
 # ----------------------- Linux -----------------------
 
-pd_linux: $(TARGETS)
+l_ia64 l_i386 pd_linux: $(TARGETS)
 
 LINUXCFLAGS = -DPD -g -O2 -funroll-loops -fomit-frame-pointer -fPIC \
     -Wall -W -Wshadow -Wstrict-prototypes \
@@ -72,9 +72,9 @@ LINUXINCLUDE =  -I$(PDSRCDIR)
 
 STRIP?=strip
 
-%.pd_linux: %.c
-	$(CC) $(LINUXLDFLAGS) $(LINUXCFLAGS) $(LINUXINCLUDE) -o $*.pd_linux $*.c
-	$(STRIP) --strip-unneeded $*.pd_linux
+%.l_ia64 %.l_i386 %.pd_linux: %.c
+	$(CC) $(LINUXLDFLAGS) $(LINUXCFLAGS) $(LINUXINCLUDE) -o $@ $<
+	$(STRIP) --strip-unneeded $@
 
 
 
