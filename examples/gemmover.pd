@@ -1,5 +1,5 @@
 #N canvas 267 53 673 475 10;
-#X obj 168 144 parentposition;
+#X obj 168 144 canvasposition;
 #X obj 115 90 gemhead;
 #X obj 115 116 t a b;
 #X obj 115 358 translateXYZ;

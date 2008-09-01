@@ -1,6 +1,6 @@
 #N canvas 351 0 673 475 10;
 #X obj 99 60 inlet~;
-#X obj 461 121 parentposition;
+#X obj 461 121 canvasposition;
 #X obj 438 266 s;
 #X obj 438 97 t b b s;
 #X obj 438 242 pack 0 0 0;

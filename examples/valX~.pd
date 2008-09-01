@@ -1,5 +1,5 @@
 #N canvas 376 60 873 521 10;
-#X obj 320 163 parentposition;
+#X obj 320 163 canvasposition;
 #X msg 324 131 bang;
 #X obj 314 189 t l l;
 #X obj 99 459 outlet~;
@@ -139,7 +139,7 @@
 #X obj 395 336 canvasindex;
 #X obj 395 359 pack;
 #X obj 314 302 t b l b;
-#X obj 671 81 parentposition;
+#X obj 671 81 canvasposition;
 #X obj 648 226 s;
 #X obj 648 57 t b b s;
 #X obj 648 202 pack 0 0 0;

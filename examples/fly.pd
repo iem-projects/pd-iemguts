@@ -1,5 +1,5 @@
 #N canvas 267 53 673 475 10;
-#X obj 230 143 parentposition;
+#X obj 230 143 canvasposition;
 #X msg 234 111 bang;
 #N canvas 0 0 478 440 mover 0;
 #X obj 230 167 unpack;
