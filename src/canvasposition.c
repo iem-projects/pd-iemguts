@@ -1,7 +1,7 @@
 
 /******************************************************
  *
- * parentposition - implementation file
+ * canvasposition - implementation file
  *
  * copyleft (c) IOhannes m zmölnig
  *
@@ -23,7 +23,7 @@
  * by default the position of the containing abstraction within the parent-patch is 
  * queried
  * you can give the "depth" as argument;
- * e.g. [parentposition 1] will set/get the position of the abstraction containing the
+ * e.g. [canvasposition 1] will set/get the position of the abstraction containing the
  * abstraction within its canvas.
  */
 
@@ -32,20 +32,20 @@
 #include "g_canvas.h"
 #include "m_imp.h"
 
-/* ------------------------- parentposition ---------------------------- */
+/* ------------------------- canvasposition ---------------------------- */
 
-static t_class *parentposition_class;
+static t_class *canvasposition_class;
 
-typedef struct _parentposition
+typedef struct _canvasposition
 {
   t_object  x_obj;
   t_canvas  *x_canvas;
 
   t_outlet*xoutlet, *youtlet;
-} t_parentposition;
+} t_canvasposition;
 
 
-static void parentposition_bang(t_parentposition *x)
+static void canvasposition_bang(t_canvasposition *x)
 {
   t_canvas*c=x->x_canvas;
   t_canvas*c0=0;
@@ -76,7 +76,7 @@ static void parentposition_bang(t_parentposition *x)
   outlet_list(x->xoutlet, 0, 2, alist);
 }
 
-static void parentposition_list(t_parentposition *x, t_symbol*s, int argc, t_atom*argv)
+static void canvasposition_list(t_canvasposition *x, t_symbol*s, int argc, t_atom*argv)
 {
   t_canvas*c=x->x_canvas;
   t_canvas*c0=0;
@@ -86,7 +86,7 @@ static void parentposition_list(t_parentposition *x, t_symbol*s, int argc, t_ato
   c0=c->gl_owner;
 
   if(argc==0){
-    parentposition_bang(x);
+    canvasposition_bang(x);
     return;
   }
 
@@ -106,15 +106,15 @@ static void parentposition_list(t_parentposition *x, t_symbol*s, int argc, t_ato
   }
 }
 
-static void parentposition_free(t_parentposition *x)
+static void canvasposition_free(t_canvasposition *x)
 {
   outlet_free(x->xoutlet);
   outlet_free(x->youtlet);
 }
 
-static void *parentposition_new(t_floatarg f)
+static void *canvasposition_new(t_floatarg f)
 {
-  t_parentposition *x = (t_parentposition *)pd_new(parentposition_class);
+  t_canvasposition *x = (t_canvasposition *)pd_new(canvasposition_class);
   t_glist *glist=(t_glist *)canvas_getcurrent();
   t_canvas *canvas=(t_canvas*)glist_getcanvas(glist);
   int depth=(int)f;
@@ -133,12 +133,12 @@ static void *parentposition_new(t_floatarg f)
   return (x);
 }
 
-void parentposition_setup(void)
+void canvasposition_setup(void)
 {
-  parentposition_class = class_new(gensym("parentposition"), 
-                                   (t_newmethod)parentposition_new, (t_method)parentposition_free, 
-                                   sizeof(t_parentposition), 0,
+  canvasposition_class = class_new(gensym("canvasposition"), 
+                                   (t_newmethod)canvasposition_new, (t_method)canvasposition_free, 
+                                   sizeof(t_canvasposition), 0,
                                    A_DEFFLOAT, 0);
-  class_addbang(parentposition_class, (t_method)parentposition_bang);
-  class_addlist(parentposition_class, (t_method)parentposition_list);
+  class_addbang(canvasposition_class, (t_method)canvasposition_bang);
+  class_addlist(canvasposition_class, (t_method)canvasposition_list);
 }

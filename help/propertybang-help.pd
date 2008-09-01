@@ -11,7 +11,7 @@
 #X restore 86 152 pd with propertybang;
 #X obj 86 176 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
 -1;
-#X text 174 44 enables the "property" menu for abstractions;
+#X text 184 44 enables the "property" menu for abstractions;
 #X text 90 77 usage:;
 #X text 140 77 put a [propertybang] object into your abstraction;
 #X text 139 94 put your abstraction into your patch;
