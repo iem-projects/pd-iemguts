@@ -41,6 +41,10 @@ typedef struct _classtest
 static void classtest_symbol(t_classtest *x, t_symbol*s)
 {
   t_float result=0.;
+  if(!pd_objectmaker) {
+    pd_error(x, "[classtest]: couldn't find pd_objectmaker!");
+    return;
+  }
   if(0!=zgetfn(&pd_objectmaker, s))
     result=1.;
 
