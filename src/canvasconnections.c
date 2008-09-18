@@ -5,7 +5,7 @@
  *
  * copyleft (c) IOhannes m zmölnig
  *
- *   2007:forum::für::umläute:2007
+ *   2008:forum::für::umläute:2008
  *
  *   institute of electronic music and acoustics (iem)
  *
@@ -20,7 +20,7 @@
  * this object provides a way to send messages to upstream canvases
  * by default it sends messages to the containing canvas, but you can give the
  * "depth" as argument;
- * e.g. [canvasconnections 1] will send messages to the parent of the containing canvas
+ * e.g. [canvasconnections 1] will query the parent of the containing canvas
  */
 
 #include "m_pd.h"
