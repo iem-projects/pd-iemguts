@@ -109,9 +109,10 @@ static void intvec_post(t_intvec*vec)
   endpost();
 }
 
-static t_intvec**query_inletconnections(t_canvasconnections *x, int *num_inlets) {
+static int query_inletconnections(t_canvasconnections *x, t_intvec***outobj, t_intvec***outwhich) {
   int i=0;
   t_intvec**invecs=NULL;
+  t_intvec**inwhich=NULL;
   int ninlets=0;
   int nin=0;
  
@@ -121,8 +122,6 @@ static t_intvec**query_inletconnections(t_canvasconnections *x, int *num_inlets)
     return 0;
 
   ninlets=obj_ninlets(x->x_object);
-  *num_inlets=ninlets;
-
 
     // TODO....find objects connecting TO this object
     /* as Pd does not have any information about connections to inlets, 
@@ -132,19 +131,24 @@ static t_intvec**query_inletconnections(t_canvasconnections *x, int *num_inlets)
      */
 
   invecs=getbytes(sizeof(t_intvec*)*ninlets);
-  for(i=0; i<ninlets; i++)invecs[i]=intvec_new(0);
+  inwhich=getbytes(sizeof(t_intvec*)*ninlets);
+  for(i=0; i<ninlets; i++){
+    invecs[i]=intvec_new(0);
+    inwhich[i]=intvec_new(0);
+  }
 
   for (y = x->x_parent->gl_list; y; y = y->g_next) /* traverse all objects in canvas */
     {
       t_object*obj=(t_object*)y;
       int obj_nout=obj_noutlets(obj);
       int nout=0;
+      int sourcewhich=0;
+
       for(nout=0; nout<obj_nout; nout++) { /* traverse all outlets of each object */
         t_outlet*out=0;
         t_inlet *in =0;
         t_object*dest=0;
-        int sourcewhich=0;
-        
+
         t_outconnect*conn=obj_starttraverseoutlet(obj, &out, nout);
         
         while(conn) { /* traverse all connections from each outlet */
@@ -157,38 +161,75 @@ static t_intvec**query_inletconnections(t_canvasconnections *x, int *num_inlets)
 
             /* add it to the inletconnectionlist */
             intvec_add(invecs[which], connid);
+            intvec_add(inwhich[which], sourcewhich);
           }
-          sourcewhich++;
         }
+        sourcewhich++;
+
       }
     }
-  return invecs;
+  if(outobj)*outobj=invecs;
+  if(outwhich)*outwhich=inwhich;
+
+  // return invecs;
+  return ninlets;
 }
 
 static void canvasconnections_queryinlets(t_canvasconnections *x)
 {
   t_atom at;
-  int ninlets=0, i;
-  t_intvec**invecs=query_inletconnections(x, &ninlets);
+  t_intvec**invecs=0;
+  int ninlets=query_inletconnections(x, &invecs, 0); 
+  int i;
+  //  t_intvec**invecs=query_inletconnections(x, &ninlets);
 
   SETFLOAT(&at, (t_float)ninlets);
   outlet_anything(x->x_out, gensym("inlets"), 1, &at);
 
   for(i=0; i<ninlets; i++){
     int size=invecs[i]->num_elements;
-    t_atom*ap=getbytes(sizeof(t_atom)*(size+1));
-    int j=0;
-    SETFLOAT(ap, (t_float)i);
-    for(j=0; j<size; j++)
-      SETFLOAT(ap+j+1, ((t_float)invecs[i]->elements[j]));
-
-    outlet_anything(x->x_out, gensym("inlet"), size+1, ap);
-
+    if(size>0) {
+      t_atom*ap=getbytes(sizeof(t_atom)*(size+1));
+      int j=0;
+      SETFLOAT(ap, (t_float)i);
+      for(j=0; j<size; j++)
+        SETFLOAT(ap+j+1, ((t_float)invecs[i]->elements[j]));
+      
+      outlet_anything(x->x_out, gensym("inlet"), size+1, ap);
+      freebytes(ap, sizeof(t_atom)*(size+1));
+    }
     intvec_free(invecs[i]);
-    freebytes(ap, sizeof(t_atom)*(size+1));
   }
   if(invecs)freebytes(invecs, sizeof(t_intvec*)*ninlets);
 }
+
+static void canvasconnections_inlet(t_canvasconnections *x, t_floatarg f)
+{
+  int inlet=f;
+  t_atom at;
+  t_intvec**invecs=0;
+  int ninlets=query_inletconnections(x, &invecs, 0); 
+
+  if(inlet >= 0 && inlet < ninlets) {
+    int size=invecs[inlet]->num_elements;
+    t_atom*ap=getbytes(sizeof(t_atom)*(size+1));
+    SETFLOAT(ap, (t_float)inlet);
+
+    if(size>0) {
+      int j=0;
+      for(j=0; j<size; j++)
+        SETFLOAT(ap+j+1, ((t_float)invecs[inlet]->elements[j]));
+    }
+      
+    outlet_anything(x->x_out, gensym("inlet"), size+1, ap);
+    freebytes(ap, sizeof(t_atom)*(size+1));
+
+    intvec_free(invecs[inlet]);
+  }
+  if(invecs)freebytes(invecs, sizeof(t_intvec*)*ninlets);
+}
+
+
 
 static int canvasconnections_inlets(t_canvasconnections *x)
 {
@@ -208,20 +249,39 @@ static int canvasconnections_inlets(t_canvasconnections *x)
   return ninlets;
 }
 
-static void canvasconnections_inlet(t_canvasconnections *x, t_floatarg f)
+static void canvasconnections_inconnect(t_canvasconnections *x, t_floatarg f)
 {
-  int inlet=f;
-  t_atom at[4];
-  int ninlets=0;
+  const int inlet=f;
+  t_intvec**invecs=0;
+  t_intvec**inwhich=0;
 
-  t_intvec**inlets=query_inletconnections(x, &ninlets);
-  if(!inlets || inlet < 0 || inlet>ninlets) {
+  int ninlets=query_inletconnections(x, &invecs, &inwhich);
+  if(!ninlets || inlet < 0 || inlet>ninlets) {
+    post("nonexisting inlet: %d", inlet);
     /* non-existing inlet! */
     return;
   } else {
-    post("TODO");
+    int i;
+    t_atom at[4];
+    int id=glist_getindex(x->x_parent, (t_gobj*)x->x_object);
 
+    for(i=0; i<ninlets; i++){
+      if(inlet==i) {
+        int j=0;
+        for(j=0; j<invecs[i]->num_elements; j++) {
+          SETFLOAT(at+0, (t_float)invecs[i]->elements[j]);
+          SETFLOAT(at+1, (t_float)inwhich[i]->elements[j]);
+          SETFLOAT(at+2, (t_float)id);
+          SETFLOAT(at+3, (t_float)i);
+          outlet_anything(x->x_out, gensym("inconnect"), 4, at);
+        }
+      }
+      intvec_free(invecs[i]);
+      intvec_free(inwhich[i]);
+    }
   }
+  if(invecs)freebytes(invecs, sizeof(t_intvec*)*ninlets);
+  if(inwhich)freebytes(inwhich, sizeof(t_intvec*)*ninlets);
 }
 
 
@@ -240,7 +300,7 @@ static int canvasconnections_outlets(t_canvasconnections *x)
   return noutlets;
 }
 
-static void canvasconnections_outlet(t_canvasconnections *x, t_floatarg f)
+static void canvasconnections_outconnect(t_canvasconnections *x, t_floatarg f)
 {
   int outlet=f;
   t_atom at[4];
@@ -279,7 +339,49 @@ static void canvasconnections_outlet(t_canvasconnections *x, t_floatarg f)
       outlet_anything(x->x_out, gensym("outconnect"), 4, at);
     }
   }
+}
 
+static void canvasconnections_outlet(t_canvasconnections *x, t_floatarg f)
+{
+  int outlet=f;
+  t_atom*at=NULL;
+  int noutlets=0;
+
+  if(0==x->x_object || 0==x->x_parent)
+    return;
+
+  noutlets=obj_noutlets(x->x_object);
+
+  if(outlet >= 0 && outlet < noutlets) {
+    t_outlet*out=0;
+    t_inlet*in=0;
+    t_object*dest=0;
+    int which;
+    t_outconnect*conn=obj_starttraverseoutlet(x->x_object, &out, outlet);
+    t_atom*abuf=0;
+    int count=0;
+    while(conn) {
+      conn=obj_nexttraverseoutlet(conn, &dest, &in, &which);
+      count++;
+    }
+    abuf=(t_atom*)getbytes(sizeof(t_atom)*(count+1));
+    SETFLOAT(abuf, outlet);
+
+    if(count>0) {
+      int i=0;
+      conn=obj_starttraverseoutlet(x->x_object, &out, outlet);
+      while(conn) {
+        int connid=0;
+        conn=obj_nexttraverseoutlet(conn, &dest, &in, &which);
+        connid = glist_getindex(x->x_parent, (t_gobj*)dest);
+        
+        SETFLOAT(abuf+1+i, (t_float)connid);
+        i++;
+      }
+    }
+    outlet_anything(x->x_out, gensym("outlet"), count+1, abuf);
+    freebytes(abuf, sizeof(t_atom)*(count+1));
+  }
 }
 
 static void canvasconnections_queryoutlets(t_canvasconnections *x)
@@ -293,25 +395,27 @@ static void canvasconnections_queryoutlets(t_canvasconnections *x)
     t_object*dest=0;
     t_inlet*in=0;
     int which=0;
-    int count=0, i=0;
-    t_atom*abuf=0;
+    int count=0;
     while(conn) {
       conn=obj_nexttraverseoutlet(conn, &dest, &in, &which);
       count++;
     }
-    abuf=(t_atom*)getbytes(sizeof(t_atom)*(count+1));
-    SETFLOAT(abuf, nout);
-    conn=obj_starttraverseoutlet(x->x_object, &out, nout);
-    while(conn) {
-      int connid=0;
-      conn=obj_nexttraverseoutlet(conn, &dest, &in, &which);
-      connid = glist_getindex(x->x_parent, (t_gobj*)dest);
-
-      SETFLOAT(abuf+1+i, (t_float)connid);
-      i++;
+    if(count>0) {
+      int i=0;
+      t_atom*abuf=(t_atom*)getbytes(sizeof(t_atom)*(count+1));
+      SETFLOAT(abuf, nout);
+      conn=obj_starttraverseoutlet(x->x_object, &out, nout);
+      while(conn) {
+        int connid=0;
+        conn=obj_nexttraverseoutlet(conn, &dest, &in, &which);
+        connid = glist_getindex(x->x_parent, (t_gobj*)dest);
+        
+        SETFLOAT(abuf+1+i, (t_float)connid);
+        i++;
+      }
+      outlet_anything(x->x_out, gensym("outlet"), count+1, abuf);
+      freebytes(abuf, sizeof(t_atom)*(count+1));
     }
-    outlet_anything(x->x_out, gensym("outlet"), count+1, abuf);
-    freebytes(abuf, sizeof(t_atom)*(count+1));
   }
 }
 
@@ -365,7 +469,9 @@ void canvasconnections_setup(void)
 
   class_addmethod(canvasconnections_class, (t_method)canvasconnections_outlets, gensym("outlets"), 0);
   class_addmethod(canvasconnections_class, (t_method)canvasconnections_outlet, gensym("outlet"), A_FLOAT, 0);
+  class_addmethod(canvasconnections_class, (t_method)canvasconnections_outconnect, gensym("outconnect"), A_FLOAT, 0);
 
   class_addmethod(canvasconnections_class, (t_method)canvasconnections_inlets, gensym("inlets"), 0);
   class_addmethod(canvasconnections_class, (t_method)canvasconnections_inlet, gensym("inlet"), A_FLOAT, 0);
+  class_addmethod(canvasconnections_class, (t_method)canvasconnections_inconnect, gensym("inconnect"), A_FLOAT, 0);
 }
