@@ -12,6 +12,14 @@ IEMguts is a collection of objects that deal with the infrastructure to build
 better abstractions.
 they might be of no use on their own...
 
+
+danger::
+--------
+IEMguts often deal with non-official internals of Pure data.
+These internals might change in future versions of Pd, rendering IEMguts unuseable.
+Always make sure that you are using IEMguts with the same version as it was compiled with!
+Else you might experience non-functional, crashing or exploding intestines.
+
 installation::
 --------------
 #1> cd src/
