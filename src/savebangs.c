@@ -27,6 +27,12 @@
  *   on call: we call the parents savefunction and output bangs
  */
 
+/* 
+ * TODO: how does this behave in sub-patches?
+ *      -> BUG: the depth should _really_ refer to the abstraction-depth 
+ *              else we get weird duplicates (most likely due to the "$0" trick
+ */
+
 #include "m_pd.h"
 #include "g_canvas.h"
 
