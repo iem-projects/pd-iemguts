@@ -12,6 +12,10 @@
  *
  * possible default abstraction: '#N canvas 0 0 450 300 10; #X vis 1;'
  *
+ * TODO: currently the template-abstraction is only initialized once.
+ * this means that we cannot change the template after loading of "autoabstraction"
+ * - FIX(LATER): add a "reload"-message to the [autoabstraction] object
+ * - FIX(ALT): check whether the template-file has changed and reload it
  */
 
 
@@ -28,12 +32,14 @@ typedef struct _autoabstraction
 } t_autoabstraction;
 static t_class *autoabstraction_class;
 
+static int s_state=0;
+
 static char *version = "$Revision: 0.1 $";
 
 /* this is the name of the filename that get's loaded as a default template for new abstractions */
-static char*templatefilename="autoabstraction.template";
+static char*s_templatefilename="autoabstraction.template";
 /* if the loading above fails, we resort to a simple default abstraction that automatically opens up */
-static char*templatestring="#N canvas 0 0 450 300 10; #X vis 1;";
+static char*s_templatestring="#N canvas 0 0 450 300 10; #X vis 1;";
 
 
 #if (PD_MINOR_VERSION >= 40)
@@ -61,20 +67,19 @@ void class_set_extern_dir(t_symbol *s);
 #endif
 
 
-static t_binbuf*aa_bb=0;
+static t_binbuf*s_bb=0;
 
 
 static void autoabstraction_save(t_canvas*canvas, char*classname) {
-  t_binbuf*bb=0;
-
-  if(!bb)
-    bb=aa_bb;
-
-  if(bb) {
+  if(!s_state) {
+    /* autoabstraction turned off... */
+    return;
+  }
+  if(s_bb) {
     char name[MAXPDSTRING];
     snprintf(name, MAXPDSTRING, "%s.pd", classname);
 
-    binbuf_write(bb, name, "", 0);
+    binbuf_write(s_bb, name, "", 0);
   } else {
     verbose(1, "[autoabstraction]: no template");
   }
@@ -102,9 +107,7 @@ static int autoabstraction_loader(t_canvas *canvas, char *classname)
       return(0);
     }
 
-
   autoabstraction_save(canvas, classname);
-
 
   /* we always fail, because we want Pd to do the real opening of abstractions */
   return 0;
@@ -112,22 +115,25 @@ static int autoabstraction_loader(t_canvas *canvas, char *classname)
 
 static void autoabstraction_initialize(void)
 {
-  aa_bb=binbuf_new();
+  s_bb=binbuf_new();
 
   /* try to read a template file */
-  if(binbuf_read(aa_bb, templatefilename, "", 0)) {
+  if(binbuf_read(s_bb, s_templatefilename, "", 0)) {
     /* if this fails, use the default template */
-    size_t length=strlen(templatestring);
+    size_t length=strlen(s_templatestring);
 
-    binbuf_text(aa_bb, templatestring, length);
+    binbuf_text(s_bb, s_templatestring, length);
   }
+  s_state=1;
 }
-
-
 
 #endif /* PD_MINOR_VERSION >= 40 */
 
-
+static void autoabstraction_state(t_autoabstraction*x, t_floatarg f)
+{
+  int state=(int)(f>=1.0);
+  s_state=state;
+}
 
 static void*autoabstraction_new(t_symbol *s, int argc, t_atom *argv)
 {
@@ -151,5 +157,6 @@ void autoabstraction_setup(void)
   error("\tor a version that has sys_register_loader()");
 #endif
 
-  autoabstraction_class = class_new(gensym("autoabstraction"), (t_newmethod)autoabstraction_new, 0, sizeof(t_autoabstraction), CLASS_NOINLET, A_GIMME, 0);
+  autoabstraction_class = class_new(gensym("autoabstraction"), (t_newmethod)autoabstraction_new, 0, sizeof(t_autoabstraction), 0, A_NULL, 0);
+  class_addfloat(autoabstraction_class, (t_method)autoabstraction_state);
 }
