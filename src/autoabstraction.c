@@ -43,32 +43,34 @@ static char*s_templatestring="#N canvas 0 0 450 300 10; #X vis 1;";
 
 
 #if (PD_MINOR_VERSION >= 40)
+# define AUTOABSTRACTION_ENABLED
+#endif
 
-#include "s_stuff.h"
-#include "g_canvas.h"
-#include <stdio.h>
-#include <string.h>
-#include <unistd.h>
+#ifdef AUTOABSTRACTION_ENABLED
 
-#ifdef UNISTD
-# include <stdlib.h>
+# include "s_stuff.h"
+# include "g_canvas.h"
+# include <stdio.h>
+# include <string.h>
 # include <unistd.h>
-#endif
-#ifdef _WIN32
-# include <io.h>
-# include <windows.h>
-#endif
 
-#ifdef MISSING_LOADER_T
+# ifdef UNISTD
+#  include <stdlib.h>
+#  include <unistd.h>
+# endif
+# ifdef _WIN32
+#  include <io.h>
+#  include <windows.h>
+# endif
+
+# ifdef MISSING_LOADER_T
 /* definitions taken from s_loader.c, since they weren't in header orignally */
 typedef int (*loader_t)(t_canvas *canvas, char *classname);
 void sys_register_loader(loader_t loader);
 void class_set_extern_dir(t_symbol *s);
-#endif
-
+# endif
 
 static t_binbuf*s_bb=0;
-
 
 static void autoabstraction_save(t_canvas*canvas, char*classname) {
   if(!s_state) {
@@ -115,6 +117,9 @@ static int autoabstraction_loader(t_canvas *canvas, char *classname)
 
 static void autoabstraction_initialize(void)
 {
+  if(s_bb)
+    binbuf_free(s_bb);
+
   s_bb=binbuf_new();
 
   /* try to read a template file */
@@ -126,8 +131,7 @@ static void autoabstraction_initialize(void)
   }
   s_state=1;
 }
-
-#endif /* PD_MINOR_VERSION >= 40 */
+#endif /* AUTOABSTRACTION_ENABLED */
 
 static void autoabstraction_state(t_autoabstraction*x, t_floatarg f)
 {
@@ -138,6 +142,16 @@ static void autoabstraction_state(t_autoabstraction*x, t_floatarg f)
 static void*autoabstraction_new(t_symbol *s, int argc, t_atom *argv)
 {
   t_autoabstraction*x = (t_autoabstraction*)pd_new(autoabstraction_class);
+
+  if(argc&&A_SYMBOL==argv->a_type) {
+    s_templatefilename=atom_getsymbol(argv)->s_name;
+  }
+
+#ifdef AUTOABSTRACTION_ENABLED
+  autoabstraction_initialize();
+#endif /* AUTOABSTRACTION_ENABLED */
+
+
   return (x);
 }
 
@@ -148,8 +162,7 @@ void autoabstraction_setup(void)
   post("\twritten by IOhannes m zmoelnig, IEM <zmoelnig@iem.at>");
   post("\tcompiled on "__DATE__" at "__TIME__ " ");
   post("\tcompiled against Pd version %d.%d.%d.%s", PD_MAJOR_VERSION, PD_MINOR_VERSION, PD_BUGFIX_VERSION, PD_TEST_VERSION);
-
-#if (PD_MINOR_VERSION >= 40)
+#ifdef AUTOABSTRACTION_ENABLED
   autoabstraction_initialize();
   sys_register_loader(autoabstraction_loader);
 #else
@@ -157,6 +170,6 @@ void autoabstraction_setup(void)
   error("\tor a version that has sys_register_loader()");
 #endif
 
-  autoabstraction_class = class_new(gensym("autoabstraction"), (t_newmethod)autoabstraction_new, 0, sizeof(t_autoabstraction), 0, A_NULL, 0);
+  autoabstraction_class = class_new(gensym("autoabstraction"), (t_newmethod)autoabstraction_new, 0, sizeof(t_autoabstraction), 0, A_GIMME, 0);
   class_addfloat(autoabstraction_class, (t_method)autoabstraction_state);
 }
