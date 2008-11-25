@@ -62,7 +62,7 @@ TARGETS=$(SOURCES:.c=.$(EXTENSION))
 
 l_ia64 l_i386 pd_linux: $(TARGETS)
 
-LINUXCFLAGS = -DPD -g -O2 -funroll-loops -fomit-frame-pointer -fPIC \
+LINUXCFLAGS = -DPD -DMISSING_LOADER_T -g -O2 -funroll-loops -fomit-frame-pointer -fPIC \
     -Wall -W -Wshadow -Wstrict-prototypes \
     -Wno-unused -Wno-parentheses -Wno-switch
 
@@ -82,7 +82,7 @@ STRIP?=strip
 
 pd_darwin: $(TARGETS)
 
-DARWINCFLAGS = -DPD -O2 -Wall -W -Wshadow -Wstrict-prototypes \
+DARWINCFLAGS = -DPD  -DMISSING_LOADER_T -O2 -Wall -W -Wshadow -Wstrict-prototypes \
     -Wno-unused -Wno-parentheses -Wno-switch
 
 DARWININCLUDE = -I$(PDSRCDIR)
@@ -96,7 +96,7 @@ DARWINLDFLAGS = -bundle -undefined suppress -flat_namespace
 # ----------------------- IRIX 5.x -----------------------
 pd_irix5: $(TARGETS)
 
-SGICFLAGS5 = -o32 -DPD -DSGI -O2
+SGICFLAGS5 = -o32 -DPD -DMISSING_LOADER_T -DSGI -O2
 
 SGIINCLUDE =  -I$(PDSRCDIR)
 
@@ -111,7 +111,7 @@ SGILDFLAGS =  -elf -shared -rdata_shared
 # ----------------------- IRIX 6.x -----------------------
 pd_irix6: $(TARGETS)
 
-SGICFLAGS6 = -DPD -DSGI -n32 \
+SGICFLAGS6 = -DPD  -DMISSING_LOADER_T -DSGI -n32 \
 	-OPT:roundoff=3 -OPT:IEEE_arithmetic=3 -OPT:cray_ivdep=true \
 	-Ofast=ip32
 
@@ -124,7 +124,7 @@ SGICFLAGS6 = -DPD -DSGI -n32 \
 # ----------------------- NT -----------------------
 dll: $(TARGETS)
 
-PDNTCFLAGS = /W3 /WX /DPD /DNT /D__WIN32__ /DMSW /nologo
+PDNTCFLAGS = /W3 /WX /DPD /DNT /D__WIN32__ /DMSW /DMISSING_LOADER_T /nologo
 
 VC="C:\Programme\Microsoft Visual Studio\Vc98"
 
@@ -144,7 +144,7 @@ PDNTLIB = $(PDNTLDIR)\libc.lib \
 
 pd_nt: $(TARGETS)
 
-MINGWCFLAGS = -DPD -O2 -funroll-loops -fomit-frame-pointer \
+MINGWCFLAGS = -DPD -DMISSING_LOADER_T -O2 -funroll-loops -fomit-frame-pointer \
     -Wall -W -Wshadow -Wstrict-prototypes \
     -Wno-unused -Wno-parentheses -Wno-switch -mms-bitfields
 
