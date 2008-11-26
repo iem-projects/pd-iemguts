@@ -31,19 +31,137 @@
  * TODO: how does this behave in sub-patches?
  *      -> BUG: the depth should _really_ refer to the abstraction-depth 
  *              else we get weird duplicates (most likely due to the "$0" trick
- *
- * TODO: make [savebangs] do something on top-level
- *    that is: if the patch the [savebangs] is in gets saved, [savebangs] will fire
- *    think (a little) about how the args to savebang have to look like to make it compatible with the [canvas*] stiff
- *
- * TODO: maintain our own list of [savebangs] to be called per abstraction rather than using the $0-trick
  */
 
 #include "m_pd.h"
 #include "g_canvas.h"
 
-/* ------------------------- help methods ---------------------------- */
+/* ------------------------- helper methods for callbacks ---------------------------- */
+typedef struct _savebangs_objlist {
+  const t_pd*obj;
+  struct _savebangs_objlist*next;
+} t_savebangs_objlist;
 
+typedef struct _savebangs_canvaslist {
+  const t_pd*parent;
+  t_savebangs_objlist*obj;
+
+  struct _savebangs_canvaslist*next;
+} t_savebangs_canvaslist;
+
+static t_savebangs_canvaslist*s_canvaslist=0;
+
+
+static t_savebangs_canvaslist*findCanvas(const t_pd*parent) {
+  t_savebangs_canvaslist*list=s_canvaslist;
+  if(0==parent  || 0==list)
+    return 0;
+
+  for(list=s_canvaslist; list; list=list->next) {
+    if(parent == list->parent) {
+      return list;
+    }
+  }
+  return 0; 
+}
+
+static t_savebangs_canvaslist*addCanvas(const t_pd*parent)
+{
+  t_savebangs_canvaslist*list=findCanvas(parent);
+  if(!list) {
+    list=(t_savebangs_canvaslist*)getbytes(sizeof(t_savebangs_canvaslist));
+    list->parent=parent;
+    list->obj=0;
+    list->next=0;
+
+    if(0==s_canvaslist) {
+      /* new list */
+      s_canvaslist=list;
+    } else {
+      /* add to the end of existing list */
+      t_savebangs_canvaslist*dummy=s_canvaslist;
+      while(dummy->next)
+        dummy=dummy->next;
+      dummy->next = list;
+    }
+  }
+  return list;
+}
+
+static t_savebangs_objlist*objectsInCanvas(const t_pd*parent) {
+  t_savebangs_canvaslist*list=findCanvas(parent);
+  if(list)
+    return list->obj;
+
+  return 0;
+}
+
+static void addObjectToCanvas(const t_pd*parent, const t_pd*obj) {
+  t_savebangs_canvaslist*p=addCanvas(parent);
+  t_savebangs_objlist*list=0;
+  t_savebangs_objlist*entry=0;
+  if(!p || !obj)
+    return;
+  list=p->obj;
+
+  if(list&&obj==list->obj)
+    return;
+
+  while(list && list->next) {
+    if(obj==list->obj) /* obj already in list */
+      return;
+    list=list->next;
+  }
+
+  /* we are at the end of the list that does not contain obj yet, so add it */
+  entry=(t_savebangs_objlist*)getbytes(sizeof(t_savebangs_objlist));
+  entry->obj=obj;
+  entry->next=0;
+  if(list) {
+    list->next=entry;
+  } else {
+    p->obj=entry;
+  }
+}
+
+static void removeObjectFromCanvas(const t_pd*parent, const t_pd*obj) {
+  t_savebangs_canvaslist*p=findCanvas(parent);
+  t_savebangs_objlist*list=0, *last=0, *next=0;
+  if(!p || !obj)return;
+  list=p->obj;
+  if(!list)
+    return;
+
+  while(list && obj!=list->obj) {
+    last=list;
+    list=list->next;
+  }
+
+  if(!list) /* couldn't find this object */
+    return;
+
+  next=list->next;
+
+  if(last)
+    last->next=next;
+  else
+    p->obj=next;
+
+  freebytes((void*)list, sizeof(t_savebangs_objlist));
+  list=0;
+}
+
+static void removeObjectFromCanvases(const t_pd*obj) {
+   t_savebangs_canvaslist*parents=s_canvaslist;
+
+  while(parents) {
+    removeObjectFromCanvas(parents->parent, obj);
+    parents=parents->next;
+  }
+}
+
+
+/* ------------------------- helper methods for savefunctions ---------------------------- */
 
 typedef struct _savefuns {
   t_class*class;
@@ -89,7 +207,27 @@ static void add_savefn(t_class*class)
   }
 }
 
+/* ------------------------- savefunctions ---------------------------- */
 
+static void orig_savefn(t_gobj*z, t_binbuf*b)
+{
+  t_class*class=z->g_pd;
+  t_savefn savefn=find_savefn(class);
+  if(savefn) {
+    savefn(z, b);
+  }
+}
+
+static void savebangs_bangem(t_savebangs_objlist*objs, int pst);
+static void savebangs_savefn(t_gobj*z, t_binbuf*b) {
+  /* z is the parent abstraction;
+   * we maintain a list of all [savebangs] within such each parent, in order to call all of them
+   */
+  t_savebangs_objlist*obj=objectsInCanvas((t_pd*)z);
+  savebangs_bangem(obj, 0);
+  orig_savefn(z, b);
+  savebangs_bangem(obj, 1);
+}
 
 /* ------------------------- savebangs ---------------------------- */
 
@@ -98,66 +236,33 @@ static t_class *savebangs_class;
 typedef struct _savebangs
 {
   t_object  x_obj;
-
-  t_symbol *x_d0;
   t_outlet *x_pre, *x_post;
-
-  t_savefn x_parentsavefn;
+  t_canvas *x_parent;
 } t_savebangs;
 
 
-static void savebangs_free(t_savebangs *x)
+static void savebangs_bangs(t_savebangs*x, int pst)
 {
-  /* unpatch the parent canvas */
-  if(x->x_d0) {
-    pd_unbind(&x->x_obj.ob_pd, x->x_d0);
-  }
-}
-
-static void orig_savefn(t_gobj*z, t_binbuf*b)
-{
-   t_class*class=z->g_pd;
-    t_savefn savefn=find_savefn(class);
-    if(savefn) {
-      savefn(z, b);
-    }
-}
-
-static void savebangs_savefn(t_gobj*z, t_binbuf*b) {
-  /* argh: z is the abstraction! but we need to access ourselfs!
-   * we handle this by binding to a special symbol. e.g. "$0 savebangs"
-   * (we use the space between in order to make it hard for the ordinary user 
-   * to use this symbol for other things...
-   */
-
-  /* alternatively we could just search the abstraction for all instances of savebangs_class
-   * and bang these;
-   * but using the pd_bind-trick is simpler for now
-   * though not as sweet, as somebody could use our bind-symbol for other things...
-   */
-
-  t_symbol*s_d0=canvas_realizedollar((t_canvas*)z, gensym("$0 savebangs"));
-  t_atom ap[2];
-  SETPOINTER(ap+0, (t_gpointer*)z);
-  SETPOINTER(ap+1, (t_gpointer*)b);
-
-  if(s_d0->s_thing) {
-    pd_list(s_d0->s_thing, &s_list, 2, ap);
-  } else {
-    orig_savefn(z, b);
-  }
-}
-
-static void savebangs_list(t_savebangs *x, t_symbol*s, int argc, t_atom*argv)
-{
-  if(argv[0].a_type == A_POINTER && argv[1].a_type == A_POINTER) {    
-    t_gobj *z    =(t_gobj*)  argv[0].a_w.w_gpointer;
-    t_binbuf*b   =(t_binbuf*)argv[1].a_w.w_gpointer;
-
+  if(!pst)
     outlet_bang(x->x_pre);
-    orig_savefn(z, b);
+  else
     outlet_bang(x->x_post);
+}
+
+static void savebangs_bangem(t_savebangs_objlist*objs, int pst) {
+  while(objs) {
+    t_savebangs*x=(t_savebangs*)objs->obj;
+    savebangs_bangs(x, pst);
+    objs=objs->next;
   }
+}
+
+static void savebangs_mysavefn(t_gobj*z, t_binbuf*b) {
+  t_savebangs*x=(t_savebangs*)z;
+  int doit=(!x->x_parent);
+  if(doit)savebangs_bangs(x, 0);
+  orig_savefn(z, b);
+  if(doit)savebangs_bangs(x, 1);
 }
 
 static void *savebangs_new(t_floatarg f)
@@ -167,35 +272,44 @@ static void *savebangs_new(t_floatarg f)
   t_canvas *canvas=(t_canvas*)glist_getcanvas(glist);
   t_class *class = 0;
 
-  
   int depth=(int)f;
   if(depth<0)depth=0;
 
-  while(depth && canvas) {
-    canvas=canvas->gl_owner;
+  if(depth) {
     depth--;
-  }
-  
-  if(canvas) {
-    class=((t_gobj*)canvas)->g_pd;
-    x->x_d0=canvas_realizedollar(canvas, gensym("$0 savebangs"));
-    pd_bind(&x->x_obj.ob_pd, x->x_d0);
+    while(depth && canvas) {
+      canvas=canvas->gl_owner;
+      depth--;
+    }
     
-    add_savefn(class);
-    class_setsavefn(class, savebangs_savefn);
-  } else {
-    x->x_d0=0;
+    if(canvas) {
+      class=((t_gobj*)canvas)->g_pd;
+      add_savefn(class);
+      class_setsavefn(class, savebangs_savefn);
+      
+      x->x_parent=canvas;
+    } else {
+      x->x_parent=0;
+    }
+
+    addObjectToCanvas((t_pd*)canvas, (t_pd*)x);
   }
 
-  x->x_pre=outlet_new(&x->x_obj, &s_bang);
   x->x_post=outlet_new(&x->x_obj, &s_bang);
+  x->x_pre=outlet_new(&x->x_obj, &s_bang);
 
   return (x);
+}
+static void savebangs_free(t_savebangs *x)
+{
+  /* unpatch the parent canvas */
+  removeObjectFromCanvases((t_pd*)x);
 }
 
 void savebangs_setup(void)
 {
   savebangs_class = class_new(gensym("savebangs"), (t_newmethod)savebangs_new,
                               (t_method)savebangs_free, sizeof(t_savebangs), CLASS_NOINLET, A_DEFFLOAT, 0);
-  class_addlist(savebangs_class, savebangs_list);
+  add_savefn(savebangs_class);
+  class_setsavefn(savebangs_class, savebangs_mysavefn); 
 }
