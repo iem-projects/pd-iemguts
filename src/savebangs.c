@@ -3,9 +3,9 @@
  *
  * propertybang - implementation file
  *
- * copyleft (c) IOhannes m zm-bölnig-A
+ * copyleft (c) IOhannes m zmölnig
  *
- *   2007:forum::f-bür::umläute:2007-A
+ *   2007:forum::für::umläute:2007
  *
  *   institute of electronic music and acoustics (iem)
  *
@@ -31,6 +31,12 @@
  * TODO: how does this behave in sub-patches?
  *      -> BUG: the depth should _really_ refer to the abstraction-depth 
  *              else we get weird duplicates (most likely due to the "$0" trick
+ *
+ * TODO: make [savebangs] do something on top-level
+ *    that is: if the patch the [savebangs] is in gets saved, [savebangs] will fire
+ *    think (a little) about how the args to savebang have to look like to make it compatible with the [canvas*] stiff
+ *
+ * TODO: maintain our own list of [savebangs] to be called per abstraction rather than using the $0-trick
  */
 
 #include "m_pd.h"
@@ -169,12 +175,12 @@ static void *savebangs_new(t_floatarg f)
     canvas=canvas->gl_owner;
     depth--;
   }
-
+  
   if(canvas) {
     class=((t_gobj*)canvas)->g_pd;
     x->x_d0=canvas_realizedollar(canvas, gensym("$0 savebangs"));
     pd_bind(&x->x_obj.ob_pd, x->x_d0);
-
+    
     add_savefn(class);
     class_setsavefn(class, savebangs_savefn);
   } else {
