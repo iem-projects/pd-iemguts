@@ -52,7 +52,7 @@ static void propertybang_bang(t_propertybang *x) {
 }
 
 static void propertybang_properties(t_gobj*z, t_glist*owner) {
-  t_iemguts_objlist*obj=objectsInCanvas((t_pd*)z);
+  t_iemguts_objlist*objs=objectsInCanvas((t_pd*)z);
    while(objs) {
     t_propertybang*x=(t_propertybang*)objs->obj;
     propertybang_bang(x);
