@@ -33,132 +33,8 @@
  *              else we get weird duplicates (most likely due to the "$0" trick
  */
 
-#include "m_pd.h"
+#include "iemguts-objlist.h"
 #include "g_canvas.h"
-
-/* ------------------------- helper methods for callbacks ---------------------------- */
-typedef struct _savebangs_objlist {
-  const t_pd*obj;
-  struct _savebangs_objlist*next;
-} t_savebangs_objlist;
-
-typedef struct _savebangs_canvaslist {
-  const t_pd*parent;
-  t_savebangs_objlist*obj;
-
-  struct _savebangs_canvaslist*next;
-} t_savebangs_canvaslist;
-
-static t_savebangs_canvaslist*s_canvaslist=0;
-
-
-static t_savebangs_canvaslist*findCanvas(const t_pd*parent) {
-  t_savebangs_canvaslist*list=s_canvaslist;
-  if(0==parent  || 0==list)
-    return 0;
-
-  for(list=s_canvaslist; list; list=list->next) {
-    if(parent == list->parent) {
-      return list;
-    }
-  }
-  return 0; 
-}
-
-static t_savebangs_canvaslist*addCanvas(const t_pd*parent)
-{
-  t_savebangs_canvaslist*list=findCanvas(parent);
-  if(!list) {
-    list=(t_savebangs_canvaslist*)getbytes(sizeof(t_savebangs_canvaslist));
-    list->parent=parent;
-    list->obj=0;
-    list->next=0;
-
-    if(0==s_canvaslist) {
-      /* new list */
-      s_canvaslist=list;
-    } else {
-      /* add to the end of existing list */
-      t_savebangs_canvaslist*dummy=s_canvaslist;
-      while(dummy->next)
-        dummy=dummy->next;
-      dummy->next = list;
-    }
-  }
-  return list;
-}
-
-static t_savebangs_objlist*objectsInCanvas(const t_pd*parent) {
-  t_savebangs_canvaslist*list=findCanvas(parent);
-  if(list)
-    return list->obj;
-
-  return 0;
-}
-
-static void addObjectToCanvas(const t_pd*parent, const t_pd*obj) {
-  t_savebangs_canvaslist*p=addCanvas(parent);
-  t_savebangs_objlist*list=0;
-  t_savebangs_objlist*entry=0;
-  if(!p || !obj)
-    return;
-  list=p->obj;
-
-  if(list&&obj==list->obj)
-    return;
-
-  while(list && list->next) {
-    if(obj==list->obj) /* obj already in list */
-      return;
-    list=list->next;
-  }
-
-  /* we are at the end of the list that does not contain obj yet, so add it */
-  entry=(t_savebangs_objlist*)getbytes(sizeof(t_savebangs_objlist));
-  entry->obj=obj;
-  entry->next=0;
-  if(list) {
-    list->next=entry;
-  } else {
-    p->obj=entry;
-  }
-}
-
-static void removeObjectFromCanvas(const t_pd*parent, const t_pd*obj) {
-  t_savebangs_canvaslist*p=findCanvas(parent);
-  t_savebangs_objlist*list=0, *last=0, *next=0;
-  if(!p || !obj)return;
-  list=p->obj;
-  if(!list)
-    return;
-
-  while(list && obj!=list->obj) {
-    last=list;
-    list=list->next;
-  }
-
-  if(!list) /* couldn't find this object */
-    return;
-
-  next=list->next;
-
-  if(last)
-    last->next=next;
-  else
-    p->obj=next;
-
-  freebytes((void*)list, sizeof(t_savebangs_objlist));
-  list=0;
-}
-
-static void removeObjectFromCanvases(const t_pd*obj) {
-   t_savebangs_canvaslist*parents=s_canvaslist;
-
-  while(parents) {
-    removeObjectFromCanvas(parents->parent, obj);
-    parents=parents->next;
-  }
-}
 
 
 /* ------------------------- helper methods for savefunctions ---------------------------- */
@@ -218,12 +94,12 @@ static void orig_savefn(t_gobj*z, t_binbuf*b)
   }
 }
 
-static void savebangs_bangem(t_savebangs_objlist*objs, int pst);
+static void savebangs_bangem(t_iemguts_objlist*objs, int pst);
 static void savebangs_savefn(t_gobj*z, t_binbuf*b) {
   /* z is the parent abstraction;
-   * we maintain a list of all [savebangs] within such each parent, in order to call all of them
+   * we maintain a list of all [savebangs] within such each parent, in order to call all of them 
    */
-  t_savebangs_objlist*obj=objectsInCanvas((t_pd*)z);
+  t_iemguts_objlist*obj=objectsInCanvas((t_pd*)z);
   savebangs_bangem(obj, 0);
   orig_savefn(z, b);
   savebangs_bangem(obj, 1);
@@ -249,7 +125,7 @@ static void savebangs_bangs(t_savebangs*x, int pst)
     outlet_bang(x->x_post);
 }
 
-static void savebangs_bangem(t_savebangs_objlist*objs, int pst) {
+static void savebangs_bangem(t_iemguts_objlist*objs, int pst) {
   while(objs) {
     t_savebangs*x=(t_savebangs*)objs->obj;
     savebangs_bangs(x, pst);
