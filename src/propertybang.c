@@ -28,7 +28,7 @@
  */
 
 
-#include "m_pd.h"
+#include "iemguts-objlist.h"
 #include "g_canvas.h"
 
 
@@ -39,33 +39,25 @@ static t_class *propertybang_class;
 typedef struct _propertybang
 {
   t_object  x_obj;
-  t_symbol *x_d0name;
 } t_propertybang;
 
 
 static void propertybang_free(t_propertybang *x)
 {
-  pd_unbind(&x->x_obj.ob_pd, x->x_d0name);
+  removeObjectFromCanvases((t_pd*)x);
 }
 
 static void propertybang_bang(t_propertybang *x) {
   outlet_bang(x->x_obj.ob_outlet);
 }
+
 static void propertybang_properties(t_gobj*z, t_glist*owner) {
-  /* argh: z is the abstraction! but we need to access ourselfs!
-   * we handle this by binding to a special symbol. e.g. "$0 propertybang"
-   * (we use the space between in order to make it hard for the ordinary user 
-   * to use this symbol for other things...
-   */
-
-  /* alternatively we could just search the abstraction for all instances of propertybang_class
-   * and bang these;
-   * but using the pd_bind-trick is simpler for now
-   * though not as sweet, as somebody could use our bind-symbol for other things...
-   */
-
-  t_symbol*s_d0name=canvas_realizedollar((t_canvas*)z, gensym("$0 propertybang"));
-    pd_bang(s_d0name->s_thing);
+  t_iemguts_objlist*obj=objectsInCanvas((t_pd*)z);
+   while(objs) {
+    t_propertybang*x=(t_propertybang*)objs->obj;
+    propertybang_bang(x);
+    objs=objs->next;
+  } 
 }
 
 static void *propertybang_new(void)
@@ -77,10 +69,9 @@ static void *propertybang_new(void)
 
   outlet_new(&x->x_obj, &s_bang);
 
-  x->x_d0name=canvas_realizedollar(canvas, gensym("$0 propertybang"));
-  pd_bind(&x->x_obj.ob_pd, x->x_d0name);
-
   class_setpropertiesfn(class, propertybang_properties);
+
+  addObjectToCanvas((t_pd*)canvas, (t_pd*)x);
   return (x);
 }
 
