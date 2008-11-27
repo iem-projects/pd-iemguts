@@ -200,7 +200,7 @@
 #X connect 39 1 37 0;
 #X connect 39 2 38 0;
 #X restore 138 304 pd propertyguts;
-#X obj 223 331 saveargs;
+#X obj 223 331 canvasargs;
 #X text 43 37 this is a simple abstraction that displays a canvas via
 gop.;
 #X text 38 168 the canvas-color can be changed via a properties-panel
