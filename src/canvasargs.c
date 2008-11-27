@@ -1,7 +1,6 @@
-
 /******************************************************
  *
- * saveargs - implementation file
+ * canvasargs - implementation file
  *
  * copyleft (c) IOhannes m zm-bölnig-A
  *
@@ -36,19 +35,19 @@
 #include "g_canvas.h"
 
 
-/* ------------------------- saveargs ---------------------------- */
+/* ------------------------- canvasargs ---------------------------- */
 
-static t_class *saveargs_class;
+static t_class *canvasargs_class;
 
-typedef struct _saveargs
+typedef struct _canvasargs
 {
   t_object  x_obj;
 
   t_canvas  *x_canvas;
-} t_saveargs;
+} t_canvasargs;
 
 
-static void saveargs_list(t_saveargs *x, t_symbol*s, int argc, t_atom*argv)
+static void canvasargs_list(t_canvasargs *x, t_symbol*s, int argc, t_atom*argv)
 {
   t_canvas*c=x->x_canvas;
   t_binbuf*b=0;
@@ -70,23 +69,44 @@ static void saveargs_list(t_saveargs *x, t_symbol*s, int argc, t_atom*argv)
   binbuf_add(b, argc, argv);
 }
 
-static void saveargs_free(t_saveargs *x)
+static void canvasargs_bang(t_canvasargs *x)
+{
+  int argc=0;
+  t_atom*argv=0;
+  t_binbuf*b;
+
+  if(!x->x_canvas) return;
+  b=x->x_canvas->gl_obj.te_binbuf;
+
+  if(!b)return;
+
+  argc=binbuf_getnatom(b);
+  argv=binbuf_getvec(b);
+  post("...");
+  outlet_list(x->x_obj.ob_outlet, &s_list, argc-1, argv+1);
+}
+
+
+static void canvasargs_free(t_canvasargs *x)
 {
 }
 
-static void *saveargs_new(void)
+static void *canvasargs_new(void)
 {
-  t_saveargs *x = (t_saveargs *)pd_new(saveargs_class);
+  t_canvasargs *x = (t_canvasargs *)pd_new(canvasargs_class);
   t_glist *glist=(t_glist *)canvas_getcurrent();
   t_canvas *canvas=(t_canvas*)glist_getcanvas(glist);
     
   x->x_canvas = canvas;
+
+  outlet_new(&x->x_obj, 0);
   return (x);
 }
 
-void saveargs_setup(void)
+void canvasargs_setup(void)
 {
-  saveargs_class = class_new(gensym("saveargs"), (t_newmethod)saveargs_new,
-    (t_method)saveargs_free, sizeof(t_saveargs), 0, 0);
-  class_addanything(saveargs_class, (t_method)saveargs_list);
+  canvasargs_class = class_new(gensym("canvasargs"), (t_newmethod)canvasargs_new,
+    (t_method)canvasargs_free, sizeof(t_canvasargs), 0, 0);
+  class_addlist(canvasargs_class, (t_method)canvasargs_list);
+  class_addbang(canvasargs_class, (t_method)canvasargs_bang);
 }
