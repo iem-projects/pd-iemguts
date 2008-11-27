@@ -91,11 +91,19 @@ static void canvasargs_free(t_canvasargs *x)
 {
 }
 
-static void *canvasargs_new(void)
+static void *canvasargs_new(t_floatarg f)
 {
   t_canvasargs *x = (t_canvasargs *)pd_new(canvasargs_class);
   t_glist *glist=(t_glist *)canvas_getcurrent();
   t_canvas *canvas=(t_canvas*)glist_getcanvas(glist);
+
+  int depth=(int)f;
+  if(depth<0)depth=0;
+
+  while(depth && canvas) {
+    canvas=canvas->gl_owner;
+    depth--;
+  }
     
   x->x_canvas = canvas;
 
@@ -106,7 +114,7 @@ static void *canvasargs_new(void)
 void canvasargs_setup(void)
 {
   canvasargs_class = class_new(gensym("canvasargs"), (t_newmethod)canvasargs_new,
-    (t_method)canvasargs_free, sizeof(t_canvasargs), 0, 0);
+                               (t_method)canvasargs_free, sizeof(t_canvasargs), 0, A_DEFFLOAT, 0);
   class_addlist(canvasargs_class, (t_method)canvasargs_list);
   class_addbang(canvasargs_class, (t_method)canvasargs_bang);
 }
