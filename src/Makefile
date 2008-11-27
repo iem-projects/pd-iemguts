@@ -16,28 +16,33 @@ EXTENSION=$(MAKECMDGOALS)
 
 # if no filename-extension is supplied by the user
 # try to guess one, based on what "uname" tells us
-UNAME := $(shell uname -s)
-ifeq ($(UNAME),Linux)
+UNAME_SYSTEM := $(shell uname -s)
+UNAME_ARCH := $(shell uname -m)
+ifeq ($(UNAME_SYSTEM),Linux)
   DEFAULTEXTENSION= pd_linux
-else
-  ifeq ($(UNAME),Darwin)
-    DEFAULTEXTENSION= pd_darwin
-  else
-    ifeq (MINGW,$(findstring MINGW,$(UNAME)))
-      DEFAULTEXTENSION= pd_nt
-    else
-      ifeq ($(UNAME),IRIX)
-	UNAMEV := $(shell uname -R)
-	ifeq (6.,$(findstring 6.,$(UNAMEV)))
-	  DEFAULTEXTENSION= pd_irix6
-	else
-	  DEFAULTEXTENSION= pd_irix5
-	endif
-      else
-	DEFAULTEXTENSION=help
-      endif
-    endif
+  ifeq ($(UNAME_ARCH),x86_64)
+    DEFAULTEXTENSION= l_ia64
+  else ifeq ($(UNAME_ARCH),i686)
+    DEFAULTEXTENSION= l_i386
   endif
+else ifeq ($(UNAME_SYSTEM),Darwin)
+    DEFAULTEXTENSION= pd_darwin
+    ifeq ($(UNAME_ARCH),i386)
+     DEFAULTEXTENSION= d_i386
+    else ifeq ($(UNAME_ARCH),PowerPC)
+     DEFAULTEXTENSION= d_ppc
+    endif
+else ifeq (MINGW,$(findstring MINGW,$(UNAME_SYSTEM)))
+      DEFAULTEXTENSION= pd_nt
+else ifeq ($(UNAME_SYSTEM),IRIX)
+  UNAME_IRIXVERSION := $(shell uname -R)
+  ifeq (6.,$(findstring 6.,$(UNAME_IRIXVERSION)))
+    DEFAULTEXTENSION= pd_irix6
+  else
+    DEFAULTEXTENSION= pd_irix5
+  endif
+else
+  DEFAULTEXTENSION=help
 endif
 
 # if no extension is given, call "make" again with a guessed extension
@@ -50,7 +55,8 @@ help:
 
 # delete old build files
 clean:
-	-rm -f *.dll *.pd_* *.o *.obj *~
+	-rm -f *.dll *.w_i386 *.pd_linux *.l_ia64 *.l_i386  *.pd_darwin *.d_fat *.d_ppc *.d_i386 *.pd_irix5 *.pd_irix6
+	-rm -f *.o *.obj *~
 
 # we want to compile all C-files we find in the current directory
 SOURCES=$(sort $(filter %.c, $(wildcard *.c)))
