@@ -82,7 +82,6 @@ static void canvasargs_bang(t_canvasargs *x)
 
   argc=binbuf_getnatom(b);
   argv=binbuf_getvec(b);
-  post("...");
   outlet_list(x->x_obj.ob_outlet, &s_list, argc-1, argv+1);
 }
 
