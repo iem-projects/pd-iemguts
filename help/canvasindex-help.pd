@@ -1,9 +1,9 @@
 #N canvas 180 165 635 592 10;
-#X msg 88 128 bang;
+#X msg 88 118 bang;
 #X obj 81 25 canvasindex;
 #X text 207 25 get the ID/index of an abstraction/subpatch within it's
 containing patch;
-#X text 99 88 this object allows you to dynamically find out indicies
+#X text 95 71 this object allows you to dynamically find out indicies
 to connect with dynamic patching;
 #N canvas 0 0 450 300 object1 0;
 #X obj 75 48 inlet;
@@ -13,7 +13,7 @@ to connect with dynamic patching;
 #X connect 0 0 2 0;
 #X connect 2 0 1 0;
 #X restore 88 168 pd object1;
-#X obj 88 148 t b b;
+#X obj 88 138 t b b;
 #N canvas 0 0 450 300 object2 0;
 #X obj 75 48 inlet;
 #X obj 75 189 outlet;
