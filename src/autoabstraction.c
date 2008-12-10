@@ -39,6 +39,7 @@ static char *version = "$Revision: 0.1 $";
 /* this is the name of the filename that get's loaded as a default template for new abstractions */
 static char*s_templatefilename="autoabstraction.template";
 /* if the loading above fails, we resort to a simple default abstraction that automatically opens up */
+/* LATER: make the font-size the same as the one used by Pd */
 static char*s_templatestring="#N canvas 0 0 450 300 10; #X vis 1;";
 
 
@@ -72,7 +73,7 @@ void class_set_extern_dir(t_symbol *s);
 
 static t_binbuf*s_bb=0;
 
-static void autoabstraction_save(t_canvas*canvas, char*classname) {
+static void autoabstraction_createpatch(t_canvas*canvas, char*classname) {
   if(!s_state) {
     /* autoabstraction turned off... */
     return;
@@ -109,7 +110,7 @@ static int autoabstraction_loader(t_canvas *canvas, char *classname)
       return(0);
     }
 
-  autoabstraction_save(canvas, classname);
+  autoabstraction_createpatch(canvas, classname);
 
   /* we always fail, because we want Pd to do the real opening of abstractions */
   return 0;
