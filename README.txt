@@ -26,6 +26,14 @@ installation::
 #2> make
 #3> make install
 
+note: iemuts depends on some internal headers of Pd.
+therefore you might have to specify the full path to your Pd-sources
+using the PDROOT environment variable.
+something like
+#2> PDROOT=/home/me/src/pd-0.41-2/
+should do the trick
+(PDROOT should point to a directory wherein there is a src/-subdirectory
+containing the sources of the Pd you are running)
 
 license::
 ---------
