@@ -51,6 +51,11 @@ static void canvasdelete_bang(t_canvasdelete *x)
   int x1=0, y1=0, width=0, height=0;
   t_atom alist[2];
 
+  if(x->x_clock) {
+    pd_error(x, "deletion already scheduled");
+    return;
+  }
+
   if(NULL==x->x_glist || NULL==x->x_gobj)return;
 
   x->x_clock=clock_new(x, (t_method)canvasdelete_doit);
