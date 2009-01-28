@@ -23,7 +23,6 @@
 #include "m_pd.h"
 
 #include "g_canvas.h"
-#include "m_imp.h"
 
 /* ------------------------- canvasdelete ---------------------------- */
 
