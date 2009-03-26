@@ -17,9 +17,9 @@
 
 
 /* 
- * this object provides a way to send messages to upstream canvases
- * by default it sends messages to the containing canvas, but you can give the
- * "depth" as argument;
+ * this object provides a way to send messages to query the connections
+ * of the containing canvas;
+ * but you can give the "depth" as argument;
  * e.g. [canvasconnections 1] will query the parent of the containing canvas
  */
 
@@ -191,11 +191,13 @@ static void canvasconnections_queryinlets(t_canvasconnections *x)
     if(size>0) {
       t_atom*ap=getbytes(sizeof(t_atom)*(size+1));
       int j=0;
+      t_symbol*s=gensym("inlet");
+
       SETFLOAT(ap, (t_float)i);
       for(j=0; j<size; j++)
         SETFLOAT(ap+j+1, ((t_float)invecs[i]->elements[j]));
       
-      outlet_anything(x->x_out, gensym("inlet"), size+1, ap);
+      outlet_anything(x->x_out, s, size+1, ap);
       freebytes(ap, sizeof(t_atom)*(size+1));
     }
     intvec_free(invecs[i]);
@@ -213,6 +215,11 @@ static void canvasconnections_inlet(t_canvasconnections *x, t_floatarg f)
   if(inlet >= 0 && inlet < ninlets) {
     int size=invecs[inlet]->num_elements;
     t_atom*ap=getbytes(sizeof(t_atom)*(size+1));
+    t_symbol*s=gensym("inlet");
+    if(obj_issignalinlet(x->x_object,inlet)) {
+      s=gensym("inlet~");
+    }
+
     SETFLOAT(ap, (t_float)inlet);
 
     if(size>0) {
@@ -221,7 +228,7 @@ static void canvasconnections_inlet(t_canvasconnections *x, t_floatarg f)
         SETFLOAT(ap+j+1, ((t_float)invecs[inlet]->elements[j]));
     }
       
-    outlet_anything(x->x_out, gensym("inlet"), size+1, ap);
+    outlet_anything(x->x_out, s, size+1, ap);
     freebytes(ap, sizeof(t_atom)*(size+1));
 
     intvec_free(invecs[inlet]);
@@ -240,9 +247,7 @@ static int canvasconnections_inlets(t_canvasconnections *x)
     return 0;
 
   ninlets=obj_ninlets(x->x_object);
-
-
-  ninlets=obj_ninlets(x->x_object);
+  //  ninlets=obj_ninlets(x->x_object);
   SETFLOAT(&at, (t_float)ninlets);
   outlet_anything(x->x_out, gensym("inlets"), 1, &at);
 
@@ -360,6 +365,12 @@ static void canvasconnections_outlet(t_canvasconnections *x, t_floatarg f)
     t_outconnect*conn=obj_starttraverseoutlet(x->x_object, &out, outlet);
     t_atom*abuf=0;
     int count=0;
+
+    t_symbol*s=gensym("outlet");
+    if(obj_issignaloutlet(x->x_object,outlet)) {
+      s=gensym("outlet~");
+    }
+
     while(conn) {
       conn=obj_nexttraverseoutlet(conn, &dest, &in, &which);
       count++;
@@ -379,7 +390,7 @@ static void canvasconnections_outlet(t_canvasconnections *x, t_floatarg f)
         i++;
       }
     }
-    outlet_anything(x->x_out, gensym("outlet"), count+1, abuf);
+    outlet_anything(x->x_out, s, count+1, abuf);
     freebytes(abuf, sizeof(t_atom)*(count+1));
   }
 }
@@ -389,6 +400,10 @@ static void canvasconnections_queryoutlets(t_canvasconnections *x)
   int noutlets=canvasconnections_outlets(x);
   int nout=0;
   t_atom at;
+
+  SETFLOAT(&at, (t_float)noutlets);
+  outlet_anything(x->x_out, gensym("outlets"), 1, &at);
+
   for(nout=0; nout<noutlets; nout++) {
     t_outlet*out=0;
     t_outconnect*conn=obj_starttraverseoutlet(x->x_object, &out, nout);
