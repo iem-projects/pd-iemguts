@@ -28,6 +28,7 @@
  */
 
 #include "m_pd.h"
+#include "m_imp.h"
 #include "g_canvas.h"
 
 int glist_getindex(t_glist *x, t_gobj *y);
@@ -40,9 +41,71 @@ typedef struct _canvasindex
 {
   t_object  x_obj;
   t_canvas  *x_canvas;
-
   t_outlet*xoutlet, *youtlet;
 } t_canvasindex;
+
+typedef struct _intlist
+{
+  int value;
+  struct _intlist*next;
+} t_intlist;
+
+static void canvasindex_symbol(t_canvasindex *x, t_symbol*s)
+{
+  /* check whether an object of name <s> is in the canvas */
+  t_canvas*c=x->x_canvas;
+  t_gobj*y;
+  int index=0;
+
+  if(!c || !c->gl_owner) return;
+  c =c->gl_owner;
+
+  for (y = (t_gobj*)c->gl_list; y; y = y->g_next) /* traverse all objects in canvas */
+    {
+      t_object*obj=(t_object*)y;
+      t_class*obj_c=y->g_pd;
+      t_symbol*cname=obj_c->c_name;
+      t_binbuf*b=obj->te_binbuf;
+      t_atom*ap=binbuf_getvec(b);
+      int    ac=binbuf_getnatom(b);
+      if(s!=cname && ac) {
+	cname=atom_getsymbol(ap);
+      }
+      if(s==cname){
+#warning LATER think about output format
+	outlet_float(x->xoutlet, (t_float)index);
+      }
+      index++;
+    }
+}
+
+
+static void canvasindex_float(t_canvasindex *x, t_floatarg f)
+{
+  /* get the objectname of object #<f> */
+  int index=f, cur=0;
+  t_canvas*c=x->x_canvas;
+  t_gobj*y;
+
+  if(index < 0 || !c || !c->gl_owner) return;
+  c =c->gl_owner;
+
+  for (y = (t_gobj*)c->gl_list; y && cur<index; y = y->g_next) /* traverse all objects in canvas */
+    {
+      cur++;
+    }
+  if(y) {
+      t_object*obj=(t_object*)y;
+      t_binbuf*b=obj->te_binbuf;
+      t_atom*ap=binbuf_getvec(b);
+      int    ac=binbuf_getnatom(b);
+      t_atom classatom[1];
+      SETSYMBOL(classatom, y->g_pd->c_name);
+      /* LATER: shan't we output the index of the object as well? */
+      outlet_anything(x->youtlet, gensym("class"), 1, classatom);
+      outlet_anything(x->xoutlet, gensym("binbuf"), ac, ap);
+  }  
+}
 
 static void canvasindex_bang(t_canvasindex *x)
 {
@@ -92,4 +155,6 @@ void canvasindex_setup(void)
                                 sizeof(t_canvasindex), 0, 
                                 A_DEFFLOAT, 0);
   class_addbang(canvasindex_class, (t_method)canvasindex_bang);
+  class_addsymbol(canvasindex_class, (t_method)canvasindex_symbol);
+  class_addfloat(canvasindex_class, (t_method)canvasindex_float);
 }
