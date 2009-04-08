@@ -41,9 +41,18 @@ typedef struct _canvasselect
 static void canvasselect_bang(t_canvasselect *x)
 {
   /* get the selection of the canvas */
+  t_glist*glist=x->x_canvas;
+  t_gobj*obj=NULL;
+  int index=0;
 
-  
-
+  if(NULL==glist) {
+    return;
+  }
+  for(obj=glist->gl_list; obj; obj=obj->g_next, index++) {
+    if(glist_isselected(glist, obj)) {
+      post("selected: %d", index);
+    }
+  }
 }
 
 
@@ -64,8 +73,9 @@ static int canvasselect_doselect(t_glist*glist, int index)
     obj=obj->g_next;
   }
 
-  if(obj)
+  if(obj) {
     glist_select(glist, obj);
+  }
   else {
     return -1;
   }
