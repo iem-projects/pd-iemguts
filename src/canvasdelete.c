@@ -39,11 +39,13 @@ typedef struct _canvasdelete
 } t_canvasdelete;
 static void canvasdelete_doit(t_canvasdelete *x)
 {
+  int dspstate= canvas_suspend_dsp();
   clock_free(x->x_clock);
   x->x_clock=NULL;
 
   glist_delete(x->x_glist, x->x_gobj);
 
+  canvas_resume_dsp(dspstate);
 }
 
 static void canvasdelete_bang(t_canvasdelete *x)
