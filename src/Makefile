@@ -68,11 +68,11 @@ TARGETS=$(SOURCES:.c=.$(EXTENSION))
 
 l_ia64 l_i386 pd_linux: $(TARGETS)
 
-LINUXCFLAGS = -DPD -DMISSING_LOADER_T -g -O2 -funroll-loops -fomit-frame-pointer -fPIC \
+LINUXCFLAGS = -DPD -g -O2 -funroll-loops -fomit-frame-pointer -fPIC \
     -Wall -W -Wshadow -Wstrict-prototypes \
     -Wno-unused -Wno-parentheses -Wno-switch
 
-LINUXLDFLAGS =  -export_dynamic -shared  -lc -lm
+LINUXLDFLAGS =  -shared  -lc -lm
 
 LINUXINCLUDE =  -I$(PDSRCDIR)
 

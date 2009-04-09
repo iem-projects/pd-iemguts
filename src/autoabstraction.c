@@ -44,10 +44,11 @@ static char*s_templatestring="#N canvas 0 0 450 300 10; #X vis 1;";
 
 
 #if (PD_MINOR_VERSION >= 40)
-# define AUTOABSTRACTION_ENABLED
+# define AUTOABSTRACTION_ENABLED 1
 #endif
 
 #ifdef AUTOABSTRACTION_ENABLED
+
 
 # include "s_stuff.h"
 # include "g_canvas.h"
@@ -64,12 +65,12 @@ static char*s_templatestring="#N canvas 0 0 450 300 10; #X vis 1;";
 #  include <windows.h>
 # endif
 
-# ifdef MISSING_LOADER_T
-/* definitions taken from s_loader.c, since they weren't in header orignally */
-typedef int (*loader_t)(t_canvas *canvas, char *classname);
-void sys_register_loader(loader_t loader);
-void class_set_extern_dir(t_symbol *s);
-# endif
+#if (PD_MINOR_VERSION < 42)
+ /* definitions taken from s_loader.c, since they weren't in header orignally */
+ typedef int (*loader_t)(t_canvas *canvas, char *classname);
+ void sys_register_loader(loader_t loader);
+ void class_set_extern_dir(t_symbol *s);
+#endif
 
 static t_binbuf*s_bb=0;
 
