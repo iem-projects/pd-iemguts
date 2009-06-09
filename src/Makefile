@@ -154,7 +154,7 @@ MINGWCFLAGS = -DPD -DMISSING_LOADER_T -O2 -funroll-loops -fomit-frame-pointer \
     -Wall -W -Wshadow -Wstrict-prototypes \
     -Wno-unused -Wno-parentheses -Wno-switch -mms-bitfields
 
-MINGWLDFLAGS =  -export_dynamic -shared -lm -lkernel32 -lcoldname -lcrtdll -lpd -L$(PDLIBDIR)
+MINGWLDFLAGS =  --export-dynamic -shared -lm -lkernel32 -lcoldname -lcrtdll -lpd -L$(PDLIBDIR)
 
 MINGWINCLUDE =  -I$(PDSRCDIR)
 
