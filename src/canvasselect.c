@@ -48,11 +48,29 @@ static void canvasselect_bang(t_canvasselect *x)
   if(NULL==glist) {
     return;
   }
+  t_atom selected_index;
+  int nselected=0;
+  
   for(obj=glist->gl_list; obj; obj=obj->g_next, index++) {
     if(glist_isselected(glist, obj)) {
-      post("selected: %d", index);
+      // post("selected: %d", index);
+      nselected++;
     }
   }
+  int n=0;
+  index=0;
+  t_atom *atombuf;
+  
+  atombuf = (t_atom *)getbytes(sizeof(t_atom)*nselected);
+  
+  for(obj=glist->gl_list; obj; obj=obj->g_next, index++) {
+    if(glist_isselected(glist, obj)) {
+      SETFLOAT(&atombuf[n], index);
+      n++;
+    }
+  }
+  
+  outlet_list(x->x_obj.ob_outlet, &s_list, nselected, atombuf);
 }
 
 
@@ -184,7 +202,8 @@ static void *canvasselect_new(t_floatarg f)
   }
 
   x->x_canvas = canvas;
-
+  
+  outlet_new(&x->x_obj, 0);
   return (x);
 }
 
