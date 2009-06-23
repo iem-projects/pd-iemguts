@@ -92,7 +92,8 @@ static int canvasselect_doselect(t_glist*glist, int index)
   }
 
   if(obj) {
-    glist_select(glist, obj);
+    if(!glist_isselected(glist, obj))
+       glist_select(glist, obj);
   }
   else {
     return -1;
