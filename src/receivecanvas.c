@@ -3,9 +3,9 @@
  *
  * receivecanvas - implementation file
  *
- * copyleft (c) IOhannes m zmölnig
+ * copyleft (c) 2009, IOhannes m zmölnig
  *
- *   2007:forum::für::umläute:2007
+ *   forum::für::umläute
  *
  *   institute of electronic music and acoustics (iem)
  *
@@ -17,19 +17,23 @@
 
 
 /* 
- * this object provides a way to send messages to upstream canvases
- * by default it sends messages to the containing canvas, but you can give the
- * "depth" as argument;
- * e.g. [receivecanvas 1] will send messages to the parent of the containing canvas
+ * this object provides a way to receive messages to upstream canvases
+ * by default it receives messages to the containing canvas, but you can give the "depth" as argument;
+ * e.g. [receivecanvas 1] will receive messages to the parent of the containing canvas
+ */
+
+/* NOTES:
+ *  it would be _really_ nice to get all the messages that are somehow "sent" to a (parent) object,
+ *  no matter whether using typedmess() or using sendcanvas()
+ *  this would require (however) to overwrite and proxy the classmethods for canvas which is a chore
+ *
+ *  currently this objects only gets the messages from typedmess()...
  */
 
 #include "m_pd.h"
 #include "g_canvas.h"
 
 #include <stdio.h>
-
-
-int glist_getindex(t_glist *x, t_gobj *y);
 
 /* ------------------------- receivecanvas ---------------------------- */
 
