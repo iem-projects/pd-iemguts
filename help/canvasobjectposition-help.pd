@@ -1,10 +1,8 @@
-#N canvas 1511 97 635 662 10;
-#X text 50 439 you can specify the depth of the parent-patch via a
+#N canvas 424 144 674 662 10;
+#X text 48 441 you can specify the depth of the parent-patch via a
 optional argument:;
-#X text 211 475 will work on the grandparent (parent-depth:2) of this
+#X text 219 473 will work on the grandparent (parent-depth:2) of this
 patch;
-#X text 39 88 this object allows you to retrieve the position of an
-abstraction/subpatch within it's containing canvas;
 #X msg 98 124 bang;
 #X obj 98 172 unpack;
 #X floatatom 137 194 5 0 0 0 - - -;
@@ -12,51 +10,22 @@ abstraction/subpatch within it's containing canvas;
 #N canvas 0 0 648 414 getpos 0;
 #X obj 75 48 inlet;
 #X obj 75 189 outlet;
-#X obj 329 318 canvasobjectposition 1 14;
-#X obj 336 285 t b f f;
-#X obj 334 341 list prepend;
-#X obj 338 371 print x;
-#X obj 338 213 until;
-#X obj 341 239 i;
-#X obj 370 239 + 1;
-#X msg 340 129 bang;
-#X obj 338 151 canvasindex;
-#X obj 341 188 t f b;
-#X msg 384 211 0;
-#X obj 75 129 canvasobjectposition 1 20;
-#X connect 0 0 13 0;
-#X connect 2 0 4 0;
-#X connect 3 0 2 0;
-#X connect 3 1 2 1;
-#X connect 3 2 4 1;
-#X connect 4 0 5 0;
-#X connect 6 0 7 0;
-#X connect 7 0 8 0;
-#X connect 7 0 3 0;
-#X connect 8 0 7 1;
-#X connect 9 0 10 0;
-#X connect 10 1 11 0;
-#X connect 11 0 6 0;
-#X connect 11 1 12 0;
-#X connect 12 0 7 1;
-#X connect 13 0 1 0;
+#X obj 75 129 canvasobjectposition 1 18;
+#X connect 0 0 2 0;
+#X connect 2 0 1 0;
 #X restore 98 148 pd getpos;
-#X text 69 253 note: there is a bug in Pd that might require you to
-save a patch \, before the "size" will actually change;
 #N canvas 0 0 450 300 setpos 0;
 #X obj 75 48 inlet;
-#X obj 75 129 canvasobjectposition 1 20;
 #X obj 167 63 loadbang;
 #X msg 167 84 350 200;
-#X connect 0 0 1 0;
+#X obj 75 129 canvasobjectposition 1 18;
+#X connect 0 0 3 0;
+#X connect 1 0 2 0;
 #X connect 2 0 3 0;
-#X connect 3 0 1 0;
-#X restore 108 382 pd setpos;
-#X obj 111 340 hsl 128 15 300 400 0 0 empty empty empty -2 -8 0 10
--262144 -1 -1 6900 1;
-#X text 54 310 finally you can move an object around (without any hackish
-mouse emulation);
-#X text 100 617 (c) 2009 IOhannes m zmoelnig;
+#X restore 108 332 pd setpos;
+#X obj 111 290 hsl 128 15 300 400 0 0 empty empty empty -2 -8 0 10
+-262144 -1 -1 300 1;
+#X text 60 631 (c) 2009 IOhannes m zmoelnig;
 #X obj 48 28 canvasobjectposition;
 #X text 207 25 get/set the position of an arbitrary object in the specified
 (parent) canvas.;
@@ -64,15 +33,24 @@ mouse emulation);
 #X text 363 164 |;
 #X text 364 176 V;
 #X obj 350 200 blabla;
-#X msg 108 359 \$1 200;
+#X msg 108 310 \$1 200;
 #X text 50 534 you can specify the object to set/query via a 2nd optional
 argument \, or via the 2nd inlet;
-#X text 240 574 will work on object #20 in this patch;
-#X obj 53 575 canvasobjectposition 0 20;
 #X obj 52 475 canvasobjectposition 2;
-#X connect 3 0 7 0;
-#X connect 4 0 6 0;
-#X connect 4 1 5 0;
-#X connect 7 0 4 0;
-#X connect 10 0 19 0;
-#X connect 19 0 9 0;
+#X obj 53 595 canvasobjectposition 0 18;
+#X text 240 594 will work on object #18 in this patch;
+#X msg 53 573 350 210;
+#X msg 225 570 18;
+#X text 39 88 this object allows you to retrieve the position of any
+object (with a known index) within it's containing canvas;
+#X text 54 260 you can move an object around (without any hackish mouse
+emulation);
+#X text 53 394 arguments:;
+#X connect 2 0 6 0;
+#X connect 3 0 5 0;
+#X connect 3 1 4 0;
+#X connect 6 0 3 0;
+#X connect 8 0 16 0;
+#X connect 16 0 7 0;
+#X connect 21 0 19 0;
+#X connect 22 0 19 1;
