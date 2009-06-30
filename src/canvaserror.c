@@ -69,7 +69,7 @@ static void canvaserror_any(t_canvaserror *x, t_symbol*s, int argc, t_atom*argv)
     pd_error(x, "%s", bbstring);
   } else {
     t_symbol*objectname=c->gl_name;
-    pd_error(c, "%s: %s", objectname->s_name, bbstring);
+    pd_error(c, "[%s]: %s", objectname->s_name, bbstring);
   }
   freebytes(bbstring, length);
 

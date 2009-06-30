@@ -80,7 +80,7 @@ STRIP?=strip
 
 %.l_ia64 %.l_i386 %.pd_linux: %.c
 	$(CC) $(LINUXLDFLAGS) $(LINUXCFLAGS) $(LINUXINCLUDE) -o $@ $<
-	$(STRIP) --strip-unneeded $@
+#	$(STRIP) --strip-unneeded $@
 
 
 
