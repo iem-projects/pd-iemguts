@@ -93,6 +93,8 @@ static void canvasdelete_free(t_canvasdelete*x)
 
 }
 
+static void canvasdelete_canvasmethods(void);
+
 void canvasdelete_setup(void)
 {
   canvasdelete_class = class_new(gensym("canvasdelete"), 
@@ -100,4 +102,61 @@ void canvasdelete_setup(void)
                                  sizeof(t_canvasdelete), 0,
                                  A_DEFFLOAT, 0);
   class_addbang(canvasdelete_class, (t_method)canvasdelete_bang);
+
+  canvasdelete_canvasmethods();
 }
+
+
+/* 'delete' message for the canvas */
+static int canvas_delete_docb(t_glist*glist, int index) {
+  /* this will crash Pd if the object to be deleted is on the stack
+   * workarounds: 
+   *   - use a clock (see above)
+   *   - finally fix this in Pd
+   */
+  t_gobj*obj=NULL;
+  int i=index;
+  if(NULL==glist) {
+    return -1;
+  }
+  if(i<0) {
+    return -1;
+  }
+
+  obj=glist->gl_list;
+
+  while(i-- && obj) {
+    obj=obj->g_next;
+  }
+
+  if(obj) {
+    glist_delete(glist, obj);
+  }
+  else {
+    return -1;
+  }
+
+  return index;
+}
+
+static void canvas_delete_cb(t_canvas*x, t_symbol*s, int argc, t_atom*argv)
+{
+  int dspstate= canvas_suspend_dsp();
+  if(argc) {
+    while(argc--){
+      canvas_delete_docb(x, atom_getint(argv++));
+    }
+  }
+  canvas_resume_dsp(dspstate);
+}
+
+
+static void canvasdelete_canvasmethods(void) {
+  if(NULL==canvas_class)return;
+  if(NULL==zgetfn(&canvas_class, gensym("delete"))) {
+    verbose(1, "adding 'delete' method to canvas");
+    class_addmethod(canvas_class, (t_method)canvas_delete_cb, gensym("delete"), A_GIMME, 0);
+  }
+
+}
+
