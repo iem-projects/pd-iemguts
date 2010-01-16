@@ -97,12 +97,15 @@ static void canvasposition_list(t_canvasposition *x, t_symbol*s, int argc, t_ato
   dx = atom_getint(argv+0) - c->gl_obj.te_xpix;
   dy = atom_getint(argv+1) - c->gl_obj.te_ypix;
 
-  if(c0&&glist_isvisible(c0))  {
-    gobj_displace((t_gobj*)c, c0, dx, dy);
-    canvas_fixlinesfor(c0, (t_text*)c);
-  } else {
-    c->gl_obj.te_xpix+=dx;
-    c->gl_obj.te_ypix+=dy;
+
+  if ((dx!=0)||(dy!=0)) {
+    if(c0&&glist_isvisible(c0))  {
+      gobj_displace((t_gobj*)c, c0, dx, dy);
+      canvas_fixlinesfor(c0, (t_text*)c);
+    } else {
+      c->gl_obj.te_xpix+=dx;
+      c->gl_obj.te_ypix+=dy;
+    }
   }
 }
 
