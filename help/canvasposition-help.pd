@@ -1,5 +1,4 @@
 #N canvas 1388 107 635 592 10;
-#X obj 81 25 canvasindex;
 #X text 47 547 (c) 2008 IOhannes m zmoelnig;
 #X text 55 471 you can specify the depth of the parent-patch via a
 optional argument:;
@@ -50,13 +49,14 @@ save a patch \, before the "size" will actually change;
 #X text 46 368 finally you can move an object around (without any hackish
 mouse emulation);
 #X msg 100 418 \$1 440;
-#X connect 6 0 18 0;
-#X connect 7 0 9 0;
-#X connect 7 1 8 0;
-#X connect 11 0 17 0;
-#X connect 12 0 14 0;
-#X connect 12 1 13 0;
-#X connect 17 0 12 0;
-#X connect 18 0 7 0;
-#X connect 21 0 24 0;
-#X connect 24 0 20 0;
+#X obj 81 25 canvasposition;
+#X connect 5 0 17 0;
+#X connect 6 0 8 0;
+#X connect 6 1 7 0;
+#X connect 10 0 16 0;
+#X connect 11 0 13 0;
+#X connect 11 1 12 0;
+#X connect 16 0 11 0;
+#X connect 17 0 6 0;
+#X connect 20 0 23 0;
+#X connect 23 0 19 0;
