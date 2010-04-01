@@ -3,9 +3,9 @@
  *
  * propertybang - implementation file
  *
- * copyleft (c) IOhannes m zm-bölnig-A
+ * copyleft (c) IOhannes m zmölnig
  *
- *   2007:forum::f-bür::umläute:2007-A
+ *   2007:forum::für::umläute:2010
  *
  *   institute of electronic music and acoustics (iem)
  *
