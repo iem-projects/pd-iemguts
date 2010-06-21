@@ -63,6 +63,13 @@ SOURCES=$(sort $(filter %.c, $(wildcard *.c)))
 # each C-files maps will become an external with the given filename-extension
 TARGETS=$(SOURCES:.c=.$(EXTENSION))
 
+install: auto
+	@echo " "
+	@echo "	Wotcher!"
+	@echo "	no installation routines found"
+	@echo "	provide one yourself"
+	@echo " "
+
 
 # ----------------------- Linux -----------------------
 
