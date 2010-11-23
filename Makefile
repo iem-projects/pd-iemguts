@@ -32,7 +32,7 @@ HELPPATCHES =  \
   help/canvasindex-help.pd \
   help/canvasobjectposition-help.pd \
   help/canvasposition-help.pd \
-  help/classloader-help.pd \
+  help/classtest-help.pd \
   help/propertybang-help.pd \
   help/sendcanvas-help.pd
 
