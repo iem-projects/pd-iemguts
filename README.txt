@@ -45,7 +45,7 @@ authors::
 ---------
 this software is 
 copyleft 2007- by 
-	IOhannes m zmoelnig <zmoelnig [at] iem [dot] at>,
+	IOhannes m zmölnig <zmoelnig [at] iem [dot] at>,
 	Institute of Electronic Music and Acoustics,
 	University of Music and Dramatic Arts, Graz, Austria
 
