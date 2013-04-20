@@ -136,7 +136,7 @@ static void *canvasobjectposition_new(t_symbol*s, int argc, t_atom*argv)
 
     if(depth<0)depth=0;
 
-    post("depth=%d\tindex=%d", depth, index);
+    //post("depth=%d\tindex=%d", depth, index);
 
     while(depth && canvas) {
       canvas=canvas->gl_owner;
