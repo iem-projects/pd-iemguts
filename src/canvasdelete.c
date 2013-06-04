@@ -154,7 +154,7 @@ static void canvas_delete_cb(t_canvas*x, t_symbol*s, int argc, t_atom*argv)
 static void canvasdelete_canvasmethods(void) {
   if(NULL==canvas_class)return;
   if(NULL==zgetfn(&canvas_class, gensym("delete"))) {
-    verbose(1, "adding 'delete' method to canvas");
+    verbose(0, "adding 'delete' method to canvas");
     class_addmethod(canvas_class, (t_method)canvas_delete_cb, gensym("delete"), A_GIMME, 0);
   }
 
