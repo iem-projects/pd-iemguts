@@ -46,7 +46,8 @@ typedef struct _canvasname
 
   t_canvas  *x_canvas;
   t_outlet*x_nameout;
-  t_outlet*x_glnameout;
+  t_outlet*x_displaynameout;
+  t_inlet*x_displaynamein;
 } t_canvasname;
 
 
@@ -59,7 +60,7 @@ static void canvasname_bang(t_canvasname *x)
   if(!c) return;
 
   if(c->gl_name)
-    outlet_symbol(x->x_glnameout, c->gl_name);
+    outlet_symbol(x->x_displaynameout, c->gl_name);
 
 
   b=c->gl_obj.te_binbuf;
@@ -93,7 +94,7 @@ static void canvasname_symbol(t_canvasname *x, t_symbol*s)
     return;
   }
 }
-static void canvasname_glname(t_canvasname *x, t_symbol*s)
+static void canvasname_displayname(t_canvasname *x, t_symbol*s)
 {
   t_canvas*c=x->x_canvas;
   if(!c) return;
@@ -103,7 +104,8 @@ static void canvasname_glname(t_canvasname *x, t_symbol*s)
 static void canvasname_free(t_canvasname *x)
 {
   if(x->x_nameout  )outlet_free(x->x_nameout  );x->x_nameout=NULL  ;
-  if(x->x_glnameout)outlet_free(x->x_glnameout);x->x_glnameout=NULL;
+  if(x->x_displaynameout)outlet_free(x->x_displaynameout);x->x_displaynameout=NULL;
+  if(x->x_displaynamein )inlet_free (x->x_displaynamein );x->x_displaynamein=NULL;
 }
 
 static void *canvasname_new(t_floatarg f)
@@ -121,8 +123,9 @@ static void *canvasname_new(t_floatarg f)
 
   x->x_canvas = canvas;
 
+  x->x_displaynamein=inlet_new(&x->x_obj, &x->x_obj.ob_pd, gensym("symbol"), gensym("display"));
   x->x_nameout=outlet_new(&x->x_obj, &s_symbol);
-  x->x_glnameout=outlet_new(&x->x_obj, &s_symbol);
+  x->x_displaynameout=outlet_new(&x->x_obj, &s_symbol);
   
   return (x);
 }
@@ -132,6 +135,6 @@ void canvasname_setup(void)
   canvasname_class = class_new(gensym("canvasname"), (t_newmethod)canvasname_new,
                                (t_method)canvasname_free, sizeof(t_canvasname), 0, A_DEFFLOAT, 0);
   class_addsymbol(canvasname_class, (t_method)canvasname_symbol);
-  class_addmethod(canvasname_class, (t_method)canvasname_glname, gensym("display"), A_SYMBOL, 0);
+  class_addmethod(canvasname_class, (t_method)canvasname_displayname, gensym("display"), A_SYMBOL, 0);
   class_addbang  (canvasname_class, (t_method)canvasname_bang);
 }
