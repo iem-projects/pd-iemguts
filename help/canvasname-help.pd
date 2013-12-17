@@ -25,9 +25,7 @@ with something different than 'pd'.;
 #X text 140 347 3 reopen the copy to inspect the modification;
 #X text 30 415 NOTE:;
 #X text 76 145 <- get the current canvas name;
-#X text 30 432 According to the sources of [canvasname] \, it is supposed
-to enable an abstraction to change its own arguments. This feature
-is not documented here \, since it does not seem to work.;
+#X text 30 432 To change the arguments of an abstraction \, use [canvasargs].;
 #X obj 29 364 print pd-subpatch;
 #X connect 0 0 2 0;
 #X connect 1 0 2 0;
