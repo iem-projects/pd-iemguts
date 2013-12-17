@@ -97,7 +97,7 @@ static void orig_savefn(t_gobj*z, t_binbuf*b)
 static void savebangs_bangem(t_iemguts_objlist*objs, int pst);
 static void savebangs_savefn(t_gobj*z, t_binbuf*b) {
   /* z is the parent abstraction;
-   * we maintain a list of all [savebangs] within such each parent, in order to call all of them 
+   * we maintain a list of all [savebangs] within a parent, in order to call all of them 
    */
   t_iemguts_objlist*obj=objectsInCanvas((t_pd*)z);
   savebangs_bangem(obj, 0);
