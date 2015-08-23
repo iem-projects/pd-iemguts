@@ -19,6 +19,7 @@ SOURCES = \
   canvasposition.c \
   canvasselect.c \
   classtest.c \
+  findbrokenobject.c \
   oreceive.c \
   propertybang.c \
   receivecanvas.c \
