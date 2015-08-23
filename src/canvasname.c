@@ -3,9 +3,9 @@
  *
  * canvasname - implementation file
  *
- * copyleft (c) IOhannes m zm-bölnig-A
+ * copyleft (c) IOhannes m zm-bÃ¶lnig-A
  *
- *   2007:forum::f-bür::umläute:2007-A
+ *   2007:forum::f-bÃ¼r::umlÃ¤ute:2007-A
  *
  *   institute of electronic music and acoustics (iem)
  *

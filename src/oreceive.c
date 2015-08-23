@@ -3,9 +3,9 @@
  *
  * oreceive - implementation file
  *
- * copyleft (c) IOhannes m zmölnig
+ * copyleft (c) IOhannes m zmÃ¶lnig
  *
- *   2307:forum::für::umläute:2008
+ *   2307:forum::fÃ¼r::umlÃ¤ute:2008
  *
  *   institute of electronic music and acoustics (iem)
  *   unsiversity of music and dramatic arts graz (kug)

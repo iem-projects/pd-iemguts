@@ -3,9 +3,9 @@
  *
  * receivecanvas - implementation file
  *
- * copyleft (c) 2009, IOhannes m zmölnig
+ * copyleft (c) 2009, IOhannes m zmÃ¶lnig
  *
- *   forum::für::umläute
+ *   forum::fÃ¼r::umlÃ¤ute
  *
  *   institute of electronic music and acoustics (iem)
  *
