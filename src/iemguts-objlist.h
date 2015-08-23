@@ -10,7 +10,7 @@
  *
  ******************************************************
  *
- * license: GNU General Public License v.2
+ * license: GNU General Public License v.2 (or later)
  *
  ******************************************************/
 

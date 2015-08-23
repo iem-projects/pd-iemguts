@@ -1,5 +1,10 @@
 /* For information on usage and redistribution, and for a DISCLAIMER OF ALL
 * WARRANTIES, see the file, "LICENSE.txt," in this distribution.
+ ******************************************************
+ *
+ * license: GNU General Public License v.2 (or later)
+ *
+ ******************************************************
 
 based on iemlib2 written by Thomas Musil, Copyright (c) IEM KUG Graz Austria 2000 - 2006 */
 

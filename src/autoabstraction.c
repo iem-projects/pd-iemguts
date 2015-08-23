@@ -1,7 +1,11 @@
 /* Copyright (c) 2008 IOhannes m zmölnig @ IEM
  * For information on usage and redistribution, and for a DISCLAIMER OF ALL
  * WARRANTIES, see the file, "LICENSE.txt," that comes with Pd.  
- */
+ ******************************************************
+ *
+ * license: GNU General Public License v.2 (or later)
+ *
+ ******************************************************/
 
 /*
  * this code adds an external "loader" to Miller S. Puckette's "pure data",
