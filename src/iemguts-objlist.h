@@ -4,7 +4,7 @@
  *
  * copyleft (c) IOhannes m zmölnig
  *
- *   2008:forum::für::umläute:2008
+ *   2008:forum::für::umläute:2015
  *
  *   institute of electronic music and acoustics (iem)
  *
@@ -14,7 +14,7 @@
  *
  ******************************************************/
 
-/* this file implements some helperr functions for dealing with lists of
+/* this file implements some helper functions for dealing with lists of
  * objects (containing other objects)
  *
  * used for callbacks to enumerated objects without $0 tricks
@@ -24,7 +24,9 @@
  * TODO: documentation
  */
 
-#include "m_pd.h"
+#ifndef INCLUDE_IEMGUTS_OBJECTLIST_H_
+#define INCLUDE_IEMGUTS_OBJECTLIST_H_
+#include "iemguts.h"
 
 
 /* ------------------------- helper methods for callbacks ---------------------------- */
@@ -150,4 +152,5 @@ static void removeObjectFromCanvases(const t_pd*obj) {
     removeObjectFromCanvas(parents->parent, obj);
     parents=parents->next;
   }
+#endif /* INCLUDE_IEMGUTS_OBJECTLIST_H_ */
 }
