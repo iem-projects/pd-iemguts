@@ -166,8 +166,7 @@ void autoabstraction_setup(void)
   /* relies on t.grill's loader functionality, fully added in 0.40 */
   post("automatic abstraction creator %s",version);  
   post("\twritten by IOhannes m zmoelnig, IEM <zmoelnig@iem.at>");
-  post("\tcompiled on "__DATE__" at "__TIME__ " ");
-  post("\tcompiled against Pd version %d.%d.%d.%s", PD_MAJOR_VERSION, PD_MINOR_VERSION, PD_BUGFIX_VERSION, PD_TEST_VERSION);
+  iemguts_boilerplate_compiled();
 #ifdef AUTOABSTRACTION_ENABLED
   autoabstraction_initialize();
   sys_register_loader(autoabstraction_loader);
