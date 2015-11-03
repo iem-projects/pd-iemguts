@@ -30,7 +30,7 @@
  *  currently this objects only gets the messages from typedmess()...
  */
 
-#include "m_pd.h"
+#include "iemguts.h"
 #include "g_canvas.h"
 
 #include <stdio.h>

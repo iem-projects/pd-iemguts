@@ -23,7 +23,7 @@
  * e.g. [canvasconnections 1] will query the parent of the containing canvas
  */
 
-#include "m_pd.h"
+#include "iemguts.h"
 #include "g_canvas.h"
 #include "m_imp.h"
 #include <string.h>

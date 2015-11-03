@@ -23,7 +23,7 @@
  * it also adds a "select" message to the canvas
  */
 
-#include "m_pd.h"
+#include "iemguts.h"
 
 #include "g_canvas.h"
 

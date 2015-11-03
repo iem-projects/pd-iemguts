@@ -20,7 +20,7 @@
  * this object deletes itself (or the specified parent canvas) when banged
  */
 
-#include "m_pd.h"
+#include "iemguts.h"
 
 #include "g_canvas.h"
 

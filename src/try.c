@@ -24,7 +24,7 @@
  * currently this doesn't work (well) with [list]  
  */
 
-#include "m_pd.h"
+#include "iemguts.h"
 #include "g_canvas.h"
 
 int glist_getindex(t_glist *x, t_gobj *y);

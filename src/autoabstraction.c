@@ -27,7 +27,7 @@
 # define MSW
 #endif
 
-#include "m_pd.h"
+#include "iemguts.h"
 
 
 typedef struct _autoabstraction

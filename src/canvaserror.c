@@ -32,7 +32,7 @@
  * nice, eh?
  */
 
-#include "m_pd.h"
+#include "iemguts.h"
 #include "g_canvas.h"
 
 

@@ -27,7 +27,7 @@
  * abstraction that holds this object
  */
 
-#include "m_pd.h"
+#include "iemguts.h"
 #include "m_imp.h"
 #include "g_canvas.h"
 

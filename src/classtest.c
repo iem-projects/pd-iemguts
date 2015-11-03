@@ -23,7 +23,7 @@
  * e.g. [classtest 1] will send messages to the parent of the containing canvas
  */
 
-#include "m_pd.h"
+#include "iemguts.h"
 #include "g_canvas.h"
 
 int glist_getindex(t_glist *x, t_gobj *y);
