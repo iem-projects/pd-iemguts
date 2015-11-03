@@ -17,7 +17,7 @@ danger::
 --------
 IEMguts often deal with non-official internals of Pure data.
 These internals might change in future versions of Pd, rendering IEMguts unuseable.
-Always make sure that you are using IEMguts with the same version as it was compiled with!
+Always make sure that you are using IEMguts with the same version of Pd as it was compiled with!
 Else you might experience non-functional, crashing or exploding intestines.
 
 installation::
