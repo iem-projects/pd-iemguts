@@ -24,6 +24,12 @@
 
 #include "m_pd.h"
 
+#ifdef STRINGIFY
+# undef STRINGIFY
+#endif
+#define IEMGUTS_STRINGIFY_AUX(s) #s
+#define STRINGIFY(s) IEMGUTS_STRINGIFY_AUX(s)
+
 #ifndef BUILD_DATE
 # define BUILD_DATE "on " __DATE__ " at " __TIME__
 #endif
