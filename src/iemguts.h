@@ -34,6 +34,25 @@
 # define BUILD_DATE "on " __DATE__ " at " __TIME__
 #endif
 
+
+/*
+ * check whether we run at least a given Pd-version
+ */
+static int iemguts_check_atleast_pdversion(int major, int minor, int bugfix) {
+  int got_major=0, got_minor=0, got_bugfix=0;
+  sys_getversion(&got_major, &got_minor, &got_bugfix);
+#pragma push_macro("cmpver_")
+#ifdef cmpver_
+# undef cmpver_
+#endif
+#define cmpver_(got, want)  if(got < want)return 0; else if (got > want)return 1;
+  cmpver_(got_major , major );
+  cmpver_(got_minor , minor );
+  cmpver_(got_bugfix, bugfix);
+  return 1;
+#pragma pop_macro("cmpver_")
+}
+
 /**
  * print some boilerplate about when the external was compiled
  * and against which version of Pd
@@ -60,23 +79,8 @@ static void iemguts_boilerplate(const char*name, const char*copyright) {
   else
     verbose(v, "\t         against Pd version %d.%d-%d",
 	 PD_MAJOR_VERSION, PD_MINOR_VERSION, PD_BUGFIX_VERSION);
+  if(!iemguts_check_atleast_pdversion(PD_MAJOR_VERSION, PD_MINOR_VERSION, PD_BUGFIX_VERSION))
+    verbose(v, "\tNOTE: you are running an older version of Pd!");
   }
 }
-
-/* check whether we run at least a given Pd-version */
-static int iemguts_check_atleast_pdversion(int major, int minor, int bugfix) {
-  int got_major=0, got_minor=0, got_bugfix=0;
-  sys_getversion(&got_major, &got_minor, &got_bugfix);
-#pragma push_macro("cmpver_")
-#ifdef cmpver_
-# undef cmpver_
-#endif
-#define cmpver_(got, want)  if(got < want)return 0; else if (got > want)return 1;
-  cmpver_(got_major , major );
-  cmpver_(got_minor , minor );
-  cmpver_(got_bugfix, bugfix);
-  return 1;
-#pragma pop_macro("cmpver_")
-}
-
 #endif /* INCLUDE_IEMGUTS_H_ */
