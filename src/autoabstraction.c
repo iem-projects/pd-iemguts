@@ -38,8 +38,6 @@ static t_class *autoabstraction_class;
 
 static int s_state=0;
 
-static char *version = "$Revision: 0.1 $";
-
 /* this is the name of the filename that get's loaded as a default template for new abstractions */
 static char*s_templatefilename="autoabstraction.template";
 /* if the loading above fails, we resort to a simple default abstraction that automatically opens up */
@@ -164,14 +162,12 @@ static void*autoabstraction_new(t_symbol *s, int argc, t_atom *argv)
 void autoabstraction_setup(void)
 {
   /* relies on t.grill's loader functionality, fully added in 0.40 */
-  post("automatic abstraction creator %s",version);  
-  post("\twritten by IOhannes m zmoelnig, IEM <zmoelnig@iem.at>");
-  iemguts_boilerplate_compiled();
+  iemguts_boilerplate("automatic abstraction creator", "IOhannes m zmölnig, IEM <zmoelnig@iem.at>");
 #ifdef AUTOABSTRACTION_ENABLED
   autoabstraction_initialize();
   sys_register_loader(autoabstraction_loader);
 #else
-  error("to function, this needs to be compiled against Pd 0.40 or higher,\n");
+  error("autoabstraction needs to be compiled against Pd 0.40 or higher,\n");
   error("\tor a version that has sys_register_loader()");
 #endif
 
