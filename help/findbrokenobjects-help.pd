@@ -1,0 +1,32 @@
+#N canvas 598 330 503 318 10;
+#X obj 35 72 findbrokenobjects;
+#X msg 35 48 bang;
+#X obj 78 274 /dev/device;
+#X obj 189 273 color 1;
+#X text 169 42 finds broken objects;
+#N canvas 317 159 706 395 subpatch 0;
+#X msg 37 129 bang;
+#X msg 309 129 bang;
+#X obj 309 153 findbrokenobjects 0;
+#X obj 37 153 findbrokenobjects;
+#X text 33 73 without args \, it finds ALL broken objects in the running
+Pd-instance, f 23;
+#X msg 511 129 bang;
+#X obj 511 153 findbrokenobjects 1;
+#X text 507 56 an argument specifies the search root. '1' will search
+the parent canvas and its children, f 23;
+#X text 304 56 an argument specifies the search root. '0' will only
+search in this canvas and its children, f 23;
+#X obj 375 289 /////////////;
+#X text 201 290 another unknown object:;
+#X connect 0 0 3 0;
+#X connect 1 0 2 0;
+#X connect 5 0 6 0;
+#X restore 99 225 pd subpatch;
+#X text 28 106 arguments: you can pass a numbeer (int>=0) as argument
+to [findbrokenobjects] to limit the search to a given root-canvas and
+it's children. '0' is the canvas the [findbrokenobjects] object lives
+in \, '1' is it's parent-canvas and so on.;
+#X text 28 178 if you don't give an argument \, the entire Pd-instance
+is searched.;
+#X connect 1 0 0 0;
