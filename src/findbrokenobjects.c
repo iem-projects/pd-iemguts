@@ -24,6 +24,9 @@
  if (objsrc && pd_class(&src->g_pd) == text_class && objsrc->te_type == T_OBJECT) {
    // 'src' is a broken object
  }
+
+TODO:
+ - output more data: canvas and object-ID
  */
 
 #include "iemguts.h"
@@ -43,6 +46,8 @@ typedef struct _findbrokenobjects
   t_object  x_obj;
   t_outlet *x_out;
   t_canvas *x_parent;   // the canvas we are acting on
+
+  int       x_verbose;
 } t_findbrokenobjects;
 
 extern t_class *text_class;
@@ -67,41 +72,61 @@ static void findbrokenobjects_doit(t_canvas*cnv) {
   }
 }
 
-static void fbo_iterate(t_canvas*x) {
+static int fbo_has_ctor(t_atom*ab) {
+  t_symbol*s=(ab&&pd_objectmaker)?atom_getsymbol(ab):0;
+  if(!s)
+    return 0;
+  if(zgetfn(&pd_objectmaker, s))
+    return 1;
+  return 0;
+}
+
+static void fbo_iterate(t_findbrokenobjects*x, t_canvas*cnv, int verbose) {
   // iterate over all top-level canvases
-  if(!(x && x->gl_name && x->gl_name->s_name))
+  if(!(cnv && cnv->gl_name && cnv->gl_name->s_name))
     return;
   t_gobj*g=0;
+  int count=0;
 
-  for(g=x->gl_list;g;g=g->g_next) {
+  for(g=cnv->gl_list;g;g=g->g_next) {
     // iterate over all objects on the canvas
     t_object*ob=pd_checkobject(&g->g_pd);
     t_class*cls=0;
+    count++;
 
     if(!(ob && ob->te_type == T_OBJECT))
       continue;
 
     cls=pd_class(&g->g_pd);
-    //const char*classname=cls->c_name->s_name;
     if (cls == canvas_class) {
       // this is just another abstraction, recurse into it
-      fbo_iterate(ob);
+      fbo_iterate(x, ob, verbose);
     } else if (cls == text_class) {
-      /* broken object */
-      int ntxt;
-      char *txt;
       t_binbuf*bb=ob->te_binbuf;
-      binbuf_gettext(bb, &txt, &ntxt);
-      pd_error(ob, "[%s] broken object!", txt);
-      freebytes(txt, ntxt);
+      t_atom*argv=binbuf_getvec(bb);
+      int argc=binbuf_getnatom(bb);
+      /* broken object */
+      if(verbose) {
+	int ntxt;
+	char *txt;
+	binbuf_gettext(bb, &txt, &ntxt);
+	pd_error(ob, "[%s] broken object!", txt);
+	freebytes(txt, ntxt);
+      }
+      //post("%s %d", cnv->gl_name->s_name, count);
+      if(argc && fbo_has_ctor(argv)) {
+	outlet_anything(x->x_out, gensym("not-created"), argc, argv);
+      } else {
+	outlet_anything(x->x_out, gensym("not-found"), argc, argv);
+      }
     }
   }
 }
 
-static void findbrokenobjects_bang(t_findbrokenobjects *x) {
+static void findbrokenobjects_iterate(t_findbrokenobjects *x, int verbose) {
   // find all broken objects in the current patch
   if(x->x_parent) {
-    fbo_iterate(x->x_parent);
+    fbo_iterate(x, x->x_parent, verbose);
   } else {
     t_canvas *c;
     for (c = pd_getcanvaslist(); c; c = c->gl_next) {
@@ -109,12 +134,27 @@ static void findbrokenobjects_bang(t_findbrokenobjects *x) {
       /* only allow names ending with '.pd'
        * (reject template canvases)
        */
-      const int len=strlen(name);
-      if(len>3 && name[len-3]=='.' && name[len-2]=='p' && name[len-1]=='d') {
-	fbo_iterate(c);
-      } //else post("canvas: %s", name);
+      int len=strlen(name);
+      const char*exclude_name;
+      int exclude=1;
+      for(exclude_name="etalpmet_"; *exclude_name && len; len--, exclude_name++) {
+	if(*exclude_name != name[len-1]) {
+	  exclude=0;
+	  break;
+	}
+      }
+      if(!exclude){
+	fbo_iterate(x, c, verbose);
+      }// else post("canvas: %s", name);
     }
   }
+}
+
+static void findbrokenobjects_bang(t_findbrokenobjects *x) {
+  findbrokenobjects_iterate(x, x->x_verbose);
+}
+static void findbrokenobjects_verbose(t_findbrokenobjects *x, t_float f) {
+  x->x_verbose=(int)f;
 }
 
 static void findbrokenobjects_free(t_findbrokenobjects *x)
@@ -139,9 +179,9 @@ static void *findbrokenobjects_new(t_symbol*s, int argc, t_atom*argv)
 	x->x_parent = canvas;
     }
   }
-  post("findbrokenobj @ %p", x->x_parent);
+  x->x_verbose=0;
 
-  x->x_out = outlet_new(&x->x_obj, &s_float);
+  x->x_out = outlet_new(&x->x_obj, 0);
   return (x);
 }
 
@@ -169,7 +209,10 @@ void findbrokenobjects_setup(void)
 				     (t_method)findbrokenobjects_free, sizeof(t_findbrokenobjects), 0,
 				     A_GIMME, 0);
   class_addbang  (findbrokenobjects_class, (t_method)findbrokenobjects_bang);
-  fbo_persist();
+  class_addmethod(findbrokenobjects_class, (t_method)findbrokenobjects_verbose, gensym("verbose"), A_FLOAT, 0);
+
+  if(0)
+    fbo_persist();
 }
 static char fbo_file[] = "\
 canvas 0 0 300 200;\n\
