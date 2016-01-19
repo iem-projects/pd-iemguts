@@ -1,10 +1,9 @@
-#N canvas 598 330 503 318 10;
-#X obj 35 72 findbrokenobjects;
-#X msg 35 48 bang;
-#X obj 78 274 /dev/device;
-#X obj 189 273 color 1;
-#X text 169 42 finds broken objects;
-#N canvas 317 159 706 395 subpatch 0;
+#N canvas 255 179 867 556 10;
+#X obj 57 19 findbrokenobjects;
+#X obj 59 494 /dev/device;
+#X obj 170 493 color 1;
+#X text 202 18 finds broken objects;
+#N canvas 321 143 706 395 subpatch 0;
 #X msg 37 129 bang;
 #X msg 309 129 bang;
 #X obj 309 153 findbrokenobjects 0;
@@ -19,14 +18,38 @@ the parent canvas and its children, f 23;
 search in this canvas and its children, f 23;
 #X obj 375 289 /////////////;
 #X text 201 290 another unknown object:;
+#X obj 511 175 print borked-in-parent;
+#X obj 309 175 print borked-here;
+#X obj 37 175 print all;
 #X connect 0 0 3 0;
 #X connect 1 0 2 0;
+#X connect 2 0 12 0;
+#X connect 3 0 13 0;
 #X connect 5 0 6 0;
-#X restore 99 225 pd subpatch;
-#X text 28 106 arguments: you can pass a numbeer (int>=0) as argument
+#X connect 6 0 11 0;
+#X restore 102 292 pd subpatch;
+#X text 33 254 if you don't give an argument \, the entire Pd-instance
+is searched., f 66;
+#X msg 44 353 verbose 1 \, bang;
+#X obj 44 375 findbrokenobjects;
+#X text 31 205 arguments: you can pass a number (int>=0) as argument
 to [findbrokenobjects] to limit the search to a given root-canvas and
 it's children. '0' is the canvas the [findbrokenobjects] object lives
-in \, '1' is it's parent-canvas and so on.;
-#X text 28 178 if you don't give an argument \, the entire Pd-instance
-is searched.;
-#X connect 1 0 0 0;
+in \, '1' is it's parent-canvas and so on., f 80;
+#X text 198 293 <- open to see rooted-search in action;
+#X text 245 493 <- a few broken objects...;
+#X text 185 363 when "verbose" is turned on \, the objects are also
+printed to the console where you can <Ctrl>-<Click> them;
+#X msg 54 67 bang;
+#X obj 54 133 print not-found;
+#X obj 54 111 route not-found not-created;
+#X text 180 129 objects that are broken because Pd doesn't know how
+to create them;
+#X obj 147 167 print not-created;
+#X text 281 165 objects that failed to create for other reasons;
+#X obj 54 89 findbrokenobjects;
+#X connect 6 0 7 0;
+#X connect 12 0 18 0;
+#X connect 14 0 13 0;
+#X connect 14 1 16 0;
+#X connect 18 0 14 0;
