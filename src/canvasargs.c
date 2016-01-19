@@ -49,11 +49,10 @@ typedef struct _canvasargs
 
 static void canvasargs_list(t_canvasargs *x, t_symbol*s, int argc, t_atom*argv)
 {
-  t_canvas*c=x->x_canvas;
   t_binbuf*b=0;
   t_atom name[1];
 
-  if(!x->x_canvas) return;
+  if(!x || !x->x_canvas) return;
   b=x->x_canvas->gl_obj.te_binbuf;
 
   if(!b)return;

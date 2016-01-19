@@ -50,9 +50,6 @@ static void canvasdelete_doit(t_canvasdelete *x)
 
 static void canvasdelete_bang(t_canvasdelete *x)
 {
-  int x1=0, y1=0, width=0, height=0;
-  t_atom alist[2];
-
   if(x->x_clock) {
     pd_error(x, "deletion already scheduled");
     return;

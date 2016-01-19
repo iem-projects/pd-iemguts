@@ -48,7 +48,6 @@ static void canvasselect_bang(t_canvasselect *x)
   if(NULL==glist) {
     return;
   }
-  t_atom selected_index;
   int nselected=0;
   
   for(obj=glist->gl_list; obj; obj=obj->g_next, index++) {
@@ -104,7 +103,6 @@ static int canvasselect_doselect(t_glist*glist, int index)
 
 static void canvasselect_select(t_canvasselect*x, t_floatarg f)
 {
-  t_glist*glist=x->x_canvas;
   int i=f;
   if(canvasselect_doselect(x->x_canvas, i)<0) {
     pd_error(x, "invalid selection %d", i);
@@ -160,7 +158,6 @@ static int canvasselect_dodeselect(t_glist*glist, int index)
 
 static void canvasselect_deselect(t_canvasselect*x, t_floatarg f)
 {
-  t_glist*glist=x->x_canvas;
   int i=f;
   if(canvasselect_dodeselect(x->x_canvas, i)<0) {
     pd_error(x, "invalid deselection %d", i);

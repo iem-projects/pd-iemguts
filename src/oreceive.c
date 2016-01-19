@@ -25,7 +25,7 @@
 # define debug_post
 #endif
 
-static t_class *oreceive_class, *oreceive_proxy_class, *oreceive_guts_class;
+static t_class *oreceive_class, *oreceive_proxy_class;
 
 
 /* ------------------------------------------------------------- */

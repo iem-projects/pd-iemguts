@@ -114,7 +114,6 @@ static int query_inletconnections(t_canvasconnections *x, t_intvec***outobj, t_i
   t_intvec**invecs=NULL;
   t_intvec**inwhich=NULL;
   int ninlets=0;
-  int nin=0;
  
   t_gobj*y;
 
@@ -208,7 +207,6 @@ static void canvasconnections_queryinlets(t_canvasconnections *x)
 static void canvasconnections_inlet(t_canvasconnections *x, t_floatarg f)
 {
   int inlet=f;
-  t_atom at;
   t_intvec**invecs=0;
   int ninlets=query_inletconnections(x, &invecs, 0); 
 
@@ -325,7 +323,6 @@ static void canvasconnections_outconnect(t_canvasconnections *x, t_floatarg f)
     t_outconnect*conn=obj_starttraverseoutlet(x->x_object, &out, outlet);
     t_object*dest=0;
     t_inlet*in=0;
-    int count=0;
     int id=glist_getindex(x->x_parent, (t_gobj*)x->x_object);
 
     conn=obj_starttraverseoutlet(x->x_object, &out, outlet);
@@ -349,7 +346,6 @@ static void canvasconnections_outconnect(t_canvasconnections *x, t_floatarg f)
 static void canvasconnections_outlet(t_canvasconnections *x, t_floatarg f)
 {
   int outlet=f;
-  t_atom*at=NULL;
   int noutlets=0;
 
   if(0==x->x_object || 0==x->x_parent)
