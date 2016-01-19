@@ -46,9 +46,11 @@ static void iemguts_boilerplate(const char*name, const char*copyright) {
 #else
     verbose(v, "%s", name);
 #endif
-    if(copyright && *copyright) {
+    /* if copyright is NULL, assume default; if it's empty skip it */
+    if(!copyright)
+      copyright="IOhannes m zmölnig, IEM <zmoelnig@iem.at>";
+    if(*copyright)
       verbose(v, "\t© %s", copyright);
-    }
 
   verbose(v, "\tcompiled "BUILD_DATE);
   if(*PD_TEST_VERSION)
