@@ -103,15 +103,15 @@ static void findbrokenobject_bang(t_findbrokenobject *x) {
   if(x->x_parent) {
     fbo_iterate(x->x_parent);
   } else {
-    t_canvas *x;
-    for (x = pd_getcanvaslist(); x; x = x->gl_next) {
-      const char*name=x->gl_name->s_name;
+    t_canvas *c;
+    for (c = pd_getcanvaslist(); c; c = c->gl_next) {
+      const char*name=c->gl_name->s_name;
       /* only allow names ending with '.pd'
        * (reject template canvases)
        */
       const int len=strlen(name);
       if(len>3 && name[len-3]=='.' && name[len-2]=='p' && name[len-1]=='d') {
-	fbo_iterate(x);
+	fbo_iterate(c);
       } //else post("canvas: %s", name);
     }
   }
