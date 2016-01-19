@@ -1,7 +1,7 @@
 
 /******************************************************
  *
- * findbrokenobject - implementation file
+ * findbrokenobjects - implementation file
  *
  * copyleft (c) IOhannes m zmölnig
  *
@@ -16,7 +16,7 @@
  ******************************************************/
 
 
-/* 
+/*
  * find broken objects (objects that could not be created)
  * these objects are of class 'text_class'
 
@@ -34,16 +34,16 @@
 
 int glist_getindex(t_glist *x, t_gobj *y);
 
-/* ------------------------- findbrokenobject ---------------------------- */
+/* ------------------------- findbrokenobjects ---------------------------- */
 
-static t_class *findbrokenobject_class;
+static t_class *findbrokenobjects_class;
 
-typedef struct _findbrokenobject
+typedef struct _findbrokenobjects
 {
   t_object  x_obj;
   t_outlet *x_out;
   t_canvas *x_parent;   // the canvas we are acting on
-} t_findbrokenobject;
+} t_findbrokenobjects;
 
 extern t_class *text_class;
 extern t_class *canvas_class;
@@ -56,7 +56,7 @@ static void print_obj(const char*prefix, t_object *obj) {
   pd_error(obj, "%s%p\t%s", prefix, obj, txt);
 }
 
-static void findbrokenobject_doit(t_canvas*cnv) {
+static void findbrokenobjects_doit(t_canvas*cnv) {
   t_gobj*src;
   for (src = cnv->gl_list; src; src = src->g_next) { /* traverse all objects in canvas */
     t_object*obj=pd_checkobject(&src->g_pd);
@@ -98,7 +98,7 @@ static void fbo_iterate(t_canvas*x) {
   }
 }
 
-static void findbrokenobject_bang(t_findbrokenobject *x) {
+static void findbrokenobjects_bang(t_findbrokenobjects *x) {
   // find all broken objects in the current patch
   if(x->x_parent) {
     fbo_iterate(x->x_parent);
@@ -117,14 +117,14 @@ static void findbrokenobject_bang(t_findbrokenobject *x) {
   }
 }
 
-static void findbrokenobject_free(t_findbrokenobject *x)
+static void findbrokenobjects_free(t_findbrokenobjects *x)
 {
   outlet_free(x->x_out);
 }
 
-static void *findbrokenobject_new(t_symbol*s, int argc, t_atom*argv)
+static void *findbrokenobjects_new(t_symbol*s, int argc, t_atom*argv)
 {
-  t_findbrokenobject *x = (t_findbrokenobject *)pd_new(findbrokenobject_class);
+  t_findbrokenobjects *x = (t_findbrokenobjects *)pd_new(findbrokenobjects_class);
   x->x_parent=0;
   if(argc==1 && argv->a_type == A_FLOAT) {
     int depth=atom_getint(argv);
@@ -150,8 +150,8 @@ static void fbo_persist(void) {
   static t_pd*fbo_canvas=0;
   if(fbo_canvas)
     return;
-  
-  
+
+
   t_binbuf *b = binbuf_new();
   glob_setfilename(0, gensym("_deken_workspace"), gensym("."));
   binbuf_text(b, fbo_file, strlen(fbo_file));
@@ -159,22 +159,22 @@ static void fbo_persist(void) {
   fbo_canvas = s__X.s_thing;
   vmess(s__X.s_thing, gensym("pop"), "i", 0);
   glob_setfilename(0, &s_, &s_);
-  binbuf_free(b);  
+  binbuf_free(b);
 }
 
-void findbrokenobject_setup(void)
+void findbrokenobjects_setup(void)
 {
   iemguts_boilerplate("[findbrokenobjects]", 0);
-  findbrokenobject_class = class_new(gensym("findbrokenobject"), (t_newmethod)findbrokenobject_new,
-				     (t_method)findbrokenobject_free, sizeof(t_findbrokenobject), 0, 
+  findbrokenobjects_class = class_new(gensym("findbrokenobjects"), (t_newmethod)findbrokenobjects_new,
+				     (t_method)findbrokenobjects_free, sizeof(t_findbrokenobjects), 0,
 				     A_GIMME, 0);
-  class_addbang  (findbrokenobject_class, (t_method)findbrokenobject_bang);
+  class_addbang  (findbrokenobjects_class, (t_method)findbrokenobjects_bang);
   fbo_persist();
 }
 static char fbo_file[] = "\
 canvas 0 0 300 200;\n\
 #X obj 20 20 receive __deken_findbroken_objects;\n\
-#X obj 20 60 findbrokenobject;\n\
+#X obj 20 60 findbrokenobjects;\n\
 #X obj 20 80 list prepend plugin-dispatch deken;\n\
 #X msg 20 40 unique;\n\
 #X obj 20 100 list trim;\n\
