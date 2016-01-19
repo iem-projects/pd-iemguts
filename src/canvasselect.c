@@ -245,6 +245,7 @@ static void register_methods(void)
 
 void canvasselect_setup(void)
 {
+  iemguts_boilerplate("[canvasselect] - (de)select messages for canvas", 0);
   canvasselect_class = class_new(gensym("canvasselect"), 
                                  (t_newmethod)canvasselect_new, (t_method)canvasselect_free, 
                                  sizeof(t_canvasselect), 0,

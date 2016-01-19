@@ -70,6 +70,7 @@ static void *sendcanvas_new(t_floatarg f)
 
 void sendcanvas_setup(void)
 {
+  iemguts_boilerplate("[sendcanvas]", 0);
   sendcanvas_class = class_new(gensym("sendcanvas"), (t_newmethod)sendcanvas_new,
                                (t_method)sendcanvas_free, sizeof(t_sendcanvas), 0, A_DEFFLOAT, 0);
   class_addanything(sendcanvas_class, (t_method)sendcanvas_anything);

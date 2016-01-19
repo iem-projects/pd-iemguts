@@ -283,6 +283,7 @@ static void oreceive_free(t_oreceive *x)
 
 void oreceive_setup(void)
 {
+    iemguts_boilerplate("[oreceive] (ordered receive)", 0);
     oreceive_class = class_new(gensym("oreceive"), (t_newmethod)oreceive_new, 
                                (t_method)oreceive_free, sizeof(t_oreceive), CLASS_NOINLET, A_DEFSYM, A_DEFFLOAT, 0);
     class_addcreator((t_newmethod)oreceive_new, gensym("r"), A_DEFSYM, A_DEFFLOAT, 0);

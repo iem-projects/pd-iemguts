@@ -186,6 +186,7 @@ static void canvasobjectposition_object(t_canvasobjectposition *x, t_float f)
 
 void canvasobjectposition_setup(void)
 {
+  iemguts_boilerplate("[canvasobjectposition]", 0);
   canvasobjectposition_class = class_new(gensym("canvasobjectposition"), 
                                    (t_newmethod)canvasobjectposition_new, (t_method)canvasobjectposition_free, 
                                    sizeof(t_canvasobjectposition), 0,

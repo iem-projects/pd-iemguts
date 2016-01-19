@@ -476,6 +476,7 @@ static void *canvasconnections_new(t_floatarg f)
 
 void canvasconnections_setup(void)
 {
+  iemguts_boilerplate("[canvasconnections]", 0);
   canvasconnections_class = class_new(gensym("canvasconnections"), 
                                       (t_newmethod)canvasconnections_new, (t_method)canvasconnections_free, 
                                       sizeof(t_canvasconnections), 0, 

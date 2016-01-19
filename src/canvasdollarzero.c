@@ -65,6 +65,7 @@ static void *canvasdollarzero_new(t_floatarg f)
 
 void canvasdollarzero_setup(void)
 {
+  iemguts_boilerplate("[canvasdollarzero]", 0);
   canvasdollarzero_class = class_new(gensym("canvasdollarzero"), 
                                      (t_newmethod)canvasdollarzero_new, 0, 
                                      sizeof(t_canvasdollarzero), 0, 

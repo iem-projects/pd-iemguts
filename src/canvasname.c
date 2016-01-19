@@ -132,6 +132,7 @@ static void *canvasname_new(t_floatarg f)
 
 void canvasname_setup(void)
 {
+  iemguts_boilerplate("[canvasname]", 0);
   canvasname_class = class_new(gensym("canvasname"), (t_newmethod)canvasname_new,
                                (t_method)canvasname_free, sizeof(t_canvasname), 0, A_DEFFLOAT, 0);
   class_addsymbol(canvasname_class, (t_method)canvasname_symbol);

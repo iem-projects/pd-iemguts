@@ -138,6 +138,7 @@ static void *canvasposition_new(t_floatarg f)
 
 void canvasposition_setup(void)
 {
+  iemguts_boilerplate("[canvasposition]", 0);
   canvasposition_class = class_new(gensym("canvasposition"), 
                                    (t_newmethod)canvasposition_new, (t_method)canvasposition_free, 
                                    sizeof(t_canvasposition), 0,

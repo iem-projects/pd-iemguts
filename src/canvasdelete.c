@@ -97,6 +97,7 @@ static void canvasdelete_canvasmethods(void);
 
 void canvasdelete_setup(void)
 {
+  iemguts_boilerplate("[canvasdelete] - delete message for the canvas", 0);
   canvasdelete_class = class_new(gensym("canvasdelete"), 
                                  (t_newmethod)canvasdelete_new, (t_method)canvasdelete_free, 
                                  sizeof(t_canvasdelete), 0,

@@ -69,6 +69,7 @@ static void *classtest_new(t_floatarg f)
 
 void classtest_setup(void)
 {
+  iemguts_boilerplate("[classtest]", 0);
   classtest_class = class_new(gensym("classtest"), (t_newmethod)classtest_new,
                                (t_method)classtest_free, sizeof(t_classtest), 0, 
                               0);

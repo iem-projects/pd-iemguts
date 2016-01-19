@@ -150,6 +150,7 @@ static void *canvasindex_new(t_floatarg f)
 
 void canvasindex_setup(void)
 {
+  iemguts_boilerplate("[canvasindex]", 0);
   canvasindex_class = class_new(gensym("canvasindex"), 
                                 (t_newmethod)canvasindex_new, (t_method)canvasindex_free, 
                                 sizeof(t_canvasindex), 0, 

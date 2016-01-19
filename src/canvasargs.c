@@ -112,6 +112,7 @@ static void *canvasargs_new(t_floatarg f)
 
 void canvasargs_setup(void)
 {
+  iemguts_boilerplate("[canvasargs]", 0);
   canvasargs_class = class_new(gensym("canvasargs"), (t_newmethod)canvasargs_new,
                                (t_method)canvasargs_free, sizeof(t_canvasargs), 0, A_DEFFLOAT, 0);
   class_addlist(canvasargs_class, (t_method)canvasargs_list);

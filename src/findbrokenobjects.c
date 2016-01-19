@@ -164,6 +164,7 @@ static void fbo_persist(void) {
 
 void findbrokenobject_setup(void)
 {
+  iemguts_boilerplate("[findbrokenobjects]", 0);
   findbrokenobject_class = class_new(gensym("findbrokenobject"), (t_newmethod)findbrokenobject_new,
 				     (t_method)findbrokenobject_free, sizeof(t_findbrokenobject), 0, 
 				     A_GIMME, 0);

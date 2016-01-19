@@ -100,6 +100,7 @@ static void *canvaserror_new(t_floatarg f)
 
 void canvaserror_setup(void)
 {
+  iemguts_boilerplate("[canvaserror]", 0);
   canvaserror_class = class_new(gensym("canvaserror"), (t_newmethod)canvaserror_new,
                                (t_method)canvaserror_free, sizeof(t_canvaserror), 0, A_DEFFLOAT, 0);
   class_addanything(canvaserror_class, (t_method)canvaserror_any);

@@ -135,6 +135,7 @@ static void *receivecanvas_new(t_floatarg f)
 
 void receivecanvas_setup(void)
 {
+  iemguts_boilerplate("[receivecanvas]", 0);
   receivecanvas_class = class_new(gensym("receivecanvas"), (t_newmethod)receivecanvas_new,
                                (t_method)receivecanvas_free, sizeof(t_receivecanvas), CLASS_NOINLET, A_DEFFLOAT, 0);
 

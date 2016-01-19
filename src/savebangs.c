@@ -184,6 +184,7 @@ static void savebangs_free(t_savebangs *x)
 
 void savebangs_setup(void)
 {
+  iemguts_boilerplate("[savebangs]", 0);
   savebangs_class = class_new(gensym("savebangs"), (t_newmethod)savebangs_new,
                               (t_method)savebangs_free, sizeof(t_savebangs), CLASS_NOINLET, A_DEFFLOAT, 0);
   add_savefn(savebangs_class);

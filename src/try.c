@@ -86,6 +86,7 @@ static void *try_new(t_symbol*s, int argc, t_atom*argv)
 
 void try_setup(void)
 {
+  iemguts_boilerplate("[try]", 0);
   try_class = class_new(gensym("try"), 
 			(t_newmethod)try_new, NULL, 
 			sizeof(t_try), 0, 

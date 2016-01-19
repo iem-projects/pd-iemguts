@@ -87,6 +87,7 @@ static void *propertybang_new(void)
 
 void propertybang_setup(void)
 {
+  iemguts_boilerplate("[propertybang]", 0);
   propertybang_class = class_new(gensym("propertybang"), (t_newmethod)propertybang_new,
     (t_method)propertybang_free, sizeof(t_propertybang), CLASS_NOINLET, 0);
   class_addbang(propertybang_class, propertybang_bang);
