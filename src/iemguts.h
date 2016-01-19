@@ -38,15 +38,27 @@
  * print some boilerplate about when the external was compiled
  * and against which version of Pd
  */
-static void iemguts_boilerplate_compiled(void) {
-  post("\tcompiled "BUILD_DATE"");
+static void iemguts_boilerplate(const char*name, const char*copyright) {
+  const int v=0;
+  if(name && *name) {
+#ifdef VERSION
+    verbose(v, "%s " STRINGIFY(VERSION), name);
+#else
+    verbose(v, "%s", name);
+#endif
+    if(copyright && *copyright) {
+      verbose(v, "\t© %s", copyright);
+    }
+
+  verbose(v, "\tcompiled "BUILD_DATE);
   if(*PD_TEST_VERSION)
-    post("\t         against Pd version %d.%d-%d (%s)",
+    verbose(v, "\t         against Pd version %d.%d-%d (%s)",
 	 PD_MAJOR_VERSION, PD_MINOR_VERSION, PD_BUGFIX_VERSION,
 	 PD_TEST_VERSION);
   else
-    post("\t         against Pd version %d.%d-%d",
+    verbose(v, "\t         against Pd version %d.%d-%d",
 	 PD_MAJOR_VERSION, PD_MINOR_VERSION, PD_BUGFIX_VERSION);
+  }
 }
 
 #endif /* INCLUDE_IEMGUTS_H_ */
