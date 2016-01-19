@@ -92,7 +92,7 @@
 #=== descriptions of Makefile.pdlibbuilder API variables =======================
 #
 #
-# lib.name: 
+# lib.name:
 # Name of the library directory as it will be installed / distributed. Also the
 # name of the lib executable in the case where all classes are linked into
 # a single binary.
@@ -102,7 +102,7 @@
 # into a single lib binary.
 #
 # class.sources:
-# All sources files (C or C++) for which the condition holds that 
+# All sources files (C or C++) for which the condition holds that
 # class name == source file basename.
 #
 # <classname>.class.sources:
@@ -121,26 +121,26 @@
 # link libs) for the whole library. These flags are added to platform-specific
 # flags defined by Makefile.pdlibbuilder.
 #
-# <classname>.class.ldflags and <classname>.class.ldlibs: 
+# <classname>.class.ldflags and <classname>.class.ldlibs:
 # Define ldflags resp. ldlibs specific to class <classname>. These flags are
 # added to platform-specific flags defined by Makefile.pdlibbuilder, and flags
 # defined in your Makefile for the whole library. Note: cflags can not be
 # defined per class in the current implementation.
 #
-# datafiles and datadirs: 
+# datafiles and datadirs:
 # All extra files you want to include in binary distributions of the
 # library: abstractions and help patches, example patches, meta patch, readme
 # and license texts, manuals, sound files, etcetera. Use 'datafiles' for all
 # files that should go into your lib rootdir and 'datadirs' for complete
 # directories you want to copy from source to distribution.
 #
-# externalsdir: 
+# externalsdir:
 # Relative path to directory 'externals' in the context of pd-extended SVN, or
 # any other centralized build layout for multiple libraries. Default value
-# is '..', meaning the direct parent. The value is used in search paths for 
+# is '..', meaning the direct parent. The value is used in search paths for
 # pd core components (header files, and executable in the case of Windows).
 #
-# makefiles and makefiledirs: 
+# makefiles and makefiledirs:
 # Extra makefiles or directories with makefiles that should be made in sub-make
 # processes.
 #
@@ -162,7 +162,7 @@
 # dependent relative install locations.
 #
 # CFLAGS:
-# Compiler (notably optimization) flags which are defined by 
+# Compiler (notably optimization) flags which are defined by
 # Makefile.pdlibbuilder, but may be overriden via command argument.
 #
 # CC and CXX:
@@ -176,7 +176,7 @@
 # Makefile.pdlibbuilder will try to build all classes into a single library
 # executable (but it will force exit if lib.setup.sources is undefined).
 # If your makefile defines 'make-lib-executable=yes' as the library default,
-# this can still be overriden with 'make-lib-executable=no' as command argument 
+# this can still be overriden with 'make-lib-executable=no' as command argument
 # to build individual class executables (the Makefile.pdlibbuilder default.)
 #
 # suppress-wunused:
@@ -191,7 +191,7 @@
 # Source files in directories other than current working directory must be
 # prefixed with their relative path. Do not rely on VPATH or vpath.
 # Object (.o) files are built in the directory of their source files.
-# Executables are built in current working directory. 
+# Executables are built in current working directory.
 #
 # Variable 'pdincludepath' stores the location where m_pd.h was found.
 # Locations where Makefile.pdlibbuilder tries to find it, in order of priority:
@@ -264,7 +264,7 @@
 # are upper case. Use target 'allvars' to print all variables and their values.
 #
 # 'Fields' in data variables are separated by dots, like in 'foo.class.sources'.
-# Words in variables expressing a function or command are separated by dashes, 
+# Words in variables expressing a function or command are separated by dashes,
 # like in 'make-lib-executable'.
 #
 #
@@ -288,7 +288,7 @@
 #
 #=== end of documentation sections =============================================
 #
-# 
+#
 ################################################################################
 ################################################################################
 ################################################################################
@@ -303,7 +303,7 @@ ifneq ($(firstword $(sort 3.81 $(MAKE_VERSION))), 3.81)
   $(error GNU make version 3.81 or higher is required)
 endif
 
-# Relative path to externals root dir in multi-lib source tree like 
+# Relative path to externals root dir in multi-lib source tree like
 # pd-extended SVN. Default is parent of current working directory. May be
 # defined differently in including makefile. This variable is used to probe for
 # paths.
@@ -321,7 +321,7 @@ Makefile.pdlibbuilder = true
 # strip possibles spaces from lib.name, they mess up calculated file names
 lib.name := $(strip $(lib.name))
 
-# if meta file exists, check library version 
+# if meta file exists, check library version
 metafile := $(wildcard $(lib.name)-meta.pd)
 
 ifdef metafile
@@ -393,29 +393,29 @@ endif
 #=== flags per architecture ====================================================
 
 
-# Set architecture-dependent flags, mainly for Linux. For Mac and Windows, 
-# arch.flags are overriden below.
+# Set architecture-dependent cflags, mainly for Linux. For Mac and Windows,
+# arch.c.flags are overriden below.
 
 machine := $(shell uname -m)
 
 # Raspberry Pi 1st generation
 ifeq ($(machine), armv6l)
-  arch.flags = -march=armv6 -mfpu=vfp -mfloat-abi=hard
+  arch.c.flags = -march=armv6 -mfpu=vfp -mfloat-abi=hard
 endif
 
 # Beagle, Udoo, RPi2 etc.
 ifeq ($(machine), armv7l)
-  arch.flags = -march=armv7-a -mfpu=vfpv3 -mfloat-abi=hard
+  arch.c.flags = -march=armv7-a -mfpu=vfpv3 -mfloat-abi=hard
 endif
 
 # Intel 32 bit, build with SSE and SSE2 instructions
 ifeq ($(findstring $(machine), i386 i686), $(machine))
-  arch.flags = -march=pentium4 -mfpmath=sse -msse -msse2
+  arch.c.flags = -march=pentium4 -mfpmath=sse -msse -msse2
 endif
 
 # Intel/AMD 64 bit, build with SSE, SSE2 and SSE3 instructions
 ifeq ($(findstring $(machine), ia64 x86_64), $(machine))
-  arch.flags = -march=core2 -mfpmath=sse -msse -msse2 -msse3 
+  arch.c.flags = -march=core2 -mfpmath=sse -msse -msse2 -msse3
 endif
 
 
@@ -423,7 +423,7 @@ endif
 
 
 # The following systems are defined: Linux, Darwin, Windows. GNU and
-# GNU/kFreeBSD are treated as Linux to get the same options. 
+# GNU/kFreeBSD are treated as Linux to get the same options.
 
 uname := $(shell uname)
 
@@ -482,9 +482,8 @@ ifeq ($(system), Darwin)
     /Applications/Pd-extended.app/Contents/Resources/include/pdextended/m_pd.h \
     /Applications/Pd.app/Contents/Resources/src/m_pd.h)))
   extension = pd_darwin
-  arch.flags =
   cpp.flags := -DUNIX -DMACOSX -I /sw/include
-  c.flags := 
+  c.flags :=
   c.ldflags := -undefined suppress -flat_namespace -bundle
   c.ldlibs := -lc
   cxx.ldflags := -undefined suppress -flat_namespace -bundle
@@ -496,10 +495,12 @@ ifeq ($(system), Darwin)
   stripflags = -x
   ifeq ($(machine), i386)
     cxx.flags := -fcheck-new
-    arch.flags := -arch ppc -arch i386 -arch x86_64 -mmacosx-version-min=10.4
+    arch.c.flags := -arch ppc -arch i386 -arch x86_64 -mmacosx-version-min=10.4
+    arch.ld.flags := -arch ppc -arch i386 -arch x86_64 -mmacosx-version-min=10.4
   endif
   ifeq ($(machine), x86_64)
-    arch.flags := -arch i386 -arch x86_64 -mmacosx-version-min=10.5
+    arch.c.flags := -arch i386 -arch x86_64 -mmacosx-version-min=10.5
+    arch.ld.flags := -arch i386 -arch x86_64 -mmacosx-version-min=10.5
   endif
 endif
 
@@ -530,14 +531,14 @@ ifeq ($(system), Windows)
   endif
 endif
 
-# On Windows we build 32 bit by default to match Pd(-extended) binary 
+# On Windows we build 32 bit by default to match Pd(-extended) binary
 # distributions. This may change in the future.
 # TODO: decide whether -mms-bitfields should be specified.
 ifeq ($(system), Windows)
   extension = dll
   CC = gcc
   CXX = g++
-  arch.flags := -march=pentium4 -msse -msse2 -mfpmath=sse
+  arch.c.flags := -march=pentium4 -msse -msse2 -mfpmath=sse
   cpp.flags := -DMSW -DNT
   c.flags :=
   c.ldflags := -static-libgcc -shared \
@@ -556,7 +557,7 @@ endif
 #=== paths =====================================================================
 
 
-# Default pkglibdir is specified above per operating system. It is aliased as 
+# Default pkglibdir is specified above per operating system. It is aliased as
 # 'objectsdir' to retain compatibility with pd-extended template. Assignment
 # operator '?=' is used to enable a project-relative path definition in the
 # including makefile.
@@ -574,9 +575,9 @@ pdincludepathwithspaces := $(if $(word 2, $(pdincludepath)), $(pdincludepath))
 
 
 # From GNU make docs: 'Users expect to be able to specify CFLAGS freely
-# themselves.' So we use CFLAGS to define platform-independent options which 
-# are not strictly required for compilation: optimizations and warnings. CFLAGS
-# can be safely overriden using a make command argument.
+# themselves.' So we use CFLAGS to define options which  are not strictly
+# required for compilation: optimizations, architecture specifications, and
+# warnings. CFLAGS can be safely overriden using a make command argument.
 # Variables cflags, ldflags and ldlibs may be defined in including makefile.
 
 optimization.flags = -O3 -ffast-math -funroll-loops -fomit-frame-pointer
@@ -587,19 +588,25 @@ ifdef suppress-wunused
   warn.flags += $(addprefix -Wno-unused-, function parameter value variable)
 endif
 
-CFLAGS = $(warn.flags) $(optimization.flags)
+CFLAGS = $(warn.flags) $(optimization.flags) $(arch.c.flags)
 
 # preprocessor flags
-cpp.flags += -DPD -I "$(pdincludepath)"
+cpp.flags += -DPD -I "$(pdincludepath)" $(CPPFLAGS)
 
-# flags for C compiler / linker
+# architecture specifications for linker are overridable by LDFLAGS
+LDFLAGS := $(arch.ld.flags)
+
+# now add the same ld flags to shared dynamic lib
+shared.ldflags := $(shared.ldflags) $(LDFLAGS)
+
+# accumulated flags for C compiler / linker
 c.flags := $(cpp.flags) $(c.flags) $(cflags) $(CFLAGS)
-c.ldflags := $(c.ldflags) $(ldflags)
+c.ldflags := $(c.ldflags) $(ldflags) $(LDFLAGS)
 c.ldlibs := $(c.ldlibs) $(ldlibs)
 
-# flags for C++ compiler / linker
+# accumulated flags for C++ compiler / linker
 cxx.flags := $(cpp.flags) $(cxx.flags) $(cflags) $(CFLAGS)
-cxx.ldflags := $(cxx.ldflags) $(ldflags)
+cxx.ldflags := $(cxx.ldflags) $(ldflags) $(LDFLAGS)
 cxx.ldlibs := $(cxx.ldlibs) $(ldlibs)
 
 
@@ -625,7 +632,7 @@ compile-cxx := $(CXX)
 all:
 
 # To avoid unpredictable results, make sure the default target is not redefined
-# by including makefile. 
+# by including makefile.
 ifneq ($(.DEFAULT_GOAL), all)
   $(error Default target must be 'all'.)
 endif
@@ -706,7 +713,6 @@ alldebug: all
 # argument $2 = class basename
 define link-class
   $(compile-$1) \
-  $(arch.flags) \
   $($1.ldflags) $($2.class.ldflags) \
   -o $2.$(extension) \
   $(addsuffix .o, $(basename $($2.class.sources))) \
@@ -733,7 +739,6 @@ build-lib: $(lib.name).$(extension)
 # argument $1 = compiler type (c or cxx)
 define link-lib
   $(compile-$1) \
-  $(arch.flags) \
   $($1.ldflags) $(lib.ldflags) \
   -o $(lib.name).$(extension) $(all.objects) \
   $($1.ldlibs) $(lib.ldlibs)
@@ -756,7 +761,6 @@ endif
 # argument $1 = compiler type (c or cxx)
 define link-shared
   $(compile-$1) \
-  $(arch.flags) \
   $(shared.ldflags) \
   -o lib$(lib.name).$(shared.extension) $(shared.objects) \
   $($1.ldlibs) $(shared.ldlibs)
@@ -780,7 +784,7 @@ define make-object-file
   $(info ++++ info: making $@ in lib $(lib.name))
   $(compile-$1) \
   $($1.flags) \
-  $(arch.flags) -o $@ -c $<
+  -o $@ -c $<
 endef
 
 # Three rules to create .o files. These are double colon 'terminal' rules,
@@ -889,7 +893,7 @@ endef
 %.pre:: %.cc force
 	$(call make-preprocessor-file,cxx)
 
-%.pre:: %.cpp force 
+%.pre:: %.cpp force
 	$(call make-preprocessor-file,cxx)
 
 
@@ -904,7 +908,6 @@ define make-assembly-file
   $(compile-$1) \
   -c -Wa,-a,-ad -fverbose-asm \
   $($1.flags) \
-  $(arch.flags) \
   $< > $(notdir $*.lst)
 endef
 
