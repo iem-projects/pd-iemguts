@@ -22,7 +22,7 @@
 #if 0
 # define debug_post post
 #else
-# define debug_post
+static void debug_post(const char *fmt, ...) {;}
 #endif
 
 static t_class *oreceive_class, *oreceive_proxy_class;
