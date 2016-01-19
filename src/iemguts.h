@@ -63,4 +63,20 @@ static void iemguts_boilerplate(const char*name, const char*copyright) {
   }
 }
 
+/* check whether we run at least a given Pd-version */
+static int iemguts_check_atleast_pdversion(int major, int minor, int bugfix) {
+  int got_major=0, got_minor=0, got_bugfix=0;
+  sys_getversion(&got_major, &got_minor, &got_bugfix);
+#pragma push_macro("cmpver_")
+#ifdef cmpver_
+# undef cmpver_
+#endif
+#define cmpver_(got, want)  if(got < want)return 0; else if (got > want)return 1;
+  cmpver_(got_major , major );
+  cmpver_(got_minor , minor );
+  cmpver_(got_bugfix, bugfix);
+  return 1;
+#pragma pop_macro("cmpver_")
+}
+
 #endif /* INCLUDE_IEMGUTS_H_ */
