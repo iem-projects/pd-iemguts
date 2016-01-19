@@ -162,7 +162,7 @@ static void*autoabstraction_new(t_symbol *s, int argc, t_atom *argv)
 void autoabstraction_setup(void)
 {
   /* relies on t.grill's loader functionality, fully added in 0.40 */
-  iemguts_boilerplate("automatic abstraction creator", "IOhannes m zmölnig, IEM <zmoelnig@iem.at>");
+  iemguts_boilerplate("automatic abstraction creator", 0);
 #ifdef AUTOABSTRACTION_ENABLED
   autoabstraction_initialize();
   sys_register_loader(autoabstraction_loader);
