@@ -44,7 +44,6 @@ static char*s_templatefilename="autoabstraction.template";
 /* LATER: make the font-size the same as the one used by Pd */
 static char*s_templatestring="#N canvas 0 0 450 300 10; #X vis 1;";
 
-
 #if (PD_MINOR_VERSION >= 40)
 # define AUTOABSTRACTION_ENABLED 1
 #endif
@@ -105,14 +104,14 @@ static int autoabstraction_loader(t_canvas *canvas, char *classname)
   int fd=0;
   char dirbuf[MAXPDSTRING], *nameptr;
 
-  if((fd=canvas_open(canvas, classname, ".pd", dirbuf, &nameptr, MAXPDSTRING, 0)) >= 0 ||
-     (fd=canvas_open(canvas, classname, ".pat", dirbuf, &nameptr, MAXPDSTRING, 0)) >= 0)
+  if((fd=canvas_open(canvas, classname, ".pd", dirbuf, &nameptr, MAXPDSTRING, 0)) >= 0)
     {
       /* oops, there's already an abstraction of the given <classname> */
       close(fd);
       return(0);
     }
 
+  /* none! we create one, so Pd can later find it... */
   autoabstraction_createpatch(canvas, classname);
 
   /* we always fail, because we want Pd to do the real opening of abstractions */
