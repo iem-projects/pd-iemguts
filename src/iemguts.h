@@ -34,9 +34,13 @@
  */
 static void iemguts_boilerplate_compiled(void) {
   post("\tcompiled "BUILD_DATE"");
-  post("\t         against Pd version %d.%d-%d (%s)",
-    PD_MAJOR_VERSION, PD_MINOR_VERSION, PD_BUGFIX_VERSION,
-    PD_TEST_VERSION);
+  if(*PD_TEST_VERSION)
+    post("\t         against Pd version %d.%d-%d (%s)",
+	 PD_MAJOR_VERSION, PD_MINOR_VERSION, PD_BUGFIX_VERSION,
+	 PD_TEST_VERSION);
+  else
+    post("\t         against Pd version %d.%d-%d",
+	 PD_MAJOR_VERSION, PD_MINOR_VERSION, PD_BUGFIX_VERSION);
 }
 
 #endif /* INCLUDE_IEMGUTS_H_ */
