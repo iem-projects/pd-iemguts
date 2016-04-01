@@ -12,7 +12,7 @@ lib.setup.sources =
 class.sources = $(filter-out $(lib.setup.sources),$(wildcard src/*.c))
 
 datafiles = \
-$(wildcard help/*-help.pd) \
+$(wildcard help/*.pd) \
 LICENSE.txt \
 README.txt \
 iemguts-meta.pd
