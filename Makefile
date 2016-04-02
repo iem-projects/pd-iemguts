@@ -1,6 +1,7 @@
 #!/usr/bin/make -f
-# Makefile for pure data externals in lib creb.
-# Needs Makefile.pdlibbuilder to work (https://github.com/pure-data/pd-lib-builder)
+# Makefile to the 'iemguts' library for Pure Data.
+# Needs Makefile.pdlibbuilder as helper makefile for platform-dependent build
+# settings and rules (https://github.com/pure-data/pd-lib-builder).
 
 lib.name = iemguts
 
