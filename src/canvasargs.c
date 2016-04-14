@@ -57,7 +57,9 @@ static void canvasargs_list(t_canvasargs *x, t_symbol*s, int argc, t_atom*argv)
 
   if(!b)return;
 
+  /* if this method is called with a non-special selector, we *rename* the object */
   if(s==0 || s==gensym("") || s==&s_list || s==&s_bang || s==&s_float || s==&s_symbol || s==&s_) {
+    /* keep the given name */
     t_atom*ap=binbuf_getvec(b);
     s=atom_getsymbol(ap);
   }
