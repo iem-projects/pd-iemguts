@@ -72,16 +72,22 @@ static void canvasargs_bang(t_canvasargs *x)
 {
   int argc=0;
   t_atom*argv=0;
-  t_binbuf*b;
+  t_binbuf*b=0;
 
   if(!x->x_canvas) return;
   b=x->x_canvas->gl_obj.te_binbuf;
 
-  if(!b)return;
+  if(b) {
+    argc=binbuf_getnatom(b)-1;
+    argv=binbuf_getvec(b)+1;
+  } else {
+    canvas_setcurrent(x->x_canvas);
+    canvas_getargs(&argc, &argv);
+    canvas_unsetcurrent(x->x_canvas);
+  }
 
-  argc=binbuf_getnatom(b);
-  argv=binbuf_getvec(b);
-  outlet_list(x->x_obj.ob_outlet, &s_list, argc-1, argv+1);
+  if(argv)
+    outlet_list(x->x_obj.ob_outlet, &s_list, argc, argv);
 }
 
 
