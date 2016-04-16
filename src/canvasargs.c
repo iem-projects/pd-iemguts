@@ -57,7 +57,9 @@ static void canvasargs_list(t_canvasargs *x, t_symbol*s, int argc, t_atom*argv)
 
   if(!b)return;
 
+  /* if this method is called with a non-special selector, we *rename* the object */
   if(s==0 || s==gensym("") || s==&s_list || s==&s_bang || s==&s_float || s==&s_symbol || s==&s_) {
+    /* keep the given name */
     t_atom*ap=binbuf_getvec(b);
     s=atom_getsymbol(ap);
   }
@@ -72,16 +74,22 @@ static void canvasargs_bang(t_canvasargs *x)
 {
   int argc=0;
   t_atom*argv=0;
-  t_binbuf*b;
+  t_binbuf*b=0;
 
   if(!x->x_canvas) return;
   b=x->x_canvas->gl_obj.te_binbuf;
 
-  if(!b)return;
+  if(b) {
+    argc=binbuf_getnatom(b)-1;
+    argv=binbuf_getvec(b)+1;
+  } else {
+    canvas_setcurrent(x->x_canvas);
+    canvas_getargs(&argc, &argv);
+    canvas_unsetcurrent(x->x_canvas);
+  }
 
-  argc=binbuf_getnatom(b);
-  argv=binbuf_getvec(b);
-  outlet_list(x->x_obj.ob_outlet, &s_list, argc-1, argv+1);
+  if(argv)
+    outlet_list(x->x_obj.ob_outlet, &s_list, argc, argv);
 }
 
 
