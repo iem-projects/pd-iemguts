@@ -21,6 +21,10 @@
  * it also allows to query the selection of the canvas
  * 
  * it also adds a "select" message to the canvas
+ *
+ * TODO:
+ *  - save selection to file
+ *  - patcherize selection
  */
 
 #include "iemguts.h"
