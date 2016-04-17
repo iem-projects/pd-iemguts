@@ -27,6 +27,7 @@
 #include "iemguts.h"
 
 #include "g_canvas.h"
+#include <string.h>
 
 /* ------------------------- patcherize ---------------------------- */
 
@@ -65,7 +66,7 @@ static t_glist*patcherize_makesub(t_canvas*cnv, const char* name, int x, int y) 
 	   name, x, y, name);
   subpatch_text[MAXPDSTRING-1]=0;
   b=binbuf_new();
-  binbuf_text(b, subpatch_text, MAXPDSTRING-1);
+  binbuf_text(b, subpatch_text, strnlen(subpatch_text, MAXPDSTRING-1));
   binbuf_eval(b, 0,0,0);
   binbuf_free(b);
 
