@@ -37,7 +37,7 @@ static void print_glist(t_glist*glist) {
   for(obj=glist->gl_list; obj; obj=obj->g_next) { post ("\t%p [%p]", obj, obj->g_next); }
 }
 static int glist_premigrate(t_glist*glist) {
-  int wanteditor = glist->gl_editor;
+  int wanteditor = (NULL != glist->gl_editor);
   canvas_destroy_editor(glist);
   return wanteditor;
 }
