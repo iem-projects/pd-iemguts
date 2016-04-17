@@ -62,7 +62,7 @@ static t_glist*patcherize_makesub(t_canvas*cnv, const char* name, int x, int y) 
   s__N.s_thing = &pd_canvasmaker;
 
   snprintf(subpatch_text, MAXPDSTRING-1,
-	   "#N canvas 0 0 450 300 %s 0;\n#X restore %d %d pd %s;",
+	   "#N canvas 0 0 450 300 %s 0;#X restore %d %d pd %s;",
 	   name, x, y, name);
   subpatch_text[MAXPDSTRING-1]=0;
   b=binbuf_new();
