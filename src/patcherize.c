@@ -89,8 +89,7 @@ static void canvas_patcherize(t_glist*cnv) {
   if(NULL == cnv)return;
 
   objs=getbytes(0*sizeof(*objs));
-
-  for(obj=cnv->gl_list; obj; last=obj, obj=obj->g_next) {
+  for(obj=cnv->gl_list; obj; obj=obj->g_next) {
     if(glist_isselected(cnv, obj)) {
       t_object*tob=pd_checkobject(obj);
       if(tob) {
@@ -106,14 +105,14 @@ static void canvas_patcherize(t_glist*cnv) {
     freebytes(objs,0*sizeof(*objs));
     return;
   }
-  dspstate=canvas_suspend_dsp();
 
+  dspstate=canvas_suspend_dsp();
 
   to=patcherize_makesub(cnv, "*patcherized*", xpos/objcount, ypos/objcount);
 
   editFrom=glist_suspend_editor(cnv);
 
-  for(i=0; i<objcount; i++) { // obj=cnv->gl_list; obj; last=obj, obj=obj->g_next
+  for(i=0; i<objcount; i++) {
     t_gobj*ob2 = NULL;
     int doit=0;
     obj=objs[i];
