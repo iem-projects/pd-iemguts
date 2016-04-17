@@ -17,11 +17,19 @@
 
 /*
  *
- * TODO:
- *  - save selection to file
  *  - patcherize selection
  *
- * this is done by addinga 'patcherize' message to the canvas
+ * this is done by adding a 'patcherize' message to the canvas
+ *
+ * TODO:
+ * - inlets/outlets
+ *   + inlets: any outlet that is connected TO one of the patcherized objects, is turned into an [inlet]
+ *             (so we don't need to worry about connections mixing signal/msg)
+ *   + outlets: any outlet that is going out of the patcherized is connected to an [outlet]
+ *
+ * LATER:
+ *  - save selection to file
+ *
  */
 
 #include "iemguts.h"
@@ -77,7 +85,7 @@ static t_glist*patcherize_makesub(t_canvas*cnv, const char* name, int x, int y) 
 }
 
 static void canvas_patcherize(t_glist*cnv) {
-  /* migrate an object from one canvas to another without re-instantiating it */
+  /* migrate selected objects from one canvas to another without re-instantiating them */
   int dspstate = 0;
   int editFrom = 0;
   t_gobj*obj = NULL, *last=NULL;
