@@ -37,13 +37,13 @@ static void print_glist(t_glist*glist) {
   post("\t%p", glist);
   for(obj=glist->gl_list; obj; obj=obj->g_next) { post ("\t%p [%p]", obj, obj->g_next); }
 }
-static int glist_premigrate(t_glist*glist) {
+static int glist_suspend_editor(t_glist*glist) {
   int wanteditor = (NULL != glist->gl_editor);
   canvas_destroy_editor(glist);
   return wanteditor;
 }
 
-static void glist_postmigrate(t_glist*glist, int wanteditor) {
+static void glist_resume_editor(t_glist*glist, int wanteditor) {
   if(wanteditor) {
     canvas_create_editor(glist);
   }
@@ -111,8 +111,7 @@ static void canvas_patcherize(t_glist*cnv) {
 
   to=patcherize_makesub(cnv, "*patcherized*", xpos/objcount, ypos/objcount);
 
-  editFrom=glist_premigrate(cnv);
-
+  editFrom=glist_suspend_editor(cnv);
 
   for(i=0; i<objcount; i++) { // obj=cnv->gl_list; obj; last=obj, obj=obj->g_next
     t_gobj*ob2 = NULL;
@@ -138,7 +137,7 @@ static void canvas_patcherize(t_glist*cnv) {
     }
     obj->g_next = 0;
 
-    glist_postmigrate(cnv, editFrom);
+    glist_resume_editor(cnv, editFrom);
   }
 
   canvas_resume_dsp(dspstate);
