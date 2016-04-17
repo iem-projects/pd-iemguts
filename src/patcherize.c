@@ -78,7 +78,7 @@ static t_glist*patcherize_makesub(t_canvas*cnv, const char* name, int x, int y) 
 static void canvas_patcherize(t_glist*cnv) {
   /* migrate an object from one canvas to another without re-instantiating it */
   int dspstate = 0;
-  int editFrom = 0, editTo = 0;
+  int editFrom = 0;
   t_gobj*obj = NULL, *last=NULL;
   int objcount=0;
   t_gobj**objs=0;
@@ -111,7 +111,6 @@ static void canvas_patcherize(t_glist*cnv) {
   to=patcherize_makesub(cnv, "*patcherized*", xpos/objcount, ypos/objcount);
 
   editFrom=glist_premigrate(cnv);
-  editTo=glist_premigrate(to);
 
 
   for(i=0; i<objcount; i++) { // obj=cnv->gl_list; obj; last=obj, obj=obj->g_next
@@ -139,8 +138,6 @@ static void canvas_patcherize(t_glist*cnv) {
     obj->g_next = 0;
 
     glist_postmigrate(cnv, editFrom);
-
-    glist_postmigrate(to, editTo);
   }
 
   canvas_resume_dsp(dspstate);
