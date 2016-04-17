@@ -152,7 +152,7 @@ static void canvas_patcherize(t_glist*cnv) {
 
     glist_resume_editor(cnv, editFrom);
   }
-
+  canvas_redraw(cnv);
   canvas_resume_dsp(dspstate);
 }
 
