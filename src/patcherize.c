@@ -88,6 +88,10 @@ static void canvas_patcherize(t_glist*cnv) {
   int xpos=0, ypos=0;
   if(NULL == cnv)return;
 
+  /* store all the selected objects.
+   * this needs to be done because the GUI-cleanup in glist_suspend_editor()
+   * will undo any selection...
+   */
   objs=getbytes(0*sizeof(*objs));
   for(obj=cnv->gl_list; obj; obj=obj->g_next) {
     if(glist_isselected(cnv, obj)) {
@@ -101,6 +105,7 @@ static void canvas_patcherize(t_glist*cnv) {
       objcount++;
     }
   }
+  /* if nothing is selected, we are done... */
   if(!objcount) {
     freebytes(objs,0*sizeof(*objs));
     return;
@@ -108,6 +113,7 @@ static void canvas_patcherize(t_glist*cnv) {
 
   dspstate=canvas_suspend_dsp();
 
+  /* create a new sub-patch to pacherize into */
   to=patcherize_makesub(cnv, "*patcherized*", xpos/objcount, ypos/objcount);
 
   editFrom=glist_suspend_editor(cnv);
