@@ -16,10 +16,10 @@
  ******************************************************/
 
 
-/* 
+/*
  * this object allows to select other objects on the canvas
  * it also allows to query the selection of the canvas
- * 
+ *
  * it also adds a "select" message to the canvas
  *
  * TODO:
@@ -53,7 +53,7 @@ static void canvasselect_bang(t_canvasselect *x)
     return;
   }
   int nselected=0;
-  
+
   for(obj=glist->gl_list; obj; obj=obj->g_next, index++) {
     if(glist_isselected(glist, obj)) {
       // post("selected: %d", index);
@@ -63,16 +63,16 @@ static void canvasselect_bang(t_canvasselect *x)
   int n=0;
   index=0;
   t_atom *atombuf;
-  
+
   atombuf = (t_atom *)getbytes(sizeof(t_atom)*nselected);
-  
+
   for(obj=glist->gl_list; obj; obj=obj->g_next, index++) {
     if(glist_isselected(glist, obj)) {
       SETFLOAT(&atombuf[n], index);
       n++;
     }
   }
-  
+
   outlet_list(x->x_obj.ob_outlet, &s_list, nselected, atombuf);
 }
 
@@ -195,7 +195,7 @@ static void *canvasselect_new(t_floatarg f)
   t_glist *glist=(t_glist *)canvas_getcurrent();
   t_canvas *canvas=(t_canvas*)glist_getcanvas(glist);
   int depth=(int)f;
-  
+
   if(depth<0)depth=0;
 
   while(depth && canvas) {
@@ -204,7 +204,8 @@ static void *canvasselect_new(t_floatarg f)
   }
 
   x->x_canvas = canvas;
-  
+
+
   outlet_new(&x->x_obj, 0);
   return (x);
 }
@@ -247,8 +248,8 @@ static void register_methods(void)
 void canvasselect_setup(void)
 {
   iemguts_boilerplate("[canvasselect] - (de)select messages for canvas", 0);
-  canvasselect_class = class_new(gensym("canvasselect"), 
-                                 (t_newmethod)canvasselect_new, (t_method)canvasselect_free, 
+  canvasselect_class = class_new(gensym("canvasselect"),
+                                 (t_newmethod)canvasselect_new, (t_method)canvasselect_free,
                                  sizeof(t_canvasselect), 0,
                                  A_DEFFLOAT, 0);
   class_addbang(canvasselect_class, (t_method)canvasselect_bang);
