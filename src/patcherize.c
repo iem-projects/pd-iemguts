@@ -38,13 +38,11 @@ static void print_glist(t_glist*glist) {
 }
 static int glist_premigrate(t_glist*glist) {
   int wanteditor = glist->gl_editor;
-  post("%p has editor? %d", glist, wanteditor);
   canvas_destroy_editor(glist);
   return wanteditor;
 }
 
 static void glist_postmigrate(t_glist*glist, int wanteditor) {
-  post("%p wants editor? %d", glist, wanteditor);
   if(wanteditor) {
     canvas_create_editor(glist);
   }
@@ -109,12 +107,8 @@ static void canvas_patcherize(t_glist*cnv) {
   }
   dspstate=canvas_suspend_dsp();
 
-  post("%d objects selected (%d/%d)", objcount);
-  for(i=0; i < objcount; i++) { post("selected[%d] %p", i, objs[i]);}
 
-  post("FROM:");print_glist(cnv);
   to=patcherize_makesub(cnv, "*patcherized*", xpos/objcount, ypos/objcount);
-  post("TO:");print_glist(to);
 
   editFrom=glist_premigrate(cnv);
   editTo=glist_premigrate(to);
@@ -124,7 +118,6 @@ static void canvas_patcherize(t_glist*cnv) {
     t_gobj*ob2 = NULL;
     int doit=0;
     obj=objs[i];
-    post("testing %p", obj);
     for(ob2=cnv->gl_list; ob2; last=ob2, ob2=ob2->g_next) {
       if (obj == ob2) {
 	doit=1;
@@ -132,7 +125,6 @@ static void canvas_patcherize(t_glist*cnv) {
       }
     }
     if (!doit)continue;
-    post("migrating %p (pointed to by %p in %p)", obj, last, cnv);
 
     /* remove the object from the 'from'-canvas */
     last->g_next = obj->g_next;
@@ -146,10 +138,8 @@ static void canvas_patcherize(t_glist*cnv) {
     }
     obj->g_next = 0;
 
-    post("from:");print_glist(cnv);
     glist_postmigrate(cnv, editFrom);
 
-    post("to  :");print_glist(to);
     glist_postmigrate(to, editTo);
   }
 
@@ -159,7 +149,7 @@ static void canvas_patcherize(t_glist*cnv) {
 void patcherize_setup(void)
 {
   if(NULL==canvas_class)return;
-  iemguts_boilerplate("[patcherize] - turn objects into a subpatch", 0);
+  iemguts_boilerplate("patcherize - turn objects into a subpatch", 0);
 
   if(NULL==zgetfn(&canvas_class, gensym("patcherize")))
     class_addmethod(canvas_class, (t_method)canvas_patcherize, gensym("patcherize"), 0);
