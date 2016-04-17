@@ -19,13 +19,17 @@
  *
  *  - patcherize selection
  *
- * this is done by adding a 'patcherize' message to the canvas
+ * send a 'patcherize' message to the canvas, and all currently selected objects will
+ *  e moved into a newly created subpatch
  *
  * TODO:
  * - inlets/outlets
  *   + inlets: any outlet that is connected TO one of the patcherized objects, is turned into an [inlet]
  *             (so we don't need to worry about connections mixing signal/msg)
  *   + outlets: any outlet that is going out of the patcherized is connected to an [outlet]
+ * - position
+ *   + move patcherized objects to the top/left corner
+ *   + make subpatch window large enough to hold the entire patcherized content
  *
  * LATER:
  *  - save selection to file
