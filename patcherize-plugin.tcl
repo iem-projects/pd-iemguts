@@ -1,5 +1,5 @@
-# META convert a patch to a picture (SVG)
-# META DESCRIPTION exports your patch as an SVG-image
+# META helper plugin for patcherize-selection
+# META DESCRIPTION adds menu to tell the 'patcherize' library to doit
 # META AUTHOR IOhannes m zmölnig <zmoelnig@umlaeute.mur.at>
 # META VERSION 0.1
 
@@ -11,24 +11,10 @@ if [catch {
 
 namespace eval ::iemguts::patcherize:: {
     variable label
-    proc export {mytoplevel filename} {
-        can2svg::canvas2file [tkcanvas_name $mytoplevel] $filename
-    }
-    proc is_patchwindow {w} {
-        #expr {[winfo toplevel $w] eq $w && ![catch {$w cget -menu}]}
-        expr {[winfo class $w] eq "PatchWindow"}
-    }
-
-    proc selection2patch {mytoplevel} {
-	puts "patcherize $mytoplevel"
-	pdsend "$mytoplevel patcherize"
-    }
-
     proc focus {winid state} {
 	set menustate [expr $state?"normal":"disabled"]
 	.menubar.edit entryconfigure "$::iemguts::patcherize::label" -state $menustate
     }
-
     proc register {} {
 	# create an entry for our "print2svg" in the "file" menu
 	set ::iemguts::patcherize::label [_ "Patcherize Selection"]
@@ -45,7 +31,7 @@ namespace eval ::iemguts::patcherize:: {
 	    -label $::iemguts::patcherize::label \
 	    -state disabled \
 	    -accelerator "$accelerator+P" \
-	    -command {::iemguts::patcherize::selection2patch $::focused_window}
+	    -command {	menu_send $::focused_window patcherize }
 	bind all <$::modifier-Key-P> {menu_send %W patcherize}
 	bind PatchWindow <FocusIn> "+::iemguts::patcherize::focus %W 1"
 	bind PdWindow    <FocusIn> "+::iemguts::patcherize::focus %W 0"
