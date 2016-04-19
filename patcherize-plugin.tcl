@@ -19,36 +19,39 @@ namespace eval ::iemguts::patcherize:: {
         expr {[winfo class $w] eq "PatchWindow"}
     }
 
-proc selection2patch {mytoplevel} {
-    pdsend "$mytoplevel patcherize"
-}
-
-proc focus {winid state} {
-    set menustate [expr $state?"normal":"disabled"]
-    .menubar.edit entryconfigure "$::iemguts::patcherize::label" -state $menustate
-}
-
-proc register {} {
-    # create an entry for our "print2svg" in the "file" menu
-    set ::iemguts::patcherize::label [_ "Patcherize Selection"]
-    set mymenu .menubar.edit
-    if {$::windowingsystem eq "aqua"} {
-        set inserthere 8
-    } else {
-        set inserthere 8
+    proc selection2patch {mytoplevel} {
+	puts "patcherize $mytoplevel"
+	pdsend "$mytoplevel patcherize"
     }
-    #$mymenu insert $inserthere separator
-    $mymenu insert $inserthere command \
-        -label $::iemguts::patcherize::label \
-        -state disabled \
-        -command {::iemguts::patcherize::selection2patch $::focused_window}
-    # bind all <$::modifier-Key-s> {::deken::open_helpbrowser .helpbrowser2}
-    bind PatchWindow <FocusIn> "+::iemguts::patcherize::focus %W 1"
-    bind PdWindow    <FocusIn> "+::iemguts::patcherize::focus %W 0"
 
-    pdtk_post "loaded iemguts::patcherize-plugin\n"
-}
+    proc focus {winid state} {
+	set menustate [expr $state?"normal":"disabled"]
+	.menubar.edit entryconfigure "$::iemguts::patcherize::label" -state $menustate
+    }
 
+    proc register {} {
+	# create an entry for our "print2svg" in the "file" menu
+	set ::iemguts::patcherize::label [_ "Patcherize Selection"]
+	set accelerator $::pd_menus::accelerator
+	set mymenu .menubar.edit
+	if {$::windowingsystem eq "aqua"} {
+	    set inserthere 8
+	    #set accelerator "$accelerator+Shift"
+	} else {
+	    set inserthere 8
+	    #set accelerator "Shift+$accelerator"
+	}
+	$mymenu insert $inserthere command \
+	    -label $::iemguts::patcherize::label \
+	    -state disabled \
+	    -accelerator "$accelerator+P" \
+	    -command {::iemguts::patcherize::selection2patch $::focused_window}
+	bind all <$::modifier-Key-P> {menu_send %W patcherize}
+	bind PatchWindow <FocusIn> "+::iemguts::patcherize::focus %W 1"
+	bind PdWindow    <FocusIn> "+::iemguts::patcherize::focus %W 0"
+
+	pdtk_post "loaded iemguts::patcherize-plugin\n"
+    }
 }
 
 
