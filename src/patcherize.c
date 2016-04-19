@@ -143,7 +143,10 @@ static void canvas_patcherize(t_glist*cnv) {
     if (!doit)continue;
 
     /* remove the object from the 'from'-canvas */
-    last->g_next = obj->g_next;
+    if (last)
+      last->g_next = obj->g_next;
+    else
+      cnv->gl_list = obj->g_next;
 
     /* append it to the 'to'-canvas */
     if(to->gl_list) {
