@@ -30,6 +30,8 @@
  * - position
  *   + move patcherized objects to the top/left corner
  *   + make subpatch window large enough to hold the entire patcherized content
+ * - subpatch label
+ *   + if the containing canvas is visible, go into edit-mode and let the user type a canvas-name immediately
  *
  * LATER:
  *  - save selection to file
