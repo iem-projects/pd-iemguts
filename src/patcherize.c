@@ -255,6 +255,23 @@ static void patcherize_boundary_reconnect(t_canvas*cnv,t_patcherize_connections*
   }
 }
 
+static void patcherize_fixcoordinates(unsigned int argc, t_gobj**argv, int xmin, int ymin) {
+  unsigned int i;
+  //post("fixing coords to %d/%d", xmin, ymin);
+  for(i=0; i<argc; i++) {
+    t_object*obj=pd_checkobject(&argv[i]->g_pd);
+    if(obj) {
+      int x = obj->te_xpix;
+      int y = obj->te_ypix;
+      //post("X: %d -> %d", x, x - xmin + 30);
+      //post("Y: %d -> %d", y, y - ymin + 30);
+      obj->te_xpix = x - xmin + 30;
+      obj->te_ypix = y - ymin + 60;
+    }
+  }
+
+}
+
 static t_glist*patcherize_makesub(t_canvas*cnv, const char* name,
 				  int X, int Y,
 				  int xmin, int ymin, int xmax, int ymax,
@@ -266,12 +283,18 @@ static t_glist*patcherize_makesub(t_canvas*cnv, const char* name,
 
   /* save and clear bindings to symbols #a, $N, $X; restore when done */
   t_pd *boundx = s__X.s_thing, *boundn = s__N.s_thing;
-
   s__X.s_thing = &cnv->gl_pd;
   s__N.s_thing = &pd_canvasmaker;
 
+  int width=xmax-xmin;
+  int height=ymax-ymin;
+  if(width<200) width=200;
+  if(height<100)height=100;
+
+  post("boundingbox: %d/%d || %d/%d", xmin, ymin, xmax, ymax);
+
   b=binbuf_new();
-  binbuf_addv(b, "ssiiiisi;", gensym("#N"), gensym("canvas"), xmin, ymin, xmax-xmin+50, ymax-ymin, gensym(name), 0);
+  binbuf_addv(b, "ssiiiisi;", gensym("#N"), gensym("canvas"), xmin, ymin, width, height, gensym(name), 0);
 
   iolets=connections->inlets;
   x=20;  y=20;
@@ -282,7 +305,7 @@ static t_glist*patcherize_makesub(t_canvas*cnv, const char* name,
     iolets=iolets->next;
   }
   iolets=connections->outlets;
-  x=20; y=200;
+  x=20; y=height-30;
   while(iolets) {
     binbuf_addv(b, "ssiis;", gensym("#X"), gensym("obj"), x, y,
 		obj_issignaloutlet(iolets->object, iolets->index)?gensym("outlet~"):gensym("outlet"));
@@ -292,6 +315,7 @@ static t_glist*patcherize_makesub(t_canvas*cnv, const char* name,
   binbuf_addv(b, "ssiiss;", gensym("#X"), gensym("restore"), X, Y, gensym("pd"), gensym(name));
 
   binbuf_print(b);
+
   binbuf_eval(b, 0,0,0);
   binbuf_free(b);
 
@@ -340,7 +364,6 @@ static void canvas_patcherize(t_glist*cnv) {
     }
   }
 
-  post("boundingbox: %d/%d || %d/%d", xmin, ymin, xmax, ymax);
 
   /* if nothing is selected, we are done... */
   if(!objcount) {
@@ -356,7 +379,6 @@ static void canvas_patcherize(t_glist*cnv) {
     iolets=iolets->next;
     numins++;
   }
-  post("calculated %d inlets", numins);
 
   iolets=connections->outlets;
   numouts=0;
@@ -364,7 +386,6 @@ static void canvas_patcherize(t_glist*cnv) {
     iolets=iolets->next;
     numouts++;
   }
-  post("calculated %d outlets", numouts);
   dspstate=canvas_suspend_dsp();
 
   /* disconnect the boundary connections */
@@ -373,8 +394,7 @@ static void canvas_patcherize(t_glist*cnv) {
 
   /* create a new sub-patch to pacherize into */
   to=patcherize_makesub(cnv, "*patcherized*", xpos/objcount, ypos/objcount,
-			//xmin, ymin, xmax, ymax,
-			0,0,320,240,
+			xmin, ymin, xmax+50, ymax+150,
 			connections);
 
   editFrom=glist_suspend_editor(cnv);
@@ -410,9 +430,11 @@ static void canvas_patcherize(t_glist*cnv) {
     gobj->g_next = 0;
   }
 
+  patcherize_fixcoordinates(objcount, gobjs, xmin, ymin);
+
   /* reconnect the boundary connections */
-  print_conns("inlets :",connections->inlets);
-  print_conns("outlets:",connections->outlets);
+  //print_conns("inlets :",connections->inlets);
+  //print_conns("outlets:",connections->outlets);
   patcherize_boundary_reconnect(to, connections);
   glist_resume_editor(cnv, editFrom);
   canvas_redraw(cnv);
