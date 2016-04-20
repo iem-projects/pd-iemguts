@@ -87,7 +87,7 @@ typedef struct _patcherize_connections {
   t_patcherize_connection*inlets;
   t_patcherize_connection*outlets;
 } t_patcherize_connections;
-static int patcherize_conn_leftof(t_object*ref_obj, unsigned int ref_idx, t_object*obj, unsigned int idx) {
+static int patcherize_conn_leftof_ref(t_object*ref_obj, unsigned int ref_idx, t_object*obj, unsigned int idx) {
   if(obj->te_xpix < ref_obj->te_xpix) return 1;
   if(obj->te_xpix > ref_obj->te_xpix) return 0;
   if(idx < ref_idx) return 1;
@@ -124,7 +124,7 @@ static t_patcherize_connection*insert_connection(t_patcherize_connection*iolets,
 						 t_object*from_obj, unsigned int from_index,
 						 t_object*to_obj, unsigned int to_index) {
   /* check whether iolets already contains from_obj/from_index */
-  t_patcherize_connection*cur=iolets, *last=NULL;
+  t_patcherize_connection*cur=iolets, *last=NULL, *conn=NULL;
   if(!cur) {
     return create_connection(from_obj, from_index, to_obj, to_index);
   }
@@ -134,12 +134,31 @@ static t_patcherize_connection*insert_connection(t_patcherize_connection*iolets,
       insert_connection_to(cur, to_obj, to_index);
       return iolets;
     }
-    last=cur;
     cur=cur->next;
   }
   /* if we reach this, then we didn't find the output in our list; so create it */
   /* LATER: insert the new connection at a sorted location */
-  last->next=create_connection(from_obj, from_index, to_obj, to_index);
+  conn=create_connection(from_obj, from_index, to_obj, to_index);
+
+  /* inserted into sorted list */
+  cur=iolets; last=NULL;
+  while(cur) {
+    if(patcherize_conn_leftof_ref(cur->object, cur->index, from_obj, from_index)) {
+      /* we sort before current element, so insert! */
+      conn->next=cur;
+      if(last) {
+	last->next=conn;
+      } else {
+	/* insert beginning */
+	iolets=conn;
+      }
+      return iolets;
+    }
+    last=cur;
+    cur=cur->next;
+  }
+  /* if we reached this, then the new outlet sorts last */
+  last->next=conn;
   return iolets;
 }
 static void print_conns(const char*name, t_patcherize_connection*conn) {
@@ -266,14 +285,11 @@ static void patcherize_boundary_reconnect(t_canvas*cnv,t_patcherize_connections*
 
 static void patcherize_fixcoordinates(unsigned int argc, t_gobj**argv, int xmin, int ymin) {
   unsigned int i;
-  //post("fixing coords to %d/%d", xmin, ymin);
   for(i=0; i<argc; i++) {
     t_object*obj=pd_checkobject(&argv[i]->g_pd);
     if(obj) {
       int x = obj->te_xpix;
       int y = obj->te_ypix;
-      //post("X: %d -> %d", x, x - xmin + 30);
-      //post("Y: %d -> %d", y, y - ymin + 30);
       obj->te_xpix = x - xmin + 30;
       obj->te_ypix = y - ymin + 60;
     }
@@ -301,8 +317,6 @@ static t_glist*patcherize_makesub(t_canvas*cnv, const char* name,
   if(width<200) width=200;
   if(height<100)height=100;
 
-  post("boundingbox: %d/%d || %d/%d", xmin, ymin, xmax, ymax);
-
   b=binbuf_new();
   binbuf_addv(b, "ssiiiisi;", gensym("#N"), gensym("canvas"), xwin+xmin, ywin+ymin, width, height, gensym(name), 0);
 
@@ -324,7 +338,7 @@ static t_glist*patcherize_makesub(t_canvas*cnv, const char* name,
   }
   binbuf_addv(b, "ssiiss;", gensym("#X"), gensym("restore"), X, Y, gensym("pd"), gensym(name));
 
-  binbuf_print(b);
+  //binbuf_print(b);
 
   binbuf_eval(b, 0,0,0);
   binbuf_free(b);
