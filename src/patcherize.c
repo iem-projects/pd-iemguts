@@ -87,6 +87,15 @@ typedef struct _patcherize_connections {
   t_patcherize_connection*inlets;
   t_patcherize_connection*outlets;
 } t_patcherize_connections;
+static int patcherize_conn_leftof(t_object*ref_obj, unsigned int ref_idx, t_object*obj, unsigned int idx) {
+  if(obj->te_xpix < ref_obj->te_xpix) return 1;
+  if(obj->te_xpix > ref_obj->te_xpix) return 0;
+  if(idx < ref_idx) return 1;
+  if(idx > ref_idx) return 0;
+  if(obj->te_ypix < ref_obj->te_ypix) return 1;
+  if(obj->te_ypix > ref_obj->te_ypix) return 0;
+  return 0;
+}
 static void insert_connection_to(t_patcherize_connection*iolets,t_object*to_obj, unsigned int to_index) {
   struct _patcherize_connectto*dest=iolets->to, *last=NULL;
   while(dest) {
