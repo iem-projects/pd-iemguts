@@ -168,7 +168,7 @@ static void canvas_patcherize(t_glist*cnv) {
   }
   /* if nothing is selected, we are done... */
   if(!objcount) {
-    freebytes(gobjs,0*sizeof(*gobjs));
+    freebytes(gobjs,objcount*sizeof(*gobjs));
     return;
   }
 
