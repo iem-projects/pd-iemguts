@@ -275,6 +275,7 @@ static void patcherize_fixcoordinates(unsigned int argc, t_gobj**argv, int xmin,
 static t_glist*patcherize_makesub(t_canvas*cnv, const char* name,
 				  int X, int Y,
 				  int xmin, int ymin, int xmax, int ymax,
+				  int xwin, int ywin,
 				  t_patcherize_connections*connections) {
   t_binbuf*b=NULL;
   t_gobj*result=NULL;
@@ -294,7 +295,7 @@ static t_glist*patcherize_makesub(t_canvas*cnv, const char* name,
   post("boundingbox: %d/%d || %d/%d", xmin, ymin, xmax, ymax);
 
   b=binbuf_new();
-  binbuf_addv(b, "ssiiiisi;", gensym("#N"), gensym("canvas"), xmin, ymin, width, height, gensym(name), 0);
+  binbuf_addv(b, "ssiiiisi;", gensym("#N"), gensym("canvas"), xwin+xmin, ywin+ymin, width, height, gensym(name), 0);
 
   iolets=connections->inlets;
   x=20;  y=20;
@@ -395,6 +396,7 @@ static void canvas_patcherize(t_glist*cnv) {
   /* create a new sub-patch to pacherize into */
   to=patcherize_makesub(cnv, "*patcherized*", xpos/objcount, ypos/objcount,
 			xmin, ymin, xmax+50, ymax+150,
+			cnv->gl_screenx1,cnv->gl_screeny1,
 			connections);
 
   editFrom=glist_suspend_editor(cnv);
