@@ -41,8 +41,9 @@
 #include "iemguts.h"
 
 #include "g_canvas.h"
-#include <string.h>
+#include "m_imp.h"
 
+#include <string.h>
 #include <limits.h>
 /* ------------------------- patcherize ---------------------------- */
 
@@ -63,6 +64,38 @@ static void glist_resume_editor(t_glist*glist, int wanteditor) {
     canvas_create_editor(glist);
   }
   glist_redraw(glist);
+}
+/* returns the number of connections from the outlets of the given objects
+ * that cross the selection boundary
+ * - EITHER a connection from an unselected object to a selected object
+ * - OR a connection from a selected object to an unselected object
+ * (connections between unselected objects and connections between selected objects are ignored)
+ */
+static unsigned int count_inout_connections(t_glist*cnv,t_gobj*gobj) {
+  unsigned int result=0;
+  t_object*obj=pd_checkobject(&gobj->g_pd);
+  if(obj) {
+    int sel=glist_isselected(cnv,gobj);
+    int obj_nout=obj_noutlets(obj);
+    int nout=0;
+    for(nout=0; nout<obj_nout; nout++) { /* traverse all outlets of the object */
+      t_outlet*out=0;
+      t_inlet *in =0;
+      t_outconnect*conn=obj_starttraverseoutlet(obj, &out, nout);
+      while(conn) {
+	int which;
+	t_object*dest=0;
+	t_gobj*gdest=0;
+	conn=obj_nexttraverseoutlet(conn, &dest, &in, &which);
+	gdest=&dest->te_g;
+	if (glist_isselected(cnv,gdest) != sel) {
+	  result++;
+	  break;
+	}
+      }
+    }
+  }
+  return result;
 }
 
 static t_glist*patcherize_makesub(t_canvas*cnv, const char* name, int x, int y) {
@@ -102,6 +135,8 @@ static void canvas_patcherize(t_glist*cnv) {
   int i=0;
   int xpos=0, ypos=0;
   int xmin, ymin, xmax, ymax;
+  int numins=0, numouts=0;
+
   if(NULL == cnv)return;
   xmin=ymin=INT_MAX;
   xmax=ymax=INT_MIN;
@@ -112,6 +147,7 @@ static void canvas_patcherize(t_glist*cnv) {
    */
   gobjs=getbytes(0*sizeof(*gobjs));
   for(gobj=cnv->gl_list; gobj; gobj=gobj->g_next) {
+    unsigned int conns=count_inout_connections(cnv, gobj);
     if(glist_isselected(cnv, gobj)) {
       t_object*obj=pd_checkobject(&gobj->g_pd);
       if(obj) {
@@ -125,6 +161,9 @@ static void canvas_patcherize(t_glist*cnv) {
       gobjs=resizebytes(gobjs, (objcount)*sizeof(*gobjs), (objcount+1)*sizeof(*gobjs));
       gobjs[objcount]=gobj;
       objcount++;
+      numouts+=conns;
+    } else {
+      numins+=conns;
     }
   }
   /* if nothing is selected, we are done... */
