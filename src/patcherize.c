@@ -43,6 +43,7 @@
 #include "g_canvas.h"
 #include <string.h>
 
+#include <limits.h>
 /* ------------------------- patcherize ---------------------------- */
 
 static void print_glist(t_glist*glist) {
@@ -100,7 +101,10 @@ static void canvas_patcherize(t_glist*cnv) {
   t_glist*to;
   int i=0;
   int xpos=0, ypos=0;
+  int xmin, ymin, xmax, ymax;
   if(NULL == cnv)return;
+  xmin=ymin=INT_MAX;
+  xmax=ymax=INT_MIN;
 
   /* store all the selected objects.
    * this needs to be done because the GUI-cleanup in glist_suspend_editor()
@@ -115,6 +119,8 @@ static void canvas_patcherize(t_glist*cnv) {
 	int y=obj->te_ypix;
 	xpos+=x;
 	ypos+=y;
+	if(xmin>x)xmin=x;if(xmax<x)xmax=x;
+	if(ymin>y)ymin=y;if(ymax<y)ymax=y;
       }
       gobjs=resizebytes(gobjs, (objcount)*sizeof(*gobjs), (objcount+1)*sizeof(*gobjs));
       gobjs[objcount]=gobj;
