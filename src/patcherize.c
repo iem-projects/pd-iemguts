@@ -92,9 +92,9 @@ static void canvas_patcherize(t_glist*cnv) {
   /* migrate selected objects from one canvas to another without re-instantiating them */
   int dspstate = 0;
   int editFrom = 0;
-  t_gobj*obj = NULL, *last=NULL;
+  t_gobj*gobj = NULL, *last=NULL;
   int objcount=0;
-  t_gobj**objs=0;
+  t_gobj**gobjs=0;
   t_glist*to;
   int i=0;
   int xpos=0, ypos=0;
@@ -104,22 +104,24 @@ static void canvas_patcherize(t_glist*cnv) {
    * this needs to be done because the GUI-cleanup in glist_suspend_editor()
    * will undo any selection...
    */
-  objs=getbytes(0*sizeof(*objs));
-  for(obj=cnv->gl_list; obj; obj=obj->g_next) {
-    if(glist_isselected(cnv, obj)) {
-      t_object*tob=pd_checkobject(obj);
-      if(tob) {
-	xpos+=tob->te_xpix;
-	ypos+=tob->te_ypix;
+  gobjs=getbytes(0*sizeof(*gobjs));
+  for(gobj=cnv->gl_list; gobj; gobj=gobj->g_next) {
+    if(glist_isselected(cnv, gobj)) {
+      t_object*obj=pd_checkobject(&gobj->g_pd);
+      if(obj) {
+	int x=obj->te_xpix;
+	int y=obj->te_ypix;
+	xpos+=x;
+	ypos+=y;
       }
-      objs=resizebytes(objs, (objcount)*sizeof(*objs), (objcount+1)*sizeof(*objs));
-      objs[objcount]=obj;
+      gobjs=resizebytes(gobjs, (objcount)*sizeof(*gobjs), (objcount+1)*sizeof(*gobjs));
+      gobjs[objcount]=gobj;
       objcount++;
     }
   }
   /* if nothing is selected, we are done... */
   if(!objcount) {
-    freebytes(objs,0*sizeof(*objs));
+    freebytes(gobjs,0*sizeof(*gobjs));
     return;
   }
 
@@ -131,11 +133,13 @@ static void canvas_patcherize(t_glist*cnv) {
   editFrom=glist_suspend_editor(cnv);
 
   for(i=0; i<objcount; i++) {
-    t_gobj*ob2 = NULL;
+    t_gobj*gobj2 = NULL;
     int doit=0;
-    obj=objs[i];
-    for(ob2=cnv->gl_list; ob2; last=ob2, ob2=ob2->g_next) {
-      if (obj == ob2) {
+    gobj=gobjs[i];
+
+    /* find the gobj that points to the current one (stored in 'last') */
+    for(gobj2=cnv->gl_list; gobj2; last=gobj2, gobj2=gobj2->g_next) {
+      if (gobj == gobj2) {
 	doit=1;
 	break;
       }
@@ -144,18 +148,18 @@ static void canvas_patcherize(t_glist*cnv) {
 
     /* remove the object from the 'from'-canvas */
     if (last)
-      last->g_next = obj->g_next;
+      last->g_next = gobj->g_next;
     else
-      cnv->gl_list = obj->g_next;
+      cnv->gl_list = gobj->g_next;
 
     /* append it to the 'to'-canvas */
     if(to->gl_list) {
-      for(ob2=to->gl_list; ob2 && ob2->g_next;) ob2=ob2->g_next;
-      ob2->g_next = obj;
+      for(gobj2=to->gl_list; gobj2 && gobj2->g_next;) gobj2=gobj2->g_next;
+      gobj2->g_next = gobj;
     } else {
-      to->gl_list = obj;
+      to->gl_list = gobj;
     }
-    obj->g_next = 0;
+    gobj->g_next = 0;
 
     glist_resume_editor(cnv, editFrom);
   }
