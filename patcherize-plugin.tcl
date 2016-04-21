@@ -36,6 +36,10 @@ namespace eval ::iemguts::patcherize:: {
 	bind PatchWindow <FocusIn> "+::iemguts::patcherize::focus %W 1"
 	bind PdWindow    <FocusIn> "+::iemguts::patcherize::focus %W 0"
 
+	# attempt to load the 'patcherize' library from iemguts
+	# (that does all the work)
+	pdsend "pd-_float_template declare -lib iemguts/patcherize -stdlib iemguts/patcherize -lib patcherize -stdlib patcherize"
+
 	pdtk_post "loaded iemguts::patcherize-plugin\n"
     }
 }
