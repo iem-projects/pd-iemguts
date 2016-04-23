@@ -454,6 +454,12 @@ static void canvas_patcherize(t_glist*cnv) {
   //print_conns("inlets :",connections->inlets);
   //print_conns("outlets:",connections->outlets);
   patcherize_boundary_reconnect(to, connections);
+
+  /* cleanup */
+  free_connections(connections);
+  freebytes(gobjs,objcount*sizeof(*gobjs));
+
+  /* restore state */
   glist_resume_editor(cnv, editFrom);
   canvas_redraw(cnv);
   canvas_resume_dsp(dspstate);
