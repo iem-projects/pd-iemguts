@@ -249,10 +249,10 @@ static void patcherize_boundary_reconnect(t_canvas*cnv,t_patcherize_connections*
   while(conns) {
     struct _patcherize_connectto*to=conns->to;
     /* connect outside objects with new subpatch */
-    obj_connect(conns->object, conns->index, cnv, index);
+    obj_connect(conns->object, conns->index, (t_object*)cnv, index);
     while(to) {
       /* connect [inlet]s with inside objects */
-      obj_connect(gobj, 0, to->object, to->index);
+      obj_connect((t_object*)gobj, 0, to->object, to->index);
       to=to->next;
     }
     index++;
@@ -264,10 +264,10 @@ static void patcherize_boundary_reconnect(t_canvas*cnv,t_patcherize_connections*
   while(conns) {
     struct _patcherize_connectto*to=conns->to;
     /* connect inside objects with [outlet]s */
-    obj_connect(conns->object, conns->index, gobj, 0);
+    obj_connect(conns->object, conns->index, (t_object*)gobj, 0);
     while(to) {
       /* connect subpatch with outside objects */
-      obj_connect(cnv, index, to->object, to->index);
+      obj_connect((t_object*)cnv, index, to->object, to->index);
       to=to->next;
     }
     index++;
@@ -339,7 +339,7 @@ static t_glist*patcherize_makesub(t_canvas*cnv, const char* name,
   s__X.s_thing = boundx;
   s__N.s_thing = boundn;
   for(result=cnv->gl_list; result->g_next;) result=result->g_next;
-  return result;
+  return pd_checkglist(&(result->g_pd));
 }
 
 static void canvas_patcherize(t_glist*cnv) {
