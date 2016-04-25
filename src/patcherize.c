@@ -106,7 +106,7 @@ static void insert_connection_to(t_patcherize_connection*iolets,t_object*to_obj,
     iolets->to=dest;
 }
 static t_patcherize_connection*create_connection(t_object*from_obj, int from_index, t_object*to_obj, int to_index) {
-  t_patcherize_connection*conn=(t_patcherize_connection*)calloc(1, sizeof(*conn));
+  t_patcherize_connection*conn=calloc(1, sizeof(*conn));
   conn->is_signal=obj_issignaloutlet(from_obj, from_index);
   conn->object=from_obj;
   conn->index=from_index;
@@ -187,7 +187,7 @@ static t_patcherize_connection*get_object_connections(t_patcherize_connection*io
 }
 
 static t_patcherize_connections*get_connections(t_glist*cnv) {
-  t_patcherize_connections*connections=(t_patcherize_connections*)calloc(1, sizeof(*connections));
+  t_patcherize_connections*connections=calloc(1, sizeof(*connections));
   /* 1. iterate over all the objects in the canvas, and store any connecting objects */
   t_gobj*gobj=NULL;
   for(gobj=cnv->gl_list; gobj; gobj=gobj->g_next) {
@@ -384,7 +384,7 @@ static void canvas_patcherize(t_glist*cnv) {
 
   /* if nothing is selected, we are done... */
   if(!objcount) {
-    freebytes(gobjs,objcount*sizeof(*gobjs));
+    freebytes(gobjs,objcount * sizeof(*gobjs));
     return;
   }
 
@@ -457,7 +457,7 @@ static void canvas_patcherize(t_glist*cnv) {
 
   /* cleanup */
   free_connections(connections);
-  freebytes(gobjs,objcount*sizeof(*gobjs));
+  freebytes(gobjs,objcount * sizeof(*gobjs));
 
   /* restore state */
   glist_resume_editor(cnv, editFrom);

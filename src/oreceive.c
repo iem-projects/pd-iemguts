@@ -151,7 +151,7 @@ static void pd_bind_priority(t_pd*x, t_symbol*key, t_float priority) {
     bind_list=guts_add_key(key);
   if(!bind_list)return;
 
-  element=(t_bind_element*)getbytes(sizeof(t_bind_element));
+  element=getbytes(sizeof(*element));
   element->object=x;
   element->priority=priority;
   element->next=0;

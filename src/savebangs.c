@@ -67,7 +67,7 @@ static void add_savefn(t_class*class)
   if(0!=find_savefn(class)) {
     return;
   } else {
-    t_savefuns*sfun=(t_savefuns*)getbytes(sizeof(t_savefuns));
+    t_savefuns*sfun=getbytes(sizeof(*sfun));
     sfun->class=class;
     sfun->savefn=class_getsavefn(class);
     sfun->next=0;
