@@ -187,7 +187,7 @@ static void pd_unbind_priority(t_pd*x, t_symbol*key) {
     elements->priority=0;
     elements->next=0;
 
-    freebytes(elements, sizeof(elements));
+    freebytes(elements, sizeof(*elements));
   } else {
     // not here...
   }
