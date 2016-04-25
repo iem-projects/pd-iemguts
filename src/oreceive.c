@@ -248,8 +248,8 @@ static void oreceive_priority(t_oreceive *x, t_float p)
   x->x_priority=p;
   if(x->x_sym) {
     pd_unbind_priority(&x->x_obj.ob_pd, x->x_sym);
+    pd_bind_priority(&x->x_obj.ob_pd, x->x_sym, x->x_priority);
   }
-  pd_bind_priority(&x->x_obj.ob_pd, x->x_sym, x->x_priority);
 }
 
 static void oreceive_name(t_oreceive *x, t_symbol*s)
