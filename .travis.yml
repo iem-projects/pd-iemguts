@@ -1,0 +1,29 @@
+language: c
+sudo: required
+dist: trusty
+
+env:
+  global:
+        - secure: "VtjMps4NzAMe2I3/CClJ6r8XJeXZ+4dtQR2EIul+IgPNhCexLA96Y9MLjXaE90+frOYZvuQUN/WXjqRrc5M3PgsaRnSRqlpqQSQX47AII/qoY8xf/mEJ2fn/QhF63XDRe+91cVFNG5MHUKLPDcl3QhiPBUmkN8eJtFDPrtXZiU+2zGs+sbyqB/E5BCvQAq1QCqSNbI/JUTQpcafbQf11rrzfsJBo9e/C/VK6rK+LB8Xch1ajiKPlud/VL8RXef8DfReOSsQ0LP0VI1Aj4tQs17zqKXOaUiMQUav3s7qTcIuLVaYf6w0bY3a6URV59Lj5F9+B7gkbwuAJLNPO8Dv87WeIZE8NreszPRLsTUoLrsq8OgDKiYEi4dfZH1vPpF8YhkQy+eaWImi7l7E5NNzi/k8oa6Ej/1P3aRvMuivpX8c0GRJDF5LOowG8WfGF8IkW1KeoRvYM/N7ZnIzppeMgEhKx6V+cXY1RZDUjgCO5hjUUhi9Yj1JRuInPoc5pycG0HbaMwVaZe+zyiTWRX7takuh0gQrsq1r6jg7PkcU+V8+U7QiXfwfp8KzMSr0TZxiw7DDO/Fzckg0wTsFb6Ya7RTvQPx7hM84RJ6eXzt0a+ixkKEntKaljTaW2pKvqFuTjHYq7ybisf6dnR6mjk02uqigvoVaZclDR/stLeWTqf5Q="
+        - COVERITY_SCAN_BRANCH_PATTERN="(master|coverity-.*)"
+        - COVERITY_SCAN_NOTIFICATION_EMAIL="dev@umlaeute.mur.at"
+        - COVERITY_SCAN_BUILD_COMMAND="make"
+
+matrix:
+  include:
+    - compiler: clang
+    - compiler: gcc
+      env:
+        - COVERITY_SCAN_PROJECT_NAME="$TRAVIS_REPO_SLUG"
+
+before_install:
+- sudo apt-get update -qq
+- sudo apt-get install -qq puredata-dev
+
+before_script:
+  # implement Coverity Scan with before_script instead of addons.coverity_scan
+  # to work around too-early quota check by the coverity_scan addon
+  - if [[ -n $COVERITY_SCAN_PROJECT_NAME ]] ; then curl -s 'https://scan.coverity.com/scripts/travisci_build_coverity_scan.sh' | bash || true ; fi
+
+script:
+- make
