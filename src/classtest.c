@@ -59,7 +59,7 @@ static void classtest_free(t_classtest *x)
   outlet_free(x->x_out);
 }
 
-static void *classtest_new(t_floatarg f)
+static void *classtest_new(void)
 {
   t_classtest *x = (t_classtest *)pd_new(classtest_class);
 

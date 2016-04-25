@@ -55,7 +55,6 @@ static void canvasname_bang(t_canvasname *x)
 {
   t_canvas*c=x->x_canvas;
   t_binbuf*b=0;
-  t_atom name[1];
 
   if(!c) return;
 
@@ -80,9 +79,7 @@ static void canvasname_bang(t_canvasname *x)
 
 static void canvasname_symbol(t_canvasname *x, t_symbol*s)
 {
-  t_canvas*c=x->x_canvas;
   t_binbuf*b=0;
-  t_atom name[1];
   if(!x->x_canvas) return;
   b=x->x_canvas->gl_obj.te_binbuf;
 

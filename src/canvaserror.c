@@ -77,6 +77,7 @@ static void canvaserror_any(t_canvaserror *x, t_symbol*s, int argc, t_atom*argv)
 
 static void canvaserror_free(t_canvaserror *x)
 {
+  x->x_canvas = 0;
 }
 
 static void *canvaserror_new(t_floatarg f)

@@ -211,7 +211,7 @@ static void *canvasselect_new(t_floatarg f)
 
 static void canvasselect_free(t_canvasselect*x)
 {
-
+  x->x_canvas = 0;
 }
 
 static void canvas_select_cb(t_canvas*x, t_float f)
