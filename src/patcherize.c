@@ -60,6 +60,29 @@ static void glist_resume_editor(t_glist*glist, int wanteditor) {
   glist_redraw(glist);
 }
 
+/* returns 0 if the object is to be excluded from patcherization */
+static t_symbol**s_excluded_classnames = 0;
+static void build_exclude_list(void) {
+  int i=0;
+  s_excluded_classnames=getbytes(5 * sizeof(*s_excluded_classnames));
+
+  s_excluded_classnames[i++]=gensym("inlet");
+  s_excluded_classnames[i++]=gensym("outlet");
+  s_excluded_classnames[i++]=gensym("inlet~");
+  s_excluded_classnames[i++]=gensym("outlet~");
+  s_excluded_classnames[i++]=0;
+}
+static int include_in_patcherization(const t_object*obj) {
+  const t_symbol*c_name=obj->te_g.g_pd->c_name;
+  t_symbol**excluded;
+  if(!s_excluded_classnames)build_exclude_list();
+  for(excluded=s_excluded_classnames;*excluded; excluded++) {
+    if(c_name == *excluded)return 0;
+  }
+
+  return 1;
+}
+
 
 struct _patcherize_connectto
 {
