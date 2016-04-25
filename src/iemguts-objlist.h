@@ -63,7 +63,7 @@ static t_iemguts_canvaslist*addCanvas(const t_pd*parent)
 {
   t_iemguts_canvaslist*list=findCanvas(parent);
   if(!list) {
-    list=(t_iemguts_canvaslist*)getbytes(sizeof(t_iemguts_canvaslist));
+    list=getbytes(sizeof(*list));
     list->parent=parent;
     list->obj=0;
     list->next=0;
@@ -108,7 +108,7 @@ static void addObjectToCanvas(const t_pd*parent, const t_pd*obj) {
   }
 
   /* we are at the end of the list that does not contain obj yet, so add it */
-  entry=(t_iemguts_objlist*)getbytes(sizeof(t_iemguts_objlist));
+  entry=getbytes(sizeof(*entry));
   entry->obj=obj;
   entry->next=0;
   if(list) {
@@ -141,7 +141,7 @@ static void removeObjectFromCanvas(const t_pd*parent, const t_pd*obj) {
   else
     p->obj=next;
 
-  freebytes((void*)list, sizeof(t_iemguts_objlist));
+  freebytes(list, sizeof(*list));
   list=0;
 }
 

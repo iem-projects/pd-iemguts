@@ -165,6 +165,7 @@ void autoabstraction_setup(void)
 #ifdef AUTOABSTRACTION_ENABLED
   autoabstraction_initialize();
   sys_register_loader(autoabstraction_loader);
+#warning FIXME loader-0.47 mode!
 #else
   error("autoabstraction needs to be compiled against Pd 0.40 or higher,\n");
   error("\tor a version that has sys_register_loader()");

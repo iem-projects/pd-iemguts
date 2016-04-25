@@ -95,6 +95,7 @@ static void canvasargs_bang(t_canvasargs *x)
 
 static void canvasargs_free(t_canvasargs *x)
 {
+  x->x_canvas = 0;
 }
 
 static void *canvasargs_new(t_floatarg f)

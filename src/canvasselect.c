@@ -63,7 +63,7 @@ static void canvasselect_bang(t_canvasselect *x)
   index=0;
   t_atom *atombuf;
 
-  atombuf = (t_atom *)getbytes(sizeof(t_atom)*nselected);
+  atombuf = getbytes(nselected*sizeof(*atombuf));
 
   for(obj=glist->gl_list; obj; obj=obj->g_next, index++) {
     if(glist_isselected(glist, obj)) {
@@ -211,7 +211,7 @@ static void *canvasselect_new(t_floatarg f)
 
 static void canvasselect_free(t_canvasselect*x)
 {
-
+  x->x_canvas = 0;
 }
 
 static void canvas_select_cb(t_canvas*x, t_float f)

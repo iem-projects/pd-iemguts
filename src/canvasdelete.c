@@ -149,6 +149,7 @@ static int canvas_delete_docb(t_glist*glist, int index) {
 static void canvas_delete_cb(t_canvas*x, t_symbol*s, int argc, t_atom*argv)
 {
   int dspstate= canvas_suspend_dsp();
+#warning FIXME map the indices to real objects before deleting them
   if(argc) {
     while(argc--){
       canvas_delete_docb(x, atom_getint(argv++));
