@@ -390,6 +390,11 @@ static void canvas_patcherize(t_glist*cnv) {
   for(gobj=cnv->gl_list; gobj; gobj=gobj->g_next) {
     if(glist_isselected(cnv, gobj)) {
       t_object*obj=pd_checkobject(&gobj->g_pd);
+      if(!include_in_patcherization(obj)){
+	/* deselect excluded objects */
+	glist_deselect(cnv, gobj);
+	continue;
+      }
       if(obj) {
 	int x=obj->te_xpix;
 	int y=obj->te_ypix;
