@@ -10,15 +10,38 @@ if [catch {
 }] { puts "iemguts::patcherize: i18n failed" }
 
 namespace eval ::iemguts::patcherize:: {
-    variable label
+    variable label_sub
+    variable label_abs
     proc focus {winid state} {
         set menustate [expr $state?"normal":"disabled"]
-        .menubar.edit entryconfigure "$::iemguts::patcherize::label" -state $menustate
+        .menubar.edit entryconfigure "$::iemguts::patcherize::label_sub" -state $menustate
+        .menubar.edit entryconfigure "$::iemguts::patcherize::label_abs" -state $menustate
     }
+    ## helper function to pick a filename for saving
+    # (why isn't there something like this in Pd-GUI?)
+    proc savepanel {initialdir {initialfile ""} {defaultextension ".pd"} {filetypes $::filetypes} } {
+	if { "$filetypes" == {$::filetypes} } {
+	    set filetypes $::filetypes
+	}
+        if { ! [file isdirectory $initialdir]} {set initialdir $::env(HOME)}
+        set filename [tk_getSaveFile \
+			  -defaultextension $defaultextension \
+                          -filetypes $filetypes \
+                          -initialfile $initialfile \
+			  -initialdir $initialdir]
+	return $filename
+    }
+
+    proc patcherize2file {winid} {
+	set filename [::iemguts::patcherize::savepanel "" "" ".pd" [list [list [_ "Pd Files"]          {.pd}  ]]]
+	if { $filename != "" } {
+	    menu_send $::focused_window "patcherize [enquote_path $filename]"
+	}
     }
     proc register {} {
         # create an entry for our "print2svg" in the "file" menu
-        set ::iemguts::patcherize::label [_ "SubPatcherize Selection"]
+        set ::iemguts::patcherize::label_sub [_ "SubPatcherize Selection"]
+        set ::iemguts::patcherize::label_abs [_ "Patcherize Selection..."]
         set accelerator $::pd_menus::accelerator
         set mymenu .menubar.edit
         if {$::windowingsystem eq "aqua"} {
@@ -29,10 +52,14 @@ namespace eval ::iemguts::patcherize:: {
             #set accelerator "Shift+$accelerator"
         }
         $mymenu insert $inserthere command \
-            -label $::iemguts::patcherize::label \
+            -label $::iemguts::patcherize::label_sub \
             -state disabled \
             -accelerator "$accelerator+P" \
             -command { menu_send $::focused_window patcherize }
+        $mymenu insert [incr inserthere] command \
+            -label $::iemguts::patcherize::label_abs \
+            -state disabled \
+            -command { ::iemguts::patcherize::patcherize2file $::focused_window }
 
         bind all <$::modifier-Key-P> {menu_send %W patcherize}
         bind PatchWindow <FocusIn> "+::iemguts::patcherize::focus %W 1"
