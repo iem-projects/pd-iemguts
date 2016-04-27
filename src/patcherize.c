@@ -349,6 +349,33 @@ static t_glist*patcherize_makesub(t_canvas*cnv,
 				  int xmin, int ymin, int xmax, int ymax,
 				  int xwin, int ywin,
 				  t_patcherize_connections*connections,
+				  unsigned int maxdollarg);
+static t_glist*
+patcherize_makesub_tryagain(t_canvas*cnv,
+			   const char*name, int*save2file,
+			   int X, int Y,
+			   int xmin, int ymin, int xmax, int ymax,
+			   int xwin, int ywin,
+			   t_patcherize_connections*connections,
+			   unsigned int maxdollarg,
+			   t_binbuf*b, t_pd *boundx, t_pd *boundn) {
+  /* things went wrong, try again as subpatch */
+  t_glist*res=patcherize_makesub(cnv, name, 0,
+				 X, Y, xmin, ymin, xmax, ymax, xwin, ywin,
+				 connections, maxdollarg);
+  if(save2file)*save2file=0;
+  s__X.s_thing = boundx;
+  s__N.s_thing = boundn;
+  binbuf_free(b);
+  return res;
+}
+static t_glist*patcherize_makesub(t_canvas*cnv,
+				  const char* name, /* subpatch name of filename */
+				  int*save2file_,
+				  int X, int Y,
+				  int xmin, int ymin, int xmax, int ymax,
+				  int xwin, int ywin,
+				  t_patcherize_connections*connections,
 				  unsigned int maxdollarg) {
   t_binbuf*b=NULL;
   t_gobj*result=NULL;
@@ -403,25 +430,35 @@ static t_glist*patcherize_makesub(t_canvas*cnv,
 
   if(save2file) {
     /* save the binbuf to file */
+    char dirbuf[MAXPDSTRING], *nameptr;
     char objname[MAXPDSTRING];
+    int fd;
     int len=strlen(name) -3 ;
     unsigned int i;
     strncpy(objname, name, MAXPDSTRING-1);
     objname[MAXPDSTRING-1]=0;
     if(len>0 && len<MAXPDSTRING)objname[len]=0;
+    nameptr=strrchr(name, '/');
+    nameptr=nameptr?(nameptr+1):name;
 
     if(binbuf_write(b, name, "", 0)) {
       /* things went wrong, try again as subpatch */
-      t_glist*res=patcherize_makesub(cnv, objname, 0,
-				     X, Y, xmin, ymin, xmax, ymax, xwin, ywin,
-				     connections, maxdollarg);
-      if(save2file_)*save2file_=0;
-      s__X.s_thing = boundx;
-      s__N.s_thing = boundn;
-      binbuf_free(b);
-      return res;
+      return patcherize_makesub_tryagain(cnv, objname, save2file,
+					 X, Y, xmin, ymin, xmax, ymax, xwin, ywin,
+					 connections, maxdollarg,
+					 b, boundx, boundn);
     }
     /* and instantiate the file as an abstraction*/
+    post("search for %s", nameptr);
+    if ((fd = canvas_open(cnv, nameptr, "",
+			  dirbuf, &nameptr, MAXPDSTRING, 0)) >= 0) {
+      sys_close(fd);
+      strncpy(objname, nameptr, MAXPDSTRING-2);
+      objname[strlen(nameptr)-3]=0; // strip away ".pd".extension
+      post("patch in path: %s", nameptr);
+    } else {
+      post("open local failed");
+    }
     binbuf_clear(b);
     binbuf_addv(b, "ssiis", gensym("#X"), gensym("obj"), X, Y, gensym(objname));
     for(i=1; i<=maxdollarg; i++) {
