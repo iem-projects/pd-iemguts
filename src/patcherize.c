@@ -224,6 +224,35 @@ static t_patcherize_connections*get_connections(t_glist*cnv) {
   }
   return connections;
 }
+static unsigned int get_maxdollarg(t_object*obj) {
+#warning FIXXME: recurse into subpatches (but not abstractions)
+  t_binbuf*b=obj->te_binbuf;
+  int argc=binbuf_getnatom(b);
+  t_atom*argv=binbuf_getvec(b);
+  unsigned int result=0;
+  while(argc--) {
+    t_atom*a=argv++;
+    int dollarg=0;
+    if(A_DOLLAR == a->a_type)
+      dollarg=a->a_w.w_index;
+    else if(A_DOLLSYM == a->a_type) {
+      const char*s=a->a_w.w_symbol->s_name;
+      while(*s){
+	if('$' == *s) {
+	  const char*endptr=0;
+	  long int v=strtol(s+1, &endptr, 10);
+	  s=endptr;
+	  if(v>dollarg)dollarg=v;
+	} else
+	  s++;
+      }
+    }
+    if(dollarg>result)result=dollarg;
+  }
+  return result;
+}
+
+
 static void free_connectto(struct _patcherize_connectto*conn) {
   struct _patcherize_connectto*next=0;
   while(conn) {
@@ -319,7 +348,8 @@ static t_glist*patcherize_makesub(t_canvas*cnv,
 				  int X, int Y,
 				  int xmin, int ymin, int xmax, int ymax,
 				  int xwin, int ywin,
-				  t_patcherize_connections*connections) {
+				  t_patcherize_connections*connections,
+				  unsigned int maxdollarg) {
   t_binbuf*b=NULL;
   t_gobj*result=NULL;
   t_patcherize_connection*iolets=NULL;
@@ -375,13 +405,16 @@ static t_glist*patcherize_makesub(t_canvas*cnv,
     /* save the binbuf to file */
     char objname[MAXPDSTRING];
     int len=strlen(name) -3 ;
+    unsigned int i;
     strncpy(objname, name, MAXPDSTRING-1);
     objname[MAXPDSTRING-1]=0;
     if(len>0 && len<MAXPDSTRING)objname[len]=0;
 
     if(binbuf_write(b, name, "", 0)) {
       /* things went wrong, try again as subpatch */
-      t_glist*res=patcherize_makesub(cnv, objname, 0, X, Y, xmin, ymin, xmax, ymax, xwin, ywin, connections);
+      t_glist*res=patcherize_makesub(cnv, objname, 0,
+				     X, Y, xmin, ymin, xmax, ymax, xwin, ywin,
+				     connections, maxdollarg);
       if(save2file_)*save2file_=0;
       s__X.s_thing = boundx;
       s__N.s_thing = boundn;
@@ -390,7 +423,16 @@ static t_glist*patcherize_makesub(t_canvas*cnv,
     }
     /* and instantiate the file as an abstraction*/
     binbuf_clear(b);
-    binbuf_addv(b, "ssiis;", gensym("#X"), gensym("obj"), X, Y, gensym(objname));
+    binbuf_addv(b, "ssiis", gensym("#X"), gensym("obj"), X, Y, gensym(objname));
+    for(i=1; i<=maxdollarg; i++) {
+      t_atom a;
+      char dollstring[MAXPDSTRING];
+      snprintf(dollstring, MAXPDSTRING-1, "$%d", i);
+      dollstring[MAXPDSTRING-1]=0;
+      SETSYMBOL(&a, gensym(dollstring));
+      binbuf_add(b, 1, &a);
+    }
+    binbuf_addsemi(b);
   }
   binbuf_eval(b, 0,0,0);
   binbuf_free(b);
@@ -420,6 +462,7 @@ static void canvas_patcherize(t_glist*cnv, t_symbol*s) {
   t_patcherize_connections*connections;
   const char*name = "/*patcherized*/";
   int save2file=0;
+  int maxdollarg=0;
 
   if(NULL == cnv)return;
   xmin=ymin=INT_MAX;
@@ -444,12 +487,14 @@ static void canvas_patcherize(t_glist*cnv, t_symbol*s) {
 	continue;
       }
       if(obj) {
+	int dollarg=get_maxdollarg(obj);
 	int x=obj->te_xpix;
 	int y=obj->te_ypix;
 	xpos+=x;
 	ypos+=y;
 	if(xmin>x)xmin=x;if(xmax<x)xmax=x;
 	if(ymin>y)ymin=y;if(ymax<y)ymax=y;
+	if(dollarg>maxdollarg)maxdollarg=dollarg;
       }
       gobjs=resizebytes(gobjs, (objcount)*sizeof(*gobjs), (objcount+1)*sizeof(*gobjs));
       gobjs[objcount]=gobj;
@@ -489,7 +534,7 @@ static void canvas_patcherize(t_glist*cnv, t_symbol*s) {
 			xpos/objcount, ypos/objcount,
 			xmin, ymin, xmax+50, ymax+150,
 			cnv->gl_screenx1,cnv->gl_screeny1,
-			connections);
+			connections, maxdollarg);
 
   editFrom=glist_suspend_editor(cnv);
 
