@@ -313,7 +313,9 @@ static void patcherize_fixcoordinates(unsigned int argc, t_gobj**argv, int xmin,
 
 }
 
-static t_glist*patcherize_makesub(t_canvas*cnv, const char* name,
+static t_glist*patcherize_makesub(t_canvas*cnv,
+				  const char* name, /* subpatch name of filename */
+				  int*save2file_,
 				  int X, int Y,
 				  int xmin, int ymin, int xmax, int ymax,
 				  int xwin, int ywin,
@@ -322,19 +324,31 @@ static t_glist*patcherize_makesub(t_canvas*cnv, const char* name,
   t_gobj*result=NULL;
   t_patcherize_connection*iolets=NULL;
   int x, y;
+  int width=xmax-xmin;
+  int height=ymax-ymin;
+  int save2file=(save2file_)?*save2file_:0;
 
   /* save and clear bindings to symbols #a, $N, $X; restore when done */
   t_pd *boundx = s__X.s_thing, *boundn = s__N.s_thing;
   s__X.s_thing = &cnv->gl_pd;
   s__N.s_thing = &pd_canvasmaker;
 
-  int width=xmax-xmin;
-  int height=ymax-ymin;
   if(width<200) width=200;
   if(height<100)height=100;
 
+  if (!name || !*name)save2file=0;
+  if(save2file && strcmp(name + strlen(name) - 3, ".pd")) {
+    /* not a Pd patch */
+    save2file=0;
+  }
+
   b=binbuf_new();
-  binbuf_addv(b, "ssiiiisi;", gensym("#N"), gensym("canvas"), xwin+xmin, ywin+ymin, width, height, gensym(name), 0);
+  if (save2file) {
+    // #N canvas 4 49 450 300 10;
+    binbuf_addv(b, "ssiiiii;", gensym("#N"), gensym("canvas"), xwin+xmin, ywin+ymin, width, height, 10);
+  } else {
+    binbuf_addv(b, "ssiiiisi;", gensym("#N"), gensym("canvas"), xwin+xmin, ywin+ymin, width, height, gensym(name), 0);
+  }
 
   iolets=connections->inlets;
   x=20;  y=20;
@@ -352,20 +366,46 @@ static t_glist*patcherize_makesub(t_canvas*cnv, const char* name,
     x+=50;
     iolets=iolets->next;
   }
-  binbuf_addv(b, "ssiiss;", gensym("#X"), gensym("restore"), X, Y, gensym("pd"), gensym(name));
+  if(save2file) {
+  } else {
+    binbuf_addv(b, "ssiiss;", gensym("#X"), gensym("restore"), X, Y, gensym("pd"), gensym(name));
+  }
 
-  //binbuf_print(b);
+  if(save2file) {
+    /* save the binbuf to file */
+    char objname[MAXPDSTRING];
+    int len=strlen(name) -3 ;
+    strncpy(objname, name, MAXPDSTRING-1);
+    objname[MAXPDSTRING-1]=0;
+    if(len>0 && len<MAXPDSTRING)objname[len]=0;
 
+    if(binbuf_write(b, name, "", 0)) {
+      /* things went wrong, try again as subpatch */
+      t_glist*res=patcherize_makesub(cnv, objname, 0, X, Y, xmin, ymin, xmax, ymax, xwin, ywin, connections);
+      if(save2file_)*save2file_=0;
+      s__X.s_thing = boundx;
+      s__N.s_thing = boundn;
+      binbuf_free(b);
+      return res;
+    }
+    /* and instantiate the file as an abstraction*/
+    binbuf_clear(b);
+    binbuf_addv(b, "ssiis;", gensym("#X"), gensym("obj"), X, Y, gensym(objname));
+  }
   binbuf_eval(b, 0,0,0);
   binbuf_free(b);
 
   s__X.s_thing = boundx;
   s__N.s_thing = boundn;
+
+  /* the new object is the last in the parent's glist */
   for(result=cnv->gl_list; result->g_next;) result=result->g_next;
+
+  if(save2file_)*save2file_=save2file;
   return pd_checkglist(&(result->g_pd));
 }
 
-static void canvas_patcherize(t_glist*cnv) {
+static void canvas_patcherize(t_glist*cnv, t_symbol*s) {
   /* migrate selected objects from one canvas to another without re-instantiating them */
   int dspstate = 0;
   int editFrom = 0;
@@ -378,9 +418,17 @@ static void canvas_patcherize(t_glist*cnv) {
   int xmin, ymin, xmax, ymax;
   int numins=0, numouts=0;
   t_patcherize_connections*connections;
+  const char*name = "/*patcherized*/";
+  int save2file=0;
+
   if(NULL == cnv)return;
   xmin=ymin=INT_MAX;
   xmax=ymax=INT_MIN;
+
+  if (s && s->s_name && *s->s_name) {
+    name=s->s_name;
+    save2file=1;
+  }
 
   /* store all the selected objects.
    * this needs to be done because the GUI-cleanup in glist_suspend_editor()
@@ -408,7 +456,6 @@ static void canvas_patcherize(t_glist*cnv) {
       objcount++;
     }
   }
-
 
   /* if nothing is selected, we are done... */
   if(!objcount) {
@@ -438,7 +485,8 @@ static void canvas_patcherize(t_glist*cnv) {
   patcherize_boundary_disconnect(connections->outlets);
 
   /* create a new sub-patch to pacherize into */
-  to=patcherize_makesub(cnv, "*patcherized*", xpos/objcount, ypos/objcount,
+  to=patcherize_makesub(cnv, name, &save2file,
+			xpos/objcount, ypos/objcount,
 			xmin, ymin, xmax+50, ymax+150,
 			cnv->gl_screenx1,cnv->gl_screeny1,
 			connections);
@@ -483,6 +531,10 @@ static void canvas_patcherize(t_glist*cnv) {
   //print_conns("outlets:",connections->outlets);
   patcherize_boundary_reconnect(to, connections);
 
+  if(save2file) {
+    pd_typedmess(to, gensym("menusave"), 0, 0);
+  }
+
   /* cleanup */
   free_connections(connections);
   freebytes(gobjs,objcount * sizeof(*gobjs));
@@ -499,5 +551,5 @@ void patcherize_setup(void)
   iemguts_boilerplate("patcherize - turn objects into a subpatch", 0);
 
   if(NULL==zgetfn(&canvas_class, gensym("patcherize")))
-    class_addmethod(canvas_class, (t_method)canvas_patcherize, gensym("patcherize"), 0);
+    class_addmethod(canvas_class, (t_method)canvas_patcherize, gensym("patcherize"), A_DEFSYM, 0);
 }
