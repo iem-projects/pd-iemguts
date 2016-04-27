@@ -449,15 +449,14 @@ static t_glist*patcherize_makesub(t_canvas*cnv,
 					 b, boundx, boundn);
     }
     /* and instantiate the file as an abstraction*/
-    post("search for %s", nameptr);
     if ((fd = canvas_open(cnv, nameptr, "",
 			  dirbuf, &nameptr, MAXPDSTRING, 0)) >= 0) {
       sys_close(fd);
-      strncpy(objname, nameptr, MAXPDSTRING-2);
-      objname[strlen(nameptr)-3]=0; // strip away ".pd".extension
-      post("patch in path: %s", nameptr);
-    } else {
-      post("open local failed");
+      nameptr[-1]='/';
+      if(!strcmp(dirbuf, name)) {
+	strncpy(objname, nameptr, MAXPDSTRING-2);
+	objname[strlen(nameptr)-3]=0; // strip away ".pd".extension
+      }
     }
     binbuf_clear(b);
     binbuf_addv(b, "ssiis", gensym("#X"), gensym("obj"), X, Y, gensym(objname));
