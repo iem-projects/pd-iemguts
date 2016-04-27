@@ -225,11 +225,20 @@ static t_patcherize_connections*get_connections(t_glist*cnv) {
   return connections;
 }
 static unsigned int get_maxdollarg(t_object*obj) {
-#warning FIXXME: recurse into subpatches (but not abstractions)
   t_binbuf*b=obj->te_binbuf;
   int argc=binbuf_getnatom(b);
   t_atom*argv=binbuf_getvec(b);
   unsigned int result=0;
+  const t_symbol*c_name=obj->te_g.g_pd->c_name;
+  if(c_name == gensym("canvas") && !canvas_isabstraction(obj)) {
+    // a subpatch! recurse
+    t_gobj*gobj;
+    for(gobj=((t_glist*)obj)->gl_list; gobj; gobj=gobj->g_next) {
+      unsigned int subdollar=get_maxdollarg(gobj);
+      if(subdollar>result)result=subdollar;
+    }
+  }
+
   while(argc--) {
     t_atom*a=argv++;
     int dollarg=0;
