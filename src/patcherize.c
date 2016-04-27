@@ -535,6 +535,8 @@ static void canvas_patcherize(t_glist*cnv, t_symbol*s) {
 			xmin, ymin, xmax+50, ymax+150,
 			cnv->gl_screenx1,cnv->gl_screeny1,
 			connections, maxdollarg);
+  if(!to)
+    goto cleanup;
 
   editFrom=glist_suspend_editor(cnv);
 
@@ -579,7 +581,7 @@ static void canvas_patcherize(t_glist*cnv, t_symbol*s) {
   if(save2file) {
     pd_typedmess(to, gensym("menusave"), 0, 0);
   }
-
+ cleanup:
   /* cleanup */
   free_connections(connections);
   freebytes(gobjs,objcount * sizeof(*gobjs));
