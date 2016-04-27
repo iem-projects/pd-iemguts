@@ -617,6 +617,7 @@ static void canvas_patcherize(t_glist*cnv, t_symbol*s) {
   if(save2file) {
     pd_typedmess(to, gensym("menusave"), 0, 0);
   }
+  canvas_dirty(cnv, 1);
  cleanup:
   /* cleanup */
   free_connections(connections);
