@@ -115,46 +115,54 @@ void canvasdelete_setup(void)
 
 
 /* 'delete' message for the canvas */
-static int canvas_delete_docb(t_glist*glist, int index) {
+static int canvas_delete_docb(t_glist*glist, t_gobj*wantobj) {
   /* this will crash Pd if the object to be deleted is on the stack
    * workarounds:
    *   - use a clock (see above)
    *   - finally fix this in Pd
    */
   t_gobj*obj=NULL;
-  int i=index;
-  if(NULL==glist) {
-    return -1;
+  if(!glist || !wantobj)
+    return 0;
+  for(obj=glist->gl_list; obj; obj=obj->g_next) {
+    if(wantobj == obj)
+      break;
   }
-  if(i<0) {
-    return -1;
-  }
+  if(!obj)
+    return 0;
 
-  obj=glist->gl_list;
+  glist_delete(glist, obj);
+  return 1;
+}
 
-  while(i-- && obj) {
-    obj=obj->g_next;
+static t_gobj**canvasdelete_indices2glist(const t_glist*glist, unsigned int argc, t_atom*argv) {
+  t_gobj**result = malloc(argc*sizeof(*result));
+  t_gobj**resptr=result;
+  int i=0;
+  for(i=0; i<argc; i++)result[i]=NULL;
+  for(i=0; i<argc; i++) {
+    int index=atom_getint(argv+i);
+    t_gobj*obj=glist->gl_list;
+    /* get handle to object */
+    while(index-->0 && obj) {
+      obj=obj->g_next;
+    }
+    if(obj) {
+      *resptr++=obj;
+    }
   }
-
-  if(obj) {
-    glist_delete(glist, obj);
-  }
-  else {
-    return -1;
-  }
-
-  return index;
+  return result;
 }
 
 static void canvas_delete_cb(t_canvas*x, t_symbol*s, int argc, t_atom*argv)
 {
   int dspstate= canvas_suspend_dsp();
-#warning FIXME map the indices to real objects before deleting them
-  if(argc) {
-    while(argc--){
-      canvas_delete_docb(x, atom_getint(argv++));
-    }
+  t_gobj**objs=canvasdelete_indices2glist(x, argc>0?argc:0, argv);
+  int i;
+  for(i=0; i<argc; i++) {
+    canvas_delete_docb(x, objs[i]);
   }
+  free(objs);
   canvas_resume_dsp(dspstate);
 }
 
