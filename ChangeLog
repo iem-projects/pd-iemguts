@@ -1,0 +1,57 @@
+2016-06-20  IOhannes m zmölnig <zmoelnig@umlautQ.umlaeute.mur.at>
+
+	* src/canvasdelete.c: map indices to objects before deleting them since
+	indices change when we remove a single object, we first need
+	to turn the indices to (pointers to) the objects themselves.
+
+2016-04-25  IOhannes m zmölnig <zmoelnig@iem.at>
+
+	* src/oreceive.c: fixed size-calculation of struct CID:98830
+
+2016-04-25  IOhannes m zmölnig <zmoelnig@iem.at>
+
+	* src/oreceive.c: consistent NULL-check CID:98829
+
+2016-04-25  IOhannes m zmölnig <zmoelnig@iem.at>
+
+	* .travis.yml: Travis-CI config
+
+2016-04-25  IOhannes m zmölnig <zmoelnig@iem.at>
+
+	* src/autoabstraction.c, src/canvasdelete.c: added a few FIXME
+	warnings
+
+2016-04-25  IOhannes m zmölnig <zmoelnig@iem.at>
+
+	* src/canvasargs.c, src/canvaserror.c, src/canvasname.c,
+	src/canvasselect.c, src/classtest.c: fixed a number of
+	unused-variable warnings
+
+2016-04-25  IOhannes m zmölnig <zmoelnig@iem.at>
+
+	* src/canvasconnections.c, src/canvasselect.c,
+	src/iemguts-objlist.h, src/oreceive.c, src/patcherize.c,
+	src/savebangs.c: don't cast to/from void; use sizeof(var) rather
+	than sizeof(type); this should make the code more readable and more
+	robust to type-changes.
+
+2016-04-16  IOhannes m zmölnig <zmoelnig@iem.at>
+	* src/canvasselect.c: TODO with selections
+
+2016-04-14  IOhannes m zmölnig <zmoelnig@umlautQ.umlaeute.mur.at>
+
+	* src/canvasargs.c: in-code documentation...
+
+2016-04-14  IOhannes m zmölnig <zmoelnig@umlautQ.umlaeute.mur.at>
+
+	* src/canvasargs.c: report arguments in early init phase Thanks Liam Goodacre for the bugreport.
+
+2016-04-02  IOhannes m zmölnig <zmoelnig@umlautQ.umlaeute.mur.at>
+
+	* Makefile: Drop mentioning of 'creb'
+	Closes: https://github.com/iem-projects/pd-iemguts/issues/3
+
+2016-04-01  Antoine Villeret <antoine.villeret@gmail.com>
+
+	* Makefile: add missing files for installation
+	Closes: https://github.com/iem-projects/pd-iemguts/issues/1
