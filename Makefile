@@ -22,6 +22,14 @@ datadirs =  examples
 
 cflags = -DVERSION=$(lib.version)
 
+DATE_FMT = %Y/%m/%d at %H:%M:%S UTC
+ifdef SOURCE_DATE_EPOCH
+    BUILD_DATE ?= $(shell date -u -d "@$(SOURCE_DATE_EPOCH)" "+$(DATE_FMT)" 2>/dev/null || date -u -r "$(SOURCE_DATE_EPOCH)" "+$(DATE_FMT)" 2>/dev/null || date -u "+$(DATE_FMT)")
+endif
+ifdef BUILD_DATE
+cflags += -DBUILD_DATE='"$(BUILD_DATE)"'
+endif
+
 ################################################################################
 ### pdlibbuilder ###############################################################
 ################################################################################
