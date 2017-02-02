@@ -5,6 +5,7 @@ build:
   before_script: 
     - apt update && apt -y install make puredata-dev
   script: 
+    - export
     - make
     - make install DESTDIR=/tmp/ pkglibdir=iemguts
   dependencies: []
