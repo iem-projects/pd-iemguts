@@ -6,8 +6,9 @@ build:
     - apt update && apt -y install make puredata-dev
   script: 
     - make
+    - make install DESTDIR=/tmp/ pkglibdir=iemguts
   dependencies: []
   artifacts:
     paths:
-      - "*.pd_linux"
+      - /tmp/iemguts/
     expire_in: 1 week
