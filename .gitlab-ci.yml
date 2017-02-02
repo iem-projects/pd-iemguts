@@ -7,9 +7,10 @@ build:
   script: 
     - export
     - make
-    - make install DESTDIR=/tmp/ pkglibdir=iemguts
+    - make install DESTDIR=$(pwd) pkglibdir=
   dependencies: []
   artifacts:
     paths:
-      - /tmp/iemguts/
+      - iemguts/
+      - examples/
     expire_in: 1 week
