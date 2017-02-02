@@ -10,6 +10,7 @@ build:
     - make install DESTDIR=$(pwd) pkglibdir=
   dependencies: []
   artifacts:
+    name: ${CI_PROJECT_NAME}-${CI_BUILD_REF}
     paths:
       - iemguts/
       - examples/
