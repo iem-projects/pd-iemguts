@@ -8,11 +8,9 @@ build:
     - declare -x CI_BUILD_REF_SHORT=$(git describe --tags)
     - export
     - make
-    - make install DESTDIR=$(pwd) pkglibdir=/${CI_BUILD_REF_SHORT}
+    - make install DESTDIR=$(pwd) pkglibdir=/
   dependencies: []
   artifacts:
-    name: ${CI_PROJECT_NAME}-${CI_BUILD_REF_SHORT}
     paths:
-      - ./${CI_BUILD_REF_SHORT}
-      - examples/
+      - iemguts/
     expire_in: 1 week
