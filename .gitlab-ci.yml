@@ -4,6 +4,7 @@ build:
   stage: build
   before_script: 
     - apt update && apt -y install make puredata-dev
+    - apt list --upgradable
   script: 
     - make
     - make install DESTDIR=$(pwd) pkglibdir=/
