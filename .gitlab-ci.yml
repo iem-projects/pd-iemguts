@@ -5,8 +5,6 @@ build:
   before_script: 
     - apt update && apt -y install make puredata-dev
   script: 
-    - declare -x CI_BUILD_REF_SHORT=$(git describe --tags)
-    - export
     - make
     - make install DESTDIR=$(pwd) pkglibdir=/
   dependencies: []
