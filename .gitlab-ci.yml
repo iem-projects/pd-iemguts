@@ -11,6 +11,7 @@ build:
     - make install DESTDIR=$(pwd) pkglibdir=/
   dependencies: []
   artifacts:
+    name: iemguts-snapshot
     paths:
       - iemguts/
     expire_in: 1 week
