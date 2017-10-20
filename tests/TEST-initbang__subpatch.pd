@@ -1,0 +1,23 @@
+#N canvas 735 283 450 300 10;
+#N canvas 4 50 726 359 sub 0;
+#X obj 159 195 outlet;
+#X obj 291 117 s \$0-sub;
+#X obj 291 139 namecanvas \$0-sub;
+#X obj 291 73 initbang;
+#X msg 291 95 obj 100 50 inlet \, connect 5 0 0 0;
+#X connect 3 0 4 0;
+#X connect 4 0 1 0;
+#X restore 80 202 pd sub;
+#X msg 80 166 2;
+#X obj 80 144 loadbang;
+#X obj 80 254 print initbanged;
+#X floatatom 199 257 5 0 0 0 - - -, f 5;
+#X text 39 30 if [initbang] correctly worked in subpatches \, you should
+get a "2" both on the console and in the numberbox.;
+#X text 40 65 if it does not \, you should have an error in the Pd-console:
+;
+#X text 85 86 "1 0 0 0 (message->canvas) connection failed";
+#X connect 0 0 3 0;
+#X connect 0 0 4 0;
+#X connect 2 0 1 0;
+#X connect 1 0 0 0;
