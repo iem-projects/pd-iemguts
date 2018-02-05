@@ -23,6 +23,7 @@
 #include "iemguts.h"
 
 #include "g_canvas.h"
+#include <stdlib.h>
 
 /* ------------------------- canvasdelete ---------------------------- */
 
