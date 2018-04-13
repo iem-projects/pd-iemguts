@@ -1,0 +1,53 @@
+#N canvas 233 253 645 300 10;
+#X text 90 77 usage:;
+#X obj 90 43 canvaslock;
+#X text 138 77 put a [canvaslock] object into your abstraction (or
+subpatch), f 71;
+#X text 184 44 locks a canvas so it can no longer be opened;
+#X text 139 94 put your abstraction (or subpatch) into your patch;
+#X text 127 114 --> the abstraction (or subpatch) can no longer be
+opened \, until you send a "0" to the [canvaslock] object to unlock
+it. sending a "1" will lock it again.;
+#N canvas 6 61 450 300 locked 0;
+#X obj 149 116 canvaslock;
+#X obj 109 34 inlet;
+#X obj 109 179 float;
+#X msg 109 202 vis \$1;
+#X text 234 119 <-- this locks the canvas;
+#X obj 109 57 route vis lock;
+#X obj 109 225 s \$0-locked;
+#X obj 109 249 namecanvas \$0-locked;
+#X connect 1 0 5 0;
+#X connect 2 0 3 0;
+#X connect 3 0 6 0;
+#X connect 5 0 2 0;
+#X connect 5 1 0 0;
+#X restore 126 227 pd locked subpatch;
+#N canvas 490 167 450 300 normal 0;
+#X obj 109 34 inlet;
+#X obj 109 179 float;
+#X msg 109 202 vis \$1;
+#X obj 109 57 route vis lock;
+#X obj 108 248 namecanvas \$0-normal;
+#X obj 109 225 s \$0-normal;
+#X connect 0 0 3 0;
+#X connect 1 0 2 0;
+#X connect 2 0 5 0;
+#X connect 3 0 1 0;
+#X restore 346 226 pd normal subpatch;
+#X msg 188 204 lock \$1;
+#X obj 188 185 tgl 15 1 empty empty empty 17 7 0 10 -262144 -1 -1 1
+1;
+#X obj 126 185 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X msg 126 204 vis \$1;
+#X obj 346 185 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X msg 346 204 vis \$1;
+#X text 369 275 (c) IOhannes m zmoelnig @ iem \, 2018;
+#X connect 8 0 6 0;
+#X connect 9 0 8 0;
+#X connect 10 0 11 0;
+#X connect 11 0 6 0;
+#X connect 12 0 13 0;
+#X connect 13 0 7 0;
