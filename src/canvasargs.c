@@ -70,7 +70,7 @@ static void canvasargs_list(t_canvasargs *x, t_symbol*s, int argc, t_atom*argv)
   binbuf_add(b, argc, argv);
 }
 
-static void canvasargs_bang(t_canvasargs *x)
+static void canvasargs_doit(t_canvasargs *x, int expanddollargs)
 {
   int argc=0;
   t_atom*argv=0;
@@ -78,8 +78,7 @@ static void canvasargs_bang(t_canvasargs *x)
 
   if(!x->x_canvas) return;
   b=x->x_canvas->gl_obj.te_binbuf;
-
-  if(b) {
+  if(b && !expanddollargs) {
     argc=binbuf_getnatom(b)-1;
     argv=binbuf_getvec(b)+1;
   } else {
@@ -91,6 +90,14 @@ static void canvasargs_bang(t_canvasargs *x)
   if(argv)
     outlet_list(x->x_obj.ob_outlet, &s_list, argc, argv);
 }
+
+static void canvasargs_bang(t_canvasargs *x) {
+  return canvasargs_doit(x, 1);
+}
+static void canvasargs_raw(t_canvasargs *x) {
+  return canvasargs_doit(x, 0);
+}
+
 
 
 static void canvasargs_free(t_canvasargs *x)
@@ -125,4 +132,5 @@ void canvasargs_setup(void)
                                (t_method)canvasargs_free, sizeof(t_canvasargs), 0, A_DEFFLOAT, 0);
   class_addlist(canvasargs_class, (t_method)canvasargs_list);
   class_addbang(canvasargs_class, (t_method)canvasargs_bang);
+  class_addmethod(canvasargs_class, (t_method)canvasargs_raw, gensym("raw"), 0);
 }
