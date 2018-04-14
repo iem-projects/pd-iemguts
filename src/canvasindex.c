@@ -39,9 +39,10 @@ static t_class *canvasindex_class;
 
 typedef struct _canvasindex
 {
-  t_object  x_obj;
-  t_canvas  *x_canvas;
-  t_outlet*xoutlet, *youtlet;
+  t_object x_obj;
+  t_canvas *x_canvas;
+  t_gobj   *x_self;
+  t_outlet *xoutlet, *youtlet;
 } t_canvasindex;
 
 typedef struct _intlist
@@ -53,12 +54,11 @@ typedef struct _intlist
 static void canvasindex_symbol(t_canvasindex *x, t_symbol*s)
 {
   /* check whether an object of name <s> is in the canvas */
-  t_canvas*c=x->x_canvas;
   t_gobj*y;
   int index=0;
 
-  if(!c || !c->gl_owner) return;
-  c =c->gl_owner;
+  t_canvas*c=x->x_canvas;
+  if(!c) return;
 
   for (y = (t_gobj*)c->gl_list; y; y = y->g_next) /* traverse all objects in canvas */
     {
@@ -84,11 +84,10 @@ static void canvasindex_float(t_canvasindex *x, t_floatarg f)
 {
   /* get the objectname of object #<f> */
   int index=f, cur=0;
-  t_canvas*c=x->x_canvas;
   t_gobj*y;
 
-  if(index < 0 || !c || !c->gl_owner) return;
-  c =c->gl_owner;
+  t_canvas*c=x->x_canvas;
+  if(index < 0 || !c) return;
 
   for (y = (t_gobj*)c->gl_list; y && cur<index; y = y->g_next) /* traverse all objects in canvas */
     {
@@ -109,15 +108,13 @@ static void canvasindex_float(t_canvasindex *x, t_floatarg f)
 
 static void canvasindex_bang(t_canvasindex *x)
 {
-  t_canvas*c=x->x_canvas;
-  t_canvas*c0=0;
+  t_gobj*c=x->x_self;
+  t_canvas*c0=x->x_canvas;
 
-  if(!c) return;
-  c0=c->gl_owner;
-  if(!c0)return;
+  if(!c || !c0) return;
 
   outlet_float(x->youtlet, (t_float)(glist_getindex(c0, 0)));
-  outlet_float(x->xoutlet, (t_float)(glist_getindex(c0, (t_gobj*)c)));
+  outlet_float(x->xoutlet, (t_float)(glist_getindex(c0, c)));
 }
 
 static void canvasindex_free(t_canvasindex *x)
@@ -133,14 +130,13 @@ static void *canvasindex_new(t_floatarg f)
   t_canvas *canvas=(t_canvas*)glist_getcanvas(glist);
 
   int depth=(int)f;
-
   if(depth<0)depth=0;
   while(depth && canvas) {
     canvas=canvas->gl_owner;
     depth--;
   }
-
-  x->x_canvas = canvas;
+  x->x_self =(t_gobj*)canvas;
+  x->x_canvas = canvas ? canvas->gl_owner : 0;
 
   x->xoutlet=outlet_new(&x->x_obj, &s_float);
   x->youtlet=outlet_new(&x->x_obj, &s_float);
@@ -155,7 +151,10 @@ void canvasindex_setup(void)
                                 (t_newmethod)canvasindex_new, (t_method)canvasindex_free, 
                                 sizeof(t_canvasindex), 0, 
                                 A_DEFFLOAT, 0);
+  /* gets the index of the selected canvas and the number of objects in the container */
   class_addbang(canvasindex_class, (t_method)canvasindex_bang);
+  /* gets the indices of the objects in the container that have the given name */
   class_addsymbol(canvasindex_class, (t_method)canvasindex_symbol);
+  /* get the name, args and class of the object at the given index */
   class_addfloat(canvasindex_class, (t_method)canvasindex_float);
 }
