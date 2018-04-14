@@ -130,13 +130,16 @@ static void *canvasindex_new(t_floatarg f)
   t_canvas *canvas=(t_canvas*)glist_getcanvas(glist);
 
   int depth=(int)f;
-  if(depth<0)depth=0;
-  while(depth && canvas) {
-    canvas=canvas->gl_owner;
-    depth--;
+  x->x_self =(t_gobj*)x;
+  x->x_canvas = canvas;
+  if(depth>=0) {
+    while(depth && canvas) {
+      canvas=canvas->gl_owner;
+      depth--;
+    }
+    x->x_self =(t_gobj*)canvas;
+    x->x_canvas = canvas ? canvas->gl_owner : 0;
   }
-  x->x_self =(t_gobj*)canvas;
-  x->x_canvas = canvas ? canvas->gl_owner : 0;
 
   x->xoutlet=outlet_new(&x->x_obj, &s_float);
   x->youtlet=outlet_new(&x->x_obj, &s_float);
