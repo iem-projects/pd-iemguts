@@ -50,6 +50,21 @@ static void closebang_loadbang(t_closebang *x, t_float type) {
     outlet_bang(x->x_obj.ob_outlet);
 }
 
+static void closebang_menuclose(t_canvas *x, t_floatarg f) {
+  t_atom ap[1];
+  t_gobj *y;
+
+  /* look for [closebang] instances and fire them */
+  for (y = x->gl_list; y; y = y->g_next)
+    if (pd_class(&y->g_pd) == closebang_class)
+      closebang_loadbang(&y->g_pd, LB_CLOSE);
+
+  /* pass the menuclose message on to the real canvasmethod*/
+  SETFLOAT(ap, f);
+  pd_typedmess((t_pd*)x, gensym("menuclose [closebang]"), 1, ap);
+}
+
+
 static void *closebang_new(void)
 {
   t_closebang *x = (t_closebang *)pd_new(closebang_class);
@@ -59,6 +74,7 @@ static void *closebang_new(void)
 
 void closebang_setup(void)
 {
+  t_gotfn orgfun = 0;
   iemguts_boilerplate("[closebang]", 0);
 #if (PD_MINOR_VERSION < 47)
   verbose(0, "[closebang] has been compiled against an incompatible version of Pd, proceeding anyway...");
@@ -70,4 +86,10 @@ void closebang_setup(void)
     class_addmethod(closebang_class, (t_method)closebang_loadbang, gensym("loadbang"), A_DEFFLOAT, 0);
   else
     error("[closebang] requires Pd>=0.47");
+
+  orgfun = zgetfn(&canvas_class, gensym("menuclose"));
+  if ((t_method)closebang_menuclose != orgfun) {
+    class_addmethod(canvas_class, (t_method)closebang_menuclose, gensym("menuclose"), A_DEFFLOAT, 0);
+    class_addmethod(canvas_class, (t_method)orgfun, gensym("menuclose [closebang]"), A_DEFFLOAT, 0);
+  }
 }
