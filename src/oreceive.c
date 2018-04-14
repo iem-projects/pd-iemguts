@@ -292,6 +292,6 @@ void oreceive_setup(void)
     class_addsymbol(oreceive_class, oreceive_name);
     class_addmethod(oreceive_class, (t_method)oreceive_priority, &s_float, A_FLOAT, 0);
 
-    oreceive_proxy_class = class_new(0, 0, 0, sizeof(t_oreceive_proxy), CLASS_NOINLET | CLASS_PD, 0);
+    oreceive_proxy_class = class_new(gensym("oreceive proxy"), 0, 0, sizeof(t_oreceive_proxy), CLASS_NOINLET | CLASS_PD, 0);
     class_addanything(oreceive_proxy_class, oreceive_proxy_anything);
 }
