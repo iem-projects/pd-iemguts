@@ -65,7 +65,7 @@ void initbang_setup(void)
   verbose(0, "[initbang] has been compiled against an incompatible version of Pd, proceeding anyway...");
 #endif
   initbang_class = class_new(gensym("initbang"), (t_newmethod)initbang_new, 0,
-			     sizeof(t_initbang), CLASS_NOINLET, 0);
+                             sizeof(t_initbang), CLASS_NOINLET, 0);
 
   if(iemguts_check_atleast_pdversion(0,47,0))
     class_addmethod(initbang_class, (t_method)initbang_loadbang, gensym("loadbang"), A_DEFFLOAT, 0);

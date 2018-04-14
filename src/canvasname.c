@@ -16,7 +16,7 @@
  ******************************************************/
 
 
-/* 
+/*
  * this object provides a way to manipulate the parent-patches arguments (and name!)
  * usage:
  *   + put this object into an abstraction
@@ -123,7 +123,7 @@ static void *canvasname_new(t_floatarg f)
   x->x_displaynamein=inlet_new(&x->x_obj, &x->x_obj.ob_pd, gensym("symbol"), gensym("display"));
   x->x_nameout=outlet_new(&x->x_obj, &s_symbol);
   x->x_displaynameout=outlet_new(&x->x_obj, &s_symbol);
-  
+
   return (x);
 }
 

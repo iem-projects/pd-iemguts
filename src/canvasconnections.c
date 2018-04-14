@@ -16,7 +16,7 @@
  ******************************************************/
 
 
-/* 
+/*
  * this object provides a way to send messages to query the connections
  * of the containing canvas;
  * but you can give the "depth" as argument;
@@ -55,7 +55,7 @@ static t_intvec*intvec_new(int initial_size)
   t_intvec*res=getbytes(sizeof(*res));
   if(initial_size<1)
     initial_size=32;
-  
+
   res->num_elements=0;
   res->size=initial_size;
   res->elements=getbytes(res->size*sizeof(*res->elements));
@@ -114,7 +114,7 @@ static int query_inletconnections(t_canvasconnections *x, t_intvec***outobj, t_i
   t_intvec**invecs=NULL;
   t_intvec**inwhich=NULL;
   int ninlets=0;
- 
+
   t_gobj*y;
 
   if(0==x->x_object || 0==x->x_parent)
@@ -123,7 +123,7 @@ static int query_inletconnections(t_canvasconnections *x, t_intvec***outobj, t_i
   ninlets=obj_ninlets(x->x_object);
 
     // TODO....find objects connecting TO this object
-    /* as Pd does not have any information about connections to inlets, 
+    /* as Pd does not have any information about connections to inlets,
      * we have to find out ourselves
      * this is done by traversing all objects in the canvas and try
      * to find out, whether they are connected to us!
@@ -149,7 +149,7 @@ static int query_inletconnections(t_canvasconnections *x, t_intvec***outobj, t_i
         t_object*dest=0;
 
         t_outconnect*conn=obj_starttraverseoutlet(obj, &out, nout);
-        
+
         while(conn) { /* traverse all connections from each outlet */
           int which;
           conn=obj_nexttraverseoutlet(conn, &dest, &in, &which);
@@ -178,7 +178,7 @@ static void canvasconnections_queryinlets(t_canvasconnections *x)
 {
   t_atom at;
   t_intvec**invecs=0;
-  int ninlets=query_inletconnections(x, &invecs, 0); 
+  int ninlets=query_inletconnections(x, &invecs, 0);
   int i;
   //  t_intvec**invecs=query_inletconnections(x, &ninlets);
 
@@ -195,7 +195,7 @@ static void canvasconnections_queryinlets(t_canvasconnections *x)
       SETFLOAT(ap, (t_float)i);
       for(j=0; j<size; j++)
         SETFLOAT(ap+j+1, ((t_float)invecs[i]->elements[j]));
-      
+
       outlet_anything(x->x_out, s, size+1, ap);
       freebytes(ap, (size+1) * sizeof(*ap));
     }
@@ -208,7 +208,7 @@ static void canvasconnections_inlet(t_canvasconnections *x, t_floatarg f)
 {
   int inlet=f;
   t_intvec**invecs=0;
-  int ninlets=query_inletconnections(x, &invecs, 0); 
+  int ninlets=query_inletconnections(x, &invecs, 0);
 
   if(inlet >= 0 && inlet < ninlets) {
     int size=invecs[inlet]->num_elements;
@@ -225,7 +225,7 @@ static void canvasconnections_inlet(t_canvasconnections *x, t_floatarg f)
       for(j=0; j<size; j++)
         SETFLOAT(ap+j+1, ((t_float)invecs[inlet]->elements[j]));
     }
-      
+
     outlet_anything(x->x_out, s, size+1, ap);
     freebytes(ap, (size+1) * sizeof(*ap));
 
@@ -381,7 +381,7 @@ static void canvasconnections_outlet(t_canvasconnections *x, t_floatarg f)
         int connid=0;
         conn=obj_nexttraverseoutlet(conn, &dest, &in, &which);
         connid = glist_getindex(x->x_parent, (t_gobj*)dest);
-        
+
         SETFLOAT(abuf+1+i, (t_float)connid);
         i++;
       }
@@ -420,7 +420,7 @@ static void canvasconnections_queryoutlets(t_canvasconnections *x)
         int connid=0;
         conn=obj_nexttraverseoutlet(conn, &dest, &in, &which);
         connid = glist_getindex(x->x_parent, (t_gobj*)dest);
-        
+
         SETFLOAT(abuf+1+i, (t_float)connid);
         i++;
       }
@@ -473,9 +473,9 @@ static void *canvasconnections_new(t_floatarg f)
 void canvasconnections_setup(void)
 {
   iemguts_boilerplate("[canvasconnections]", 0);
-  canvasconnections_class = class_new(gensym("canvasconnections"), 
-                                      (t_newmethod)canvasconnections_new, (t_method)canvasconnections_free, 
-                                      sizeof(t_canvasconnections), 0, 
+  canvasconnections_class = class_new(gensym("canvasconnections"),
+                                      (t_newmethod)canvasconnections_new, (t_method)canvasconnections_free,
+                                      sizeof(t_canvasconnections), 0,
                                       A_DEFFLOAT, 0);
   class_addbang(canvasconnections_class, (t_method)canvasconnections_bang);
 

@@ -80,7 +80,7 @@ void closebang_setup(void)
   verbose(0, "[closebang] has been compiled against an incompatible version of Pd, proceeding anyway...");
 #endif
   closebang_class = class_new(gensym("closebang"), (t_newmethod)closebang_new, 0,
-			     sizeof(t_closebang), CLASS_NOINLET, 0);
+                             sizeof(t_closebang), CLASS_NOINLET, 0);
 
   if(iemguts_check_atleast_pdversion(0,47,0))
     class_addmethod(closebang_class, (t_method)closebang_loadbang, gensym("loadbang"), A_DEFFLOAT, 0);

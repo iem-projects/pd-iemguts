@@ -10,7 +10,7 @@
  *
  *   institute of electronic music and acoustics (iem)
  *
- * based on iemlib2 
+ * based on iemlib2
  *   copyright (c) 2000-2006 Thomas Musil, IEM, KUG, Graz/Austria
  *
  ******************************************************
@@ -66,9 +66,9 @@ static void *canvasdollarzero_new(t_floatarg f)
 void canvasdollarzero_setup(void)
 {
   iemguts_boilerplate("[canvasdollarzero]", 0);
-  canvasdollarzero_class = class_new(gensym("canvasdollarzero"), 
-                                     (t_newmethod)canvasdollarzero_new, 0, 
-                                     sizeof(t_canvasdollarzero), 0, 
+  canvasdollarzero_class = class_new(gensym("canvasdollarzero"),
+                                     (t_newmethod)canvasdollarzero_new, 0,
+                                     sizeof(t_canvasdollarzero), 0,
                                      A_DEFFLOAT, 0);
   class_addbang(canvasdollarzero_class, (t_method)canvasdollarzero_bang);
 }

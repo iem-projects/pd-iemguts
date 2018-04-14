@@ -74,11 +74,11 @@ static void iemguts_boilerplate(const char*name, const char*copyright) {
   verbose(v, "\tcompiled "BUILD_DATE);
   if(*PD_TEST_VERSION)
     verbose(v, "\t         against Pd version %d.%d-%d (%s)",
-	 PD_MAJOR_VERSION, PD_MINOR_VERSION, PD_BUGFIX_VERSION,
-	 PD_TEST_VERSION);
+         PD_MAJOR_VERSION, PD_MINOR_VERSION, PD_BUGFIX_VERSION,
+         PD_TEST_VERSION);
   else
     verbose(v, "\t         against Pd version %d.%d-%d",
-	 PD_MAJOR_VERSION, PD_MINOR_VERSION, PD_BUGFIX_VERSION);
+         PD_MAJOR_VERSION, PD_MINOR_VERSION, PD_BUGFIX_VERSION);
   if(!iemguts_check_atleast_pdversion(PD_MAJOR_VERSION, PD_MINOR_VERSION, PD_BUGFIX_VERSION))
     verbose(v, "\tNOTE: you are running an older version of Pd!");
   }

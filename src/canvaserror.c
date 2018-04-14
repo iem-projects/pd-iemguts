@@ -16,7 +16,7 @@
  ******************************************************/
 
 
-/* 
+/*
  * this object provides a way to manipulate the parent-patches arguments (and name!)
  * usage:
  *   + put this object into an abstraction
@@ -54,7 +54,7 @@ static void canvaserror_any(t_canvaserror *x, t_symbol*s, int argc, t_atom*argv)
   t_atom name[1];
   char*bbstring;
   int length;
-  
+
 
   t_binbuf*bb=binbuf_new();
   SETSYMBOL(name, s);
@@ -95,7 +95,7 @@ static void *canvaserror_new(t_floatarg f)
   }
 
   x->x_canvas = canvas;
-  
+
   return (x);
 }
 

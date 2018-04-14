@@ -175,4 +175,3 @@ static void canvasdelete_canvasmethods(void) {
     class_addmethod(canvas_class, (t_method)canvas_delete_cb, gensym("delete"), A_GIMME, 0);
   }
 }
-

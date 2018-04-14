@@ -16,12 +16,12 @@
  ******************************************************/
 
 
-/* 
+/*
  * this object provides a way to create an object with a fallback
  * [try bla 13, blu 134] will first try to create an obect [bla 13] and if this fails use [blu 134] instead.
  *
  * currently this only works for objectclasses (no abstractions)
- * currently this doesn't work (well) with [list]  
+ * currently this doesn't work (well) with [list]
  */
 
 #include "iemguts.h"
@@ -47,7 +47,7 @@ t_pd*try_this(int argc, t_atom*argv) {
 
   s=atom_getsymbol(argv);
   if(A_SYMBOL==argv->a_type) {
-    argc--; 
+    argc--;
     argv++;
   }
 
@@ -66,7 +66,7 @@ static void *try_new(t_symbol*s, int argc, t_atom*argv)
 {
   t_pd*x=NULL;
   int start=0, i=0;
-  if(!pd_objectmaker) { 
+  if(!pd_objectmaker) {
     error("[try] could not find pd_objectmaker");
     return NULL;
   }
@@ -87,8 +87,8 @@ static void *try_new(t_symbol*s, int argc, t_atom*argv)
 void try_setup(void)
 {
   iemguts_boilerplate("[try]", 0);
-  try_class = class_new(gensym("try"), 
-			(t_newmethod)try_new, NULL, 
-			sizeof(t_try), 0, 
-			A_GIMME, 0);
+  try_class = class_new(gensym("try"),
+                        (t_newmethod)try_new, NULL,
+                        sizeof(t_try), 0,
+                        A_GIMME, 0);
 }

@@ -20,7 +20,7 @@
  * used for callbacks to enumerated objects without $0 tricks
  */
 
-/* 
+/*
  * TODO: documentation
  */
 
@@ -56,7 +56,7 @@ static t_iemguts_canvaslist*findCanvas(const t_pd*parent) {
       return list;
     }
   }
-  return 0; 
+  return 0;
 }
 
 static t_iemguts_canvaslist*addCanvas(const t_pd*parent)

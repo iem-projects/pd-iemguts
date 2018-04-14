@@ -16,7 +16,7 @@
  ******************************************************/
 
 
-/* 
+/*
  * this object provides a way to receive messages to upstream canvases
  * by default it receives messages to the containing canvas, but you can give the "depth" as argument;
  * e.g. [receivecanvas 1] will receive messages to the parent of the containing canvas

@@ -16,12 +16,12 @@
  ******************************************************/
 
 
-/* 
+/*
  * this object provides a way to get the position of the containing abstraction
  * within the parent-patch
  * this makes it easy to (dis)connect this abstraction to others
  *
- * by default the index of the containing abstraction within the parent-patch is 
+ * by default the index of the containing abstraction within the parent-patch is
  * queried; however you can give the "depth" as argument:
  * e.g. [canvasindex 1] will give you the index of the abstraction containing the
  * abstraction that holds this object
@@ -69,11 +69,11 @@ static void canvasindex_symbol(t_canvasindex *x, t_symbol*s)
       t_atom*ap=binbuf_getvec(b);
       int    ac=binbuf_getnatom(b);
       if(s!=cname && ac) {
-	cname=atom_getsymbol(ap);
+        cname=atom_getsymbol(ap);
       }
       if(s==cname){
 #warning LATER think about output format
-	outlet_float(x->xoutlet, (t_float)index);
+        outlet_float(x->xoutlet, (t_float)index);
       }
       index++;
     }
@@ -103,7 +103,7 @@ static void canvasindex_float(t_canvasindex *x, t_floatarg f)
       /* LATER: shan't we output the index of the object as well? */
       outlet_anything(x->youtlet, gensym("class"), 1, classatom);
       outlet_anything(x->xoutlet, gensym("binbuf"), ac, ap);
-  }  
+  }
 }
 
 static void canvasindex_bang(t_canvasindex *x)
@@ -150,9 +150,9 @@ static void *canvasindex_new(t_floatarg f)
 void canvasindex_setup(void)
 {
   iemguts_boilerplate("[canvasindex]", 0);
-  canvasindex_class = class_new(gensym("canvasindex"), 
-                                (t_newmethod)canvasindex_new, (t_method)canvasindex_free, 
-                                sizeof(t_canvasindex), 0, 
+  canvasindex_class = class_new(gensym("canvasindex"),
+                                (t_newmethod)canvasindex_new, (t_method)canvasindex_free,
+                                sizeof(t_canvasindex), 0,
                                 A_DEFFLOAT, 0);
   /* gets the index of the selected canvas and the number of objects in the container */
   class_addbang(canvasindex_class, (t_method)canvasindex_bang);

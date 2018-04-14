@@ -16,11 +16,11 @@
  ******************************************************/
 
 
-/* 
+/*
  * this object provides a way to get and set the position of the containing
  * abstraction within the parent-patch
  *
- * by default the position of the containing abstraction within the parent-patch is 
+ * by default the position of the containing abstraction within the parent-patch is
  * queried
  * you can give the "depth" as argument;
  * e.g. [canvasobjectposition 1] will set/get the position of the abstraction containing the
@@ -97,7 +97,7 @@ static void canvasobjectposition_list(t_canvasobjectposition *x, t_symbol*s, int
   dx = atom_getint(argv+0) - c->gl_obj.te_xpix;
   dy = atom_getint(argv+1) - c->gl_obj.te_ypix;
 
-  
+
   if(c0&&glist_isvisible(c0))  {
     gobj_displace((t_gobj*)c, c0, dx, dy);
     canvas_fixlinesfor(c0, (t_text*)c);
@@ -124,7 +124,7 @@ static void *canvasobjectposition_new(t_symbol*s, int argc, t_atom*argv)
     t_canvas *canvas=(t_canvas*)glist_getcanvas(glist);
     int index=-1;
     int depth=0;
-    
+
     switch(argc) {
     case 2:
       index=atom_getint(argv+1);
@@ -142,13 +142,13 @@ static void *canvasobjectposition_new(t_symbol*s, int argc, t_atom*argv)
       canvas=canvas->gl_owner;
       depth--;
     }
-    
+
     x->x_parent = canvas;
     x->x_canvas=NULL;
-    
+
     x->xoutlet=outlet_new(&x->x_obj, &s_list);
     x->youtlet=outlet_new(&x->x_obj, &s_list);
-    
+
     inlet_new(&x->x_obj, &x->x_obj.ob_pd, gensym("float"), gensym("object"));
 
     if(index>=0)
@@ -187,8 +187,8 @@ static void canvasobjectposition_object(t_canvasobjectposition *x, t_float f)
 void canvasobjectposition_setup(void)
 {
   iemguts_boilerplate("[canvasobjectposition]", 0);
-  canvasobjectposition_class = class_new(gensym("canvasobjectposition"), 
-                                   (t_newmethod)canvasobjectposition_new, (t_method)canvasobjectposition_free, 
+  canvasobjectposition_class = class_new(gensym("canvasobjectposition"),
+                                   (t_newmethod)canvasobjectposition_new, (t_method)canvasobjectposition_free,
                                    sizeof(t_canvasobjectposition), 0,
                                    A_GIMME, 0);
   class_addbang(canvasobjectposition_class, (t_method)canvasobjectposition_bang);

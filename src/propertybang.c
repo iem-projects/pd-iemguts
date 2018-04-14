@@ -16,7 +16,7 @@
  ******************************************************/
 
 
-/* 
+/*
  * this object provides a way to make an abstraction "property" aware
  * usage:
  *   + put this object into an abstraction
@@ -62,7 +62,7 @@ static void propertybang_properties(t_gobj*z, t_glist*owner) {
     t_propertybang*x=(t_propertybang*)objs->obj;
     propertybang_bang(x);
     objs=objs->next;
-  } 
+  }
 }
 
 static void *propertybang_new(void)
@@ -72,13 +72,13 @@ static void *propertybang_new(void)
   t_canvas *canvas=(t_canvas*)glist_getcanvas(glist);
   t_class *class = ((t_gobj*)canvas)->g_pd;
   t_propertiesfn orgfun=NULL;
- 
+
   outlet_new(&x->x_obj, &s_bang);
 
   orgfun=class_getpropertiesfn(class);
   if(orgfun!=propertybang_properties)
     s_orgfun=orgfun;
-  
+
   class_setpropertiesfn(class, propertybang_properties);
 
   addObjectToCanvas((t_pd*)canvas, (t_pd*)x);

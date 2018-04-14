@@ -15,7 +15,7 @@
  ******************************************************/
 
 
-/* 
+/*
  * this object provides a way to manipulate the parent-patches arguments (and name!)
  * usage:
  *   + put this object into an abstraction
@@ -64,7 +64,7 @@ static void canvasargs_list(t_canvasargs *x, t_symbol*s, int argc, t_atom*argv)
     s=atom_getsymbol(ap);
   }
   SETSYMBOL(name, s);
-  
+
   binbuf_clear(b);
   binbuf_add(b, 1, name);
   binbuf_add(b, argc, argv);
@@ -118,7 +118,7 @@ static void *canvasargs_new(t_floatarg f)
     canvas=canvas->gl_owner;
     depth--;
   }
-    
+
   x->x_canvas = canvas;
 
   outlet_new(&x->x_obj, 0);

@@ -30,7 +30,7 @@ static t_class *oreceive_class, *oreceive_proxy_class;
 
 /* ------------------------------------------------------------- */
 
-/* 
+/*
  * [oreceive] : ordered receive
  *
  *
@@ -38,10 +38,10 @@ static t_class *oreceive_class, *oreceive_proxy_class;
  * includes priorities
  *
  * the plan is as follows:
- *  [oreceive] tells us, which name it wants to bind to; 
+ *  [oreceive] tells us, which name it wants to bind to;
  *   it doesn't _really_ get bound to this name!
  *
- *  we have an invisible permanent object, that keeps track of 
+ *  we have an invisible permanent object, that keeps track of
  *  sorted (by priority) lists of the [oreceive] objects
  *
  *  this object binds itself to the requested name
@@ -107,7 +107,7 @@ static t_oreceive_proxy*guts_add_key(t_symbol*key)
 
 static void guts_add_element(t_oreceive_proxy*bind_list, t_bind_element*element)
 {
-  /* insert the object according to it's priority 
+  /* insert the object according to it's priority
    * this is already the right queue
    */
   t_float priority=element->priority;
@@ -132,7 +132,7 @@ static void guts_add_element(t_oreceive_proxy*bind_list, t_bind_element*element)
   debug_post("inserting after %x:%g", last,     (last    ?    (last->priority):0));
   debug_post("inserting befor %x:%g", elements, (elements?(elements->priority):0));
 
-  element->next=elements;    
+  element->next=elements;
   if(last) {
     last->next = element;
   } else {
@@ -198,7 +198,7 @@ static void pd_unbind_priority(t_pd*x, t_symbol*key) {
       last->next=list->next;
     } else {
       priority_receiver=list->next;
-    }    
+    }
 
     pd_unbind(&list->p_obj.ob_pd, list->key);
     list->next=0;
@@ -284,7 +284,7 @@ static void oreceive_free(t_oreceive *x)
 void oreceive_setup(void)
 {
     iemguts_boilerplate("[oreceive] (ordered receive)", 0);
-    oreceive_class = class_new(gensym("oreceive"), (t_newmethod)oreceive_new, 
+    oreceive_class = class_new(gensym("oreceive"), (t_newmethod)oreceive_new,
                                (t_method)oreceive_free, sizeof(t_oreceive), CLASS_NOINLET, A_DEFSYM, A_DEFFLOAT, 0);
 #if 0
     class_addcreator((t_newmethod)oreceive_new, gensym("r"), A_DEFSYM, A_DEFFLOAT, 0);

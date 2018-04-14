@@ -16,7 +16,7 @@
  ******************************************************/
 
 
-/* 
+/*
  * this object provides a way to send messages to upstream canvases
  * by default it sends messages to the containing canvas, but you can give the
  * "depth" as argument;
@@ -71,7 +71,7 @@ void classtest_setup(void)
 {
   iemguts_boilerplate("[classtest]", 0);
   classtest_class = class_new(gensym("classtest"), (t_newmethod)classtest_new,
-                               (t_method)classtest_free, sizeof(t_classtest), 0, 
+                               (t_method)classtest_free, sizeof(t_classtest), 0,
                               0);
   class_addsymbol(classtest_class, (t_method)classtest_symbol);
 }

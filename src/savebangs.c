@@ -16,20 +16,20 @@
  ******************************************************/
 
 
-/* 
+/*
  * this object outputs a bang when the savfn of the parent abstraction is called
  */
 
 /*
- * LATER sketch: 
+ * LATER sketch:
  *     monkey-patching the parent canvas so that stores a local function table
  *     then modify this function-table so that the savefn points to us
  *   on call: we call the parents savefunction and output bangs
  */
 
-/* 
+/*
  * TODO: how does this behave in sub-patches?
- *      -> BUG: the depth should _really_ refer to the abstraction-depth 
+ *      -> BUG: the depth should _really_ refer to the abstraction-depth
  *              else we get weird duplicates (most likely due to the "$0" trick
  */
 
@@ -49,7 +49,7 @@ typedef struct _savefuns {
 static t_savefuns*s_savefuns=0;
 
 
-static t_savefn find_savefn(const t_class*class) 
+static t_savefn find_savefn(const t_class*class)
 {
   t_savefuns*fun=s_savefuns;
   if(0==s_savefuns || 0==class)
@@ -78,7 +78,7 @@ static void add_savefn(t_class*class)
       t_savefuns*sfp=s_savefuns;
       while(sfp->next)
         sfp=sfp->next;
-      sfp->next = sfun;      
+      sfp->next = sfun;
     }
   }
 }
@@ -97,7 +97,7 @@ static void orig_savefn(t_gobj*z, t_binbuf*b)
 static void savebangs_bangem(t_iemguts_objlist*objs, int pst);
 static void savebangs_savefn(t_gobj*z, t_binbuf*b) {
   /* z is the parent abstraction;
-   * we maintain a list of all [savebangs] within a parent, in order to call all of them 
+   * we maintain a list of all [savebangs] within a parent, in order to call all of them
    */
   t_iemguts_objlist*obj=objectsInCanvas((t_pd*)z);
   savebangs_bangem(obj, 0);
@@ -157,12 +157,12 @@ static void *savebangs_new(t_floatarg f)
       canvas=canvas->gl_owner;
       depth--;
     }
-    
+
     if(canvas) {
       class=((t_gobj*)canvas)->g_pd;
       add_savefn(class);
       class_setsavefn(class, savebangs_savefn);
-      
+
       x->x_parent=canvas;
     } else {
       x->x_parent=0;
@@ -188,5 +188,5 @@ void savebangs_setup(void)
   savebangs_class = class_new(gensym("savebangs"), (t_newmethod)savebangs_new,
                               (t_method)savebangs_free, sizeof(t_savebangs), CLASS_NOINLET, A_DEFFLOAT, 0);
   add_savefn(savebangs_class);
-  class_setsavefn(savebangs_class, savebangs_mysavefn); 
+  class_setsavefn(savebangs_class, savebangs_mysavefn);
 }

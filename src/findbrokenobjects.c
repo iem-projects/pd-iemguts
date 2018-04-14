@@ -107,17 +107,17 @@ static void fbo_iterate(t_findbrokenobjects*x, t_canvas*cnv, int verbose) {
       int argc=binbuf_getnatom(bb);
       /* broken object */
       if(verbose) {
-	int ntxt;
-	char *txt;
-	binbuf_gettext(bb, &txt, &ntxt);
-	pd_error(ob, "[%s] broken object!", txt);
-	freebytes(txt, ntxt);
+        int ntxt;
+        char *txt;
+        binbuf_gettext(bb, &txt, &ntxt);
+        pd_error(ob, "[%s] broken object!", txt);
+        freebytes(txt, ntxt);
       }
       //post("%s %d", cnv->gl_name->s_name, count);
       if(argc && fbo_has_ctor(argv)) {
-	outlet_anything(x->x_out, gensym("not-created"), argc, argv);
+        outlet_anything(x->x_out, gensym("not-created"), argc, argv);
       } else {
-	outlet_anything(x->x_out, gensym("not-found"), argc, argv);
+        outlet_anything(x->x_out, gensym("not-found"), argc, argv);
       }
     }
   }
@@ -138,13 +138,13 @@ static void findbrokenobjects_iterate(t_findbrokenobjects *x, int verbose) {
       const char*exclude_name;
       int exclude=1;
       for(exclude_name="etalpmet_"; *exclude_name && len; len--, exclude_name++) {
-	if(*exclude_name != name[len-1]) {
-	  exclude=0;
-	  break;
-	}
+        if(*exclude_name != name[len-1]) {
+          exclude=0;
+          break;
+        }
       }
       if(!exclude){
-	fbo_iterate(x, c, verbose);
+        fbo_iterate(x, c, verbose);
       }// else post("canvas: %s", name);
     }
   }
@@ -172,11 +172,11 @@ static void *findbrokenobjects_new(t_symbol*s, int argc, t_atom*argv)
     if(depth>=0) {
       t_canvas *canvas=(t_canvas*)glist_getcanvas(glist);
       while(depth && canvas) {
-	canvas=canvas->gl_owner;
-	depth--;
+        canvas=canvas->gl_owner;
+        depth--;
       }
       if(canvas)
-	x->x_parent = canvas;
+        x->x_parent = canvas;
     }
   }
   x->x_verbose=0;
@@ -206,8 +206,8 @@ void findbrokenobjects_setup(void)
 {
   iemguts_boilerplate("[findbrokenobjects]", 0);
   findbrokenobjects_class = class_new(gensym("findbrokenobjects"), (t_newmethod)findbrokenobjects_new,
-				     (t_method)findbrokenobjects_free, sizeof(t_findbrokenobjects), 0,
-				     A_GIMME, 0);
+                                     (t_method)findbrokenobjects_free, sizeof(t_findbrokenobjects), 0,
+                                     A_GIMME, 0);
   class_addbang  (findbrokenobjects_class, (t_method)findbrokenobjects_bang);
   class_addmethod(findbrokenobjects_class, (t_method)findbrokenobjects_verbose, gensym("verbose"), A_FLOAT, 0);
 

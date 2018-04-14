@@ -16,7 +16,7 @@
  ******************************************************/
 
 
-/* 
+/*
  * this object provides a way to send messages to upstream canvases
  * by default it sends messages to the containing canvas, but you can give the
  * "depth" as argument;

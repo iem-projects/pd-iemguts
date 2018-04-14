@@ -16,11 +16,11 @@
  ******************************************************/
 
 
-/* 
+/*
  * this object provides a way to get and set the position of the containing
  * abstraction within the parent-patch
  *
- * by default the position of the containing abstraction within the parent-patch is 
+ * by default the position of the containing abstraction within the parent-patch is
  * queried
  * you can give the "depth" as argument;
  * e.g. [canvasposition 1] will set/get the position of the abstraction containing the
@@ -139,8 +139,8 @@ static void *canvasposition_new(t_floatarg f)
 void canvasposition_setup(void)
 {
   iemguts_boilerplate("[canvasposition]", 0);
-  canvasposition_class = class_new(gensym("canvasposition"), 
-                                   (t_newmethod)canvasposition_new, (t_method)canvasposition_free, 
+  canvasposition_class = class_new(gensym("canvasposition"),
+                                   (t_newmethod)canvasposition_new, (t_method)canvasposition_free,
                                    sizeof(t_canvasposition), 0,
                                    A_DEFFLOAT, 0);
   class_addbang(canvasposition_class, (t_method)canvasposition_bang);
