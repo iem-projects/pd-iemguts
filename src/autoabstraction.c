@@ -93,7 +93,7 @@ static void autoabstraction_createpatch(t_canvas*canvas, char*classname) {
  * @param classname the name of the object (external, library) to be created
  * @return 1 on success, 0 on failure
  */
-static int autoabstraction_loader(t_canvas *canvas, char *classname)
+static int autoabstraction_loader_legacy(t_canvas *canvas, char *classname)
 {
   /* check whether there is an abstraction with the given <classname> within the scope of <canvas> */
   int fd=0;
@@ -112,6 +112,12 @@ static int autoabstraction_loader(t_canvas *canvas, char *classname)
   /* we always fail, because we want Pd to do the real opening of abstractions */
   return 0;
 }
+
+static int autoabstraction_loader(t_canvas *canvas, char *classname, const char*path) {
+/* FIXXME: could this be done better? */
+  return autoabstraction_loader_legacy(canvas, classname);
+}
+
 
 static void autoabstraction_initialize(void)
 {
@@ -155,12 +161,18 @@ static void*autoabstraction_new(t_symbol *s, int argc, t_atom *argv)
 
 void autoabstraction_setup(void)
 {
+  int major, minor, bugfix;
+  sys_getversion(&major, &minor, &bugfix);
+
   /* relies on t.grill's loader functionality, fully added in 0.40 */
   iemguts_boilerplate("automatic abstraction creator", 0);
 #ifdef AUTOABSTRACTION_ENABLED
   autoabstraction_initialize();
-  sys_register_loader((loader_t)autoabstraction_loader);
-#warning FIXME loader-0.47 mode!
+  if (major>0 || minor >=47) {
+    sys_register_loader((loader_t)autoabstraction_loader);
+  } else {
+    sys_register_loader((loader_t)autoabstraction_loader_legacy);
+  }
 #else
   error("autoabstraction needs to be compiled against Pd 0.40 or higher,\n");
   error("\tor a version that has sys_register_loader()");
