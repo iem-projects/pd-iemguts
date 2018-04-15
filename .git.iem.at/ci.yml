@@ -22,7 +22,8 @@ build-osx:
      - osx
   stage: build
   script:
-    - ls /Application
+    - ls /Applications/
+    - find /Applications/Pd*/ -type d
     - make
     - make install DESTDIR=$(pwd) pkglibdir=/
   dependencies: []
