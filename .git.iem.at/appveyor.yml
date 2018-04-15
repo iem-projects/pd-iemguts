@@ -1,0 +1,22 @@
+version: 1.0.{build}
+configuration: Release
+#shallow_clone: true
+
+environment:
+  matrix:
+  - PdArchive: "pd-0.48-1.msw.zip"
+  - PdArchive: "pd-0.47-1.msw.zip"
+
+install:
+  - ps: |
+      if (-Not (Test-Path "Pd")) {
+        # Install MinGW.
+        wget http://msp.ucsd.edu/Software/$env:PdArchive -OutFile $env:PdArchive
+        &7z x $env:PdArchive
+      }
+
+before_build:
+  - set PATH=C:\MinGW\bin;%PATH%
+  - set CC=gcc
+build_script:
+  - mingw32-make PDDIR="Pd" pdbinpath="Pd/bin"
