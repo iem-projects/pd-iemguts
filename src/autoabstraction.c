@@ -22,11 +22,6 @@
  * - FIX(ALT): check whether the template-file has changed and reload it
  */
 
-
-#ifdef __WIN32__
-# define MSW
-#endif
-
 #include "iemguts.h"
 
 
