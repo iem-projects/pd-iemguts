@@ -56,10 +56,10 @@ static void canvaslock_float(t_canvaslock *x, t_float f) {
   x->x_locked = (int)f;
 }
 static void canvaslock_vis(t_canvas *z, t_floatarg f) {
-  t_iemguts_objlist*objs=objectsInCanvas(z);
+  t_iemguts_objlist*objs=objectsInCanvas((t_pd*)z);
   int locked = 0;
   if(objs) {
-    t_canvaslock*x = objs->obj;
+    t_canvaslock*x = (t_canvaslock*)(objs->obj);
     if(x)
       locked = x->x_locked;
   }
@@ -71,10 +71,10 @@ static void canvaslock_vis(t_canvas *z, t_floatarg f) {
 }
 
 static void canvaslock_menu_open(t_glist *z) {
-  t_iemguts_objlist*objs=objectsInCanvas(z);
+  t_iemguts_objlist*objs=objectsInCanvas((t_pd*)z);
   int locked = 0;
   if(objs) {
-    t_canvaslock*x = objs->obj;
+    t_canvaslock*x = (t_canvaslock*)(objs->obj);
     if(x)
       locked = x->x_locked;
   }
@@ -122,7 +122,7 @@ void canvaslock_setup(void)
   t_gotfn orgfun = 0;
   if(NULL==canvas_class)return;
   orgfun = zgetfn(&canvas_class, gensym("vis"));
-  if((t_method)canvaslock_vis != orgfun) {
+  if((t_gotfn)canvaslock_vis != orgfun) {
     class_addmethod(canvas_class, (t_method)canvaslock_vis, gensym("vis"), A_DEFFLOAT, 0);
     class_addmethod(canvas_class, (t_method)orgfun, gensym("vis canvaslock"), A_DEFFLOAT, 0);
     class_addmethod(canvas_class, (t_method)canvaslock_click, gensym("click"), A_FLOAT, A_FLOAT, A_FLOAT, A_FLOAT, A_FLOAT, 0);

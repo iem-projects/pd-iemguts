@@ -57,7 +57,7 @@ static void closebang_menuclose(t_canvas *x, t_floatarg f) {
   /* look for [closebang] instances and fire them */
   for (y = x->gl_list; y; y = y->g_next)
     if (pd_class(&y->g_pd) == closebang_class)
-      closebang_loadbang(&y->g_pd, LB_CLOSE);
+      closebang_loadbang((t_closebang*)(&y->g_pd), LB_CLOSE);
 
   /* pass the menuclose message on to the real canvasmethod*/
   SETFLOAT(ap, f);
@@ -88,7 +88,7 @@ void closebang_setup(void)
     error("[closebang] requires Pd>=0.47");
 
   orgfun = zgetfn(&canvas_class, gensym("menuclose"));
-  if ((t_method)closebang_menuclose != orgfun) {
+  if ((t_gotfn)closebang_menuclose != orgfun) {
     class_addmethod(canvas_class, (t_method)closebang_menuclose, gensym("menuclose"), A_DEFFLOAT, 0);
     class_addmethod(canvas_class, (t_method)orgfun, gensym("menuclose [closebang]"), A_DEFFLOAT, 0);
   }
