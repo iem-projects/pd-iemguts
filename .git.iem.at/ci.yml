@@ -22,6 +22,7 @@ build-osx:
      - osx
   stage: build
   script:
+    - ls /Application
     - make
     - make install DESTDIR=$(pwd) pkglibdir=/
   dependencies: []
