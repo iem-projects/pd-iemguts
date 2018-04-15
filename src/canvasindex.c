@@ -72,7 +72,6 @@ static void canvasindex_symbol(t_canvasindex *x, t_symbol*s)
         cname=atom_getsymbol(ap);
       }
       if(s==cname){
-#warning LATER think about output format
         outlet_float(x->xoutlet, (t_float)index);
       }
       index++;
