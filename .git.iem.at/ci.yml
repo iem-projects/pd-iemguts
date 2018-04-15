@@ -1,6 +1,6 @@
-image: gcc
 
-build:
+build-linux:
+  image: gcc
   stage: build
   before_script:
     - apt update && apt -y install make puredata-dev
@@ -9,6 +9,24 @@ build:
     - make
     - make install DESTDIR=$(pwd) pkglibdir=/
   dependencies: []
+  except:
+    - tags
+  artifacts:
+    name: iemguts-snapshot
+    paths:
+      - iemguts/
+    expire_in: 1 week
+
+build-osx:
+  tags:
+     - osx
+  stage: build
+  script:
+    - make
+    - make install DESTDIR=$(pwd) pkglibdir=/
+  dependencies: []
+  except:
+    - tags
   artifacts:
     name: iemguts-snapshot
     paths:
