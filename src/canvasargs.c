@@ -74,13 +74,27 @@ static void canvasargs_doit(t_canvasargs *x, int expanddollargs)
 {
   int argc=0;
   t_atom*argv=0;
-  t_binbuf*b=0;
+  t_binbuf*b=0,*b1=0;
 
   if(!x->x_canvas) return;
   b=x->x_canvas->gl_obj.te_binbuf;
   if(b && !expanddollargs) {
-    argc=binbuf_getnatom(b)-1;
-    argv=binbuf_getvec(b)+1;
+    int i;
+    b1 = binbuf_duplicate(b);
+    argc=binbuf_getnatom(b1)-1;
+    argv=binbuf_getvec(b1)+1;
+    for(i=0; i<argc; i++) {
+      switch(argv[i].a_type) {
+      default: break;
+      case A_DOLLAR: case A_DOLLSYM: {
+        char buf[MAXPDSTRING];
+        atom_string(argv+i, buf, MAXPDSTRING-2);
+        buf[MAXPDSTRING-1]=0;
+        SETSYMBOL(argv+i, gensym(buf));
+        break;
+      }
+      }
+    }
   } else {
     canvas_setcurrent(x->x_canvas);
     canvas_getargs(&argc, &argv);
@@ -89,6 +103,8 @@ static void canvasargs_doit(t_canvasargs *x, int expanddollargs)
 
   if(argv)
     outlet_list(x->x_obj.ob_outlet, &s_list, argc, argv);
+  if(b1)
+    binbuf_free(b1);
 }
 
 static void canvasargs_bang(t_canvasargs *x) {
