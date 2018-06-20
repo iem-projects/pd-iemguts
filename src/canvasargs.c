@@ -46,28 +46,37 @@ typedef struct _canvasargs
   t_canvas  *x_canvas;
 } t_canvasargs;
 
-
-static void canvasargs_list(t_canvasargs *x, t_symbol*s, int argc, t_atom*argv)
+static void canvasargs_set(t_canvasargs *x, int argc, t_atom*argv, int dollsyms)
 {
-  t_binbuf*b=0;
+  t_binbuf*b=0, *unescapebuf=0;
   t_atom name[1];
 
   if(!x || !x->x_canvas) return;
   b=x->x_canvas->gl_obj.te_binbuf;
-
   if(!b)return;
 
-  /* if this method is called with a non-special selector, we *rename* the object */
-  if(s==0 || s==gensym("") || s==&s_list || s==&s_bang || s==&s_float || s==&s_symbol || s==&s_) {
-    /* keep the given name */
-    t_atom*ap=binbuf_getvec(b);
-    s=atom_getsymbol(ap);
-  }
-  SETSYMBOL(name, s);
-
+  /* get the name from the canvas */
+  SETSYMBOL(name, atom_getsymbol(binbuf_getvec(b)));
   binbuf_clear(b);
   binbuf_add(b, 1, name);
+
+  if(dollsyms) {
+    /* try to add symbols with dollars as A_DOLLAR resp. A_DOLLSYM */
+    unescapebuf = binbuf_new();
+    binbuf_restore(unescapebuf, argc, argv);
+    argc = binbuf_getnatom(unescapebuf);
+    argv = binbuf_getvec(unescapebuf);
+  }
+
   binbuf_add(b, argc, argv);
+
+  if(unescapebuf)
+    binbuf_free(unescapebuf);
+}
+
+static void canvasargs_list(t_canvasargs *x, t_symbol*s, int argc, t_atom*argv)
+{
+  canvasargs_set(x, argc, argv, 1);
 }
 
 static void canvasargs_doit(t_canvasargs *x, int expanddollargs)
