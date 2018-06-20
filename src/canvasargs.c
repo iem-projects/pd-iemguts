@@ -78,6 +78,9 @@ static void canvasargs_list(t_canvasargs *x, t_symbol*s, int argc, t_atom*argv)
 {
   canvasargs_set(x, argc, argv, 1);
 }
+static void canvasargs_setraw(t_canvasargs *x, t_symbol*s, int argc, t_atom*argv) {
+  return canvasargs_set(x, argc, argv, 0);
+}
 
 static void canvasargs_doit(t_canvasargs *x, int expanddollargs)
 {
@@ -123,8 +126,6 @@ static void canvasargs_raw(t_canvasargs *x) {
   return canvasargs_doit(x, 0);
 }
 
-
-
 static void canvasargs_free(t_canvasargs *x)
 {
   x->x_canvas = 0;
@@ -158,4 +159,5 @@ void canvasargs_setup(void)
   class_addlist(canvasargs_class, (t_method)canvasargs_list);
   class_addbang(canvasargs_class, (t_method)canvasargs_bang);
   class_addmethod(canvasargs_class, (t_method)canvasargs_raw, gensym("raw"), 0);
+  class_addmethod(canvasargs_class, (t_method)canvasargs_setraw, gensym("setraw"), A_GIMME, 0);
 }
