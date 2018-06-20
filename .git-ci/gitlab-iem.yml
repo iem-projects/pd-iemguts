@@ -1,64 +1,109 @@
-build-linux:
+###################################################
+### configuration templates (to be used for snapshot and release builds)
+.build:snapshot: &snapshot
+  except:
+    - tags
+  artifacts: &snapshot_artifacts
+    name: ${CI_PROJECT_NAME}_${CI_COMMIT_REF_NAME}_${CI_JOB_NAME%_*}
+    paths:
+      - "${CI_PROJECT_NAME}"
+    expire_in: 1 week
+
+.build:release: &release
+  only:
+    - tags
+  artifacts: &release_artifacts
+    name: ${CI_PROJECT_NAME}_${CI_COMMIT_REF_NAME}_${CI_JOB_NAME%_*}
+    paths:
+      - "${CI_PROJECT_NAME}"
+
+.build:linux: &build_linux
   image: gcc
   stage: build
   before_script:
-    - apt update && apt -y install make puredata-dev
-    - apt list --upgradable
+    - apt-get update && apt-get install -y --no-install-recommends make puredata-dev
   script:
     - make
     - make install DESTDIR=$(pwd) pkglibdir=/
-  dependencies: []
-  except:
-    - tags
-  artifacts:
-    name: iemguts-snapshot
-    paths:
-      - iemguts/
-    expire_in: 1 week
 
-build-osx:
+.build:macos: &build_macos
   tags:
      - osx
   stage: build
   script:
     - make
     - make install DESTDIR=$(pwd) pkglibdir=/
-  dependencies: []
-  except:
-    - tags
-  artifacts:
-    name: iemguts-snapshot
-    paths:
-      - iemguts/
-    expire_in: 1 week
 
-
-release-linux:
-  image: gcc
+.build:w32: &build_w32
   stage: build
-  before_script:
-    - apt update && apt -y install make puredata-dev
-    - apt list --upgradable
-  script:
-    - make
-    - make install DESTDIR=$(pwd) pkglibdir=/
-  dependencies: []
-  only:
-    - tags
-  artifacts:
-    paths:
-      - iemguts/
-
-release-osx:
   tags:
-     - osx
-  stage: build
+    - windows
+  variables:
+    IEMCI_CONFIGURATIONS: mingw32
   script:
+    - wget -O Pd.zip http://msp.ucsd.edu/Software/pd-0.48-1.msw.zip
+    - mkdir -p "${PROGRAMFILESX86}/pd"
+    - unzip -q Pd.zip -d "${PROGRAMFILESX86}/pd"
+    - mv -v "${PROGRAMFILESX86}/pd"/*/* "${PROGRAMFILESX86}/pd"
+    - make extension=m_i386
+    - make install extension=m_i386 DESTDIR=$(pwd) pkglibdir=/
+
+.build:w64: &build_w64
+  stage: build
+  tags:
+    - windows
+  variables:
+    IEMCI_CONFIGURATIONS: mingw64
+  script:
+    - wget -O Pd.zip http://msp.ucsd.edu/Software/pd-0.48-1.windows.64bit.zip
+    - mkdir -p "${PROGRAMFILES}/pd"
+    - unzip -q Pd.zip -d "${PROGRAMFILES}/pd"
+    - mv -v "${PROGRAMFILES}/pd"/*/* "${PROGRAMFILES}/pd"
     - make
     - make install DESTDIR=$(pwd) pkglibdir=/
-  dependencies: []
+
+###################################################
+### the actual jobs: (linux,macos,windows)*(release,snapshot)
+
+Linux:
+  <<: *build_linux
+  <<: *release
+Darwin:
+  <<: *build_macos
+  <<: *release
+W32:
+  <<: *build_w32
+  <<: *release
+W64:
+  <<: *build_w64
+  <<: *release
+
+
+Linux_snapshot:
+  <<: *build_linux
+  <<: *snapshot
+Darwin_snapshot:
+  <<: *build_macos
+  <<: *snapshot
+w32_snapshot:
+  <<: *build_w32
+  <<: *snapshot
+w64_snapshot:
+  <<: *build_w64
+  <<: *snapshot
+
+
+deken:
+  stage: deploy
+  image: debian:buster
   only:
     - tags
-  artifacts:
-    paths:
-      - iemguts/
+  variables:
+    DEKEN_ROOT: "yes"
+  before_script:
+    - apt-get update && apt-get --no-install-recommends -y install deken
+  script:
+    - git archive --format=tar --prefix=tmp/${CI_PROJECT_NAME}/ HEAD | tar xf -
+    - deken package --version="${CI_COMMIT_TAG#v}" "tmp/${CI_PROJECT_NAME}"
+    - deken package --version="${CI_COMMIT_TAG#v}" "${CI_PROJECT_NAME}"
+    - test -z "${DEKEN_USERNAME}" || test -z "${DEKEN_PASSWORD}" || deken upload --no-source-error ./*.dek
