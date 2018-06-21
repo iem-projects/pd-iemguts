@@ -56,8 +56,8 @@ static void canvasposition_bang(t_canvasposition *x)
   if(!c) return;
 
   if((c0=c->gl_owner)) {
-    width= (int)(c0->gl_screenx2 - c0->gl_screenx1);
-    height=(int)(c0->gl_screeny2 - c0->gl_screeny1);
+    width= (c0->gl_screenx2 - c0->gl_screenx1);
+    height=(c0->gl_screeny2 - c0->gl_screeny1);
 
 #if (defined PD_MAJOR_VERSION && defined PD_MINOR_VERSION) && (PD_MAJOR_VERSION > 0 || PD_MINOR_VERSION >= 47)
     if(iemguts_check_atleast_pdversion(0,47,0)) {
