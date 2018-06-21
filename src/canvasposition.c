@@ -49,30 +49,33 @@ static void canvasposition_bang(t_canvasposition *x)
 {
   t_canvas*c=x->x_canvas;
   t_canvas*c0=0;
-
-  int x1=0, y1=0, width=0, height=0;
+  t_float x1=0., y1=0., width=0., height=0.;
+  t_float zoom = 1.;
   t_atom alist[2];
 
   if(!c) return;
 
+  if((c0=c->gl_owner)) {
+    width= (int)(c0->gl_screenx2 - c0->gl_screenx1);
+    height=(int)(c0->gl_screeny2 - c0->gl_screeny1);
+
+#if (defined PD_MAJOR_VERSION && defined PD_MINOR_VERSION) && (PD_MAJOR_VERSION > 0 || PD_MINOR_VERSION >= 47)
+    if(iemguts_check_atleast_pdversion(0,47,0)) {
+      zoom = c0->gl_zoom;
+    }
+#endif
+  }
 
   x1=c->gl_obj.te_xpix;
   y1=c->gl_obj.te_ypix;
 
-
-  c0=c->gl_owner;
-  if(c0!=0) {
-    width= (int)(c0->gl_screenx2 - c0->gl_screenx1);
-    height=(int)(c0->gl_screeny2 - c0->gl_screeny1);
-  }
-
-  SETFLOAT(alist, (t_float)width);
-  SETFLOAT(alist+1, (t_float)height);
+  SETFLOAT(alist, width);
+  SETFLOAT(alist+1, height);
   outlet_list(x->youtlet, 0, 2, alist);
 
   //  outlet_float(x->youtlet, y1);
-  SETFLOAT(alist, (t_float)x1);
-  SETFLOAT(alist+1, (t_float)y1);
+  SETFLOAT(alist, x1/zoom);
+  SETFLOAT(alist+1, y1/zoom);
   outlet_list(x->xoutlet, 0, 2, alist);
 }
 
@@ -81,6 +84,7 @@ static void canvasposition_list(t_canvasposition *x, t_symbol*s, int argc, t_ato
   t_canvas*c=x->x_canvas;
   t_canvas*c0=0;
   int dx, dy;
+  t_float zoom = 1.;
 
   if(!c) return;
   c0=c->gl_owner;
@@ -94,9 +98,14 @@ static void canvasposition_list(t_canvasposition *x, t_symbol*s, int argc, t_ato
     pd_error(x, "expected <x> <y> as new position");
     return;
   }
-  dx = atom_getfloat(argv+0) - c->gl_obj.te_xpix;
-  dy = atom_getfloat(argv+1) - c->gl_obj.te_ypix;
+#if (defined PD_MAJOR_VERSION && defined PD_MINOR_VERSION) && (PD_MAJOR_VERSION > 0 || PD_MINOR_VERSION >= 47)
+  if(c0 && iemguts_check_atleast_pdversion(0,47,0)) {
+    zoom = c0->gl_zoom;
+  }
+#endif
 
+  dx = atom_getfloat(argv+0)*zoom - c->gl_obj.te_xpix;
+  dy = atom_getfloat(argv+1)*zoom - c->gl_obj.te_ypix;
 
   if ((dx!=0)||(dy!=0)) {
     if(c0&&glist_isvisible(c0))  {
@@ -145,4 +154,11 @@ void canvasposition_setup(void)
                                    A_DEFFLOAT, 0);
   class_addbang(canvasposition_class, (t_method)canvasposition_bang);
   class_addlist(canvasposition_class, (t_method)canvasposition_list);
+#if (defined PD_MAJOR_VERSION && defined PD_MINOR_VERSION) && (PD_MAJOR_VERSION <= 0 && PD_MINOR_VERSION < 47)
+  if(iemguts_check_atleast_pdversion(0,47,0)) {
+    int got_major=0, got_minor=0, got_bugfix=0;
+    sys_getversion(&got_major, &got_minor, &got_bugfix);
+    error("[canvasposition] disabled zoom support at compile-time");
+  }
+#endif
 }
