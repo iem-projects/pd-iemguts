@@ -42,7 +42,7 @@ typedef struct _canvasobjectposition
   t_canvas *x_parent;   // the canvas we are acting on
   t_canvas *x_canvas; // an object in the x_canvas selected via the 2nd inlet (index)
 
-  t_outlet*xoutlet, *youtlet;
+  t_outlet*x_posoutlet, *x_sizeoutlet, *x_extraoutlet;
 
 } t_canvasobjectposition;
 
@@ -52,8 +52,8 @@ static void canvasobjectposition_bang(t_canvasobjectposition *x)
 {
   t_canvas*c=x->x_canvas;
   t_canvas*c0=x->x_parent;
-
-  int x1=0, y1=0, width=0, height=0;
+  t_float zoom=1.;
+  t_float x1=0, y1=0, width=0, height=0;
   t_atom alist[2];
 
   if(!c) return;
@@ -61,18 +61,26 @@ static void canvasobjectposition_bang(t_canvasobjectposition *x)
   x1=c->gl_obj.te_xpix;
   y1=c->gl_obj.te_ypix;
 
-  if(NULL!=c0) {
-    width= (int)(c0->gl_screenx2 - c0->gl_screenx1);
-    height=(int)(c0->gl_screeny2 - c0->gl_screeny1);
+  if(c0) {
+    width= (c0->gl_screenx2 - c0->gl_screenx1);
+    height=(c0->gl_screeny2 - c0->gl_screeny1);
+#if (defined PD_MAJOR_VERSION && defined PD_MINOR_VERSION) && (PD_MAJOR_VERSION > 0 || PD_MINOR_VERSION >= 47)
+    if(iemguts_check_atleast_pdversion(0,47,0)) {
+      zoom = c0->gl_zoom;
+    }
+#endif
   }
 
-  SETFLOAT(alist, (t_float)width);
-  SETFLOAT(alist+1, (t_float)height);
-  outlet_list(x->youtlet, 0, 2, alist);
+  SETFLOAT(alist+0, zoom);
+  outlet_anything(x->x_extraoutlet, gensym("zoom"), 1, alist);
 
-  SETFLOAT(alist, (t_float)x1);
-  SETFLOAT(alist+1, (t_float)y1);
-  outlet_list(x->xoutlet, 0, 2, alist);
+  SETFLOAT(alist+0, width);
+  SETFLOAT(alist+1, height);
+  outlet_list(x->x_sizeoutlet, 0, 2, alist);
+
+  SETFLOAT(alist+0, x1/zoom);
+  SETFLOAT(alist+1, y1/zoom);
+  outlet_list(x->x_posoutlet, 0, 2, alist);
 }
 
 static void canvasobjectposition_list(t_canvasobjectposition *x, t_symbol*s, int argc, t_atom*argv)
@@ -80,6 +88,7 @@ static void canvasobjectposition_list(t_canvasobjectposition *x, t_symbol*s, int
   t_canvas*c =x->x_canvas;
   t_canvas*c0=x->x_parent;
   int dx, dy;
+  t_float zoom = 1.;
 
   if(!c) return;
 
@@ -92,8 +101,14 @@ static void canvasobjectposition_list(t_canvasobjectposition *x, t_symbol*s, int
     pd_error(x, "expected <x> <y> as new position");
     return;
   }
-  dx = atom_getint(argv+0) - c->gl_obj.te_xpix;
-  dy = atom_getint(argv+1) - c->gl_obj.te_ypix;
+#if (defined PD_MAJOR_VERSION && defined PD_MINOR_VERSION) && (PD_MAJOR_VERSION > 0 || PD_MINOR_VERSION >= 47)
+  if(c0 && iemguts_check_atleast_pdversion(0,47,0)) {
+    zoom = c0->gl_zoom;
+  }
+#endif
+
+  dx = atom_getfloat(argv+0)*zoom - c->gl_obj.te_xpix;
+  dy = atom_getfloat(argv+1)*zoom - c->gl_obj.te_ypix;
 
 
   if(c0&&glist_isvisible(c0))  {
@@ -107,8 +122,9 @@ static void canvasobjectposition_list(t_canvasobjectposition *x, t_symbol*s, int
 
 static void canvasobjectposition_free(t_canvasobjectposition *x)
 {
-  outlet_free(x->xoutlet);
-  outlet_free(x->youtlet);
+  outlet_free(x->x_posoutlet);
+  outlet_free(x->x_sizeoutlet);
+  outlet_free(x->x_extraoutlet);
 }
 
 static void *canvasobjectposition_new(t_symbol*s, int argc, t_atom*argv)
@@ -142,8 +158,9 @@ static void *canvasobjectposition_new(t_symbol*s, int argc, t_atom*argv)
     x->x_parent = canvas;
     x->x_canvas=NULL;
 
-    x->xoutlet=outlet_new(&x->x_obj, &s_list);
-    x->youtlet=outlet_new(&x->x_obj, &s_list);
+    x->x_posoutlet=outlet_new(&x->x_obj, &s_list);
+    x->x_sizeoutlet=outlet_new(&x->x_obj, &s_list);
+    x->x_extraoutlet=outlet_new(&x->x_obj, 0);
 
     inlet_new(&x->x_obj, &x->x_obj.ob_pd, gensym("float"), gensym("object"));
 
@@ -191,5 +208,11 @@ void canvasobjectposition_setup(void)
   class_addlist(canvasobjectposition_class, (t_method)canvasobjectposition_list);
 
   class_addmethod(canvasobjectposition_class, (t_method)canvasobjectposition_object, gensym("object"), A_FLOAT, 0);
-
+#if (defined PD_MAJOR_VERSION && defined PD_MINOR_VERSION) && (PD_MAJOR_VERSION <= 0 && PD_MINOR_VERSION < 47)
+  if(iemguts_check_atleast_pdversion(0,47,0)) {
+    int got_major=0, got_minor=0, got_bugfix=0;
+    sys_getversion(&got_major, &got_minor, &got_bugfix);
+    error("[canvasobjectposition] disabled zoom support at compile-time");
+  }
+#endif
 }
