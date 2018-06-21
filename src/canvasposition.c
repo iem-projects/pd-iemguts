@@ -94,8 +94,8 @@ static void canvasposition_list(t_canvasposition *x, t_symbol*s, int argc, t_ato
     pd_error(x, "expected <x> <y> as new position");
     return;
   }
-  dx = atom_getint(argv+0) - c->gl_obj.te_xpix;
-  dy = atom_getint(argv+1) - c->gl_obj.te_ypix;
+  dx = atom_getfloat(argv+0) - c->gl_obj.te_xpix;
+  dy = atom_getfloat(argv+1) - c->gl_obj.te_ypix;
 
 
   if ((dx!=0)||(dy!=0)) {
