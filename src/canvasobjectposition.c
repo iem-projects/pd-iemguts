@@ -70,7 +70,6 @@ static void canvasobjectposition_bang(t_canvasobjectposition *x)
   SETFLOAT(alist+1, (t_float)height);
   outlet_list(x->youtlet, 0, 2, alist);
 
-  //  outlet_float(x->youtlet, y1);
   SETFLOAT(alist, (t_float)x1);
   SETFLOAT(alist+1, (t_float)y1);
   outlet_list(x->xoutlet, 0, 2, alist);
@@ -83,7 +82,6 @@ static void canvasobjectposition_list(t_canvasobjectposition *x, t_symbol*s, int
   int dx, dy;
 
   if(!c) return;
-  //  c0=c->gl_owner;
 
   if(argc==0){
     canvasobjectposition_bang(x);
@@ -135,8 +133,6 @@ static void *canvasobjectposition_new(t_symbol*s, int argc, t_atom*argv)
     }
 
     if(depth<0)depth=0;
-
-    //post("depth=%d\tindex=%d", depth, index);
 
     while(depth && canvas) {
       canvas=canvas->gl_owner;

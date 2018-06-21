@@ -76,7 +76,6 @@ static void canvasposition_bang(t_canvasposition *x)
   SETFLOAT(alist+1, height);
   outlet_list(x->sizeoutlet, 0, 2, alist);
 
-  //  outlet_float(x->sizeoutlet, y1);
   SETFLOAT(alist+0, x1/zoom);
   SETFLOAT(alist+1, y1/zoom);
   outlet_list(x->posoutlet, 0, 2, alist);
