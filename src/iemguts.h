@@ -45,7 +45,7 @@ static int iemguts_check_atleast_pdversion(int major, int minor, int bugfix) {
 #ifdef cmpver_
 # undef cmpver_
 #endif
-#define cmpver_(got, want)  if(got < want)return 0; else if (got > want)return 1;
+#define cmpver_(got, want)  if(got < want)return 0; if (got > want)return 1
   cmpver_(got_major , major );
   cmpver_(got_minor , minor );
   cmpver_(got_bugfix, bugfix);
