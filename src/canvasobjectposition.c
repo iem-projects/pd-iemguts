@@ -40,33 +40,54 @@ typedef struct _canvasobjectposition
 {
   t_object  x_obj;
   t_canvas *x_parent;   // the canvas we are acting on
-  t_canvas *x_canvas; // an object in the x_canvas selected via the 2nd inlet (index)
+  int       x_index;
 
   t_outlet*x_posoutlet, *x_sizeoutlet, *x_extraoutlet;
 
 } t_canvasobjectposition;
 
-static void canvasobjectposition_object(t_canvasobjectposition *x, t_float f);
+static t_object* index2obj(t_canvas*glist, int index)
+{
+  t_gobj*gobj=NULL;
+  int i=index;
+  if(glist==NULL) return NULL;
+  if(index<0) return NULL;
+  if(NULL==glist) return NULL;
+
+  gobj=glist->gl_list;
+  while(i-- && gobj) {
+    gobj=gobj->g_next;
+  }
+  return pd_checkobject(&gobj->g_pd);
+}
+static void canvasobjectposition_index(t_canvasobjectposition *x, t_float findex)
+{
+  int index=findex;
+  if(index2obj(x->x_parent, index))
+    x->x_index = index;
+  else
+    pd_error(x, "object index %d out of range", index);
+}
 
 static void canvasobjectposition_bang(t_canvasobjectposition *x)
 {
-  t_canvas*c=x->x_canvas;
-  t_canvas*c0=x->x_parent;
+  t_object*obj=index2obj(x->x_parent, x->x_index);
+  t_canvas*cnv=x->x_parent;
   t_float zoom=1.;
   t_float x1=0, y1=0, width=0, height=0;
   t_atom alist[2];
 
-  if(!c) return;
+  if(!obj) return;
 
-  x1=c->gl_obj.te_xpix;
-  y1=c->gl_obj.te_ypix;
+  x1=obj->te_xpix;
+  y1=obj->te_ypix;
 
-  if(c0) {
-    width= (c0->gl_screenx2 - c0->gl_screenx1);
-    height=(c0->gl_screeny2 - c0->gl_screeny1);
+  if(cnv) {
+    width= (cnv->gl_screenx2 - cnv->gl_screenx1);
+    height=(cnv->gl_screeny2 - cnv->gl_screeny1);
 #if (defined PD_MAJOR_VERSION && defined PD_MINOR_VERSION) && (PD_MAJOR_VERSION > 0 || PD_MINOR_VERSION >= 47)
     if(iemguts_check_atleast_pdversion(0,47,0)) {
-      zoom = c0->gl_zoom;
+      zoom = cnv->gl_zoom;
     }
 #endif
   }
@@ -85,12 +106,12 @@ static void canvasobjectposition_bang(t_canvasobjectposition *x)
 
 static void canvasobjectposition_list(t_canvasobjectposition *x, t_symbol*s, int argc, t_atom*argv)
 {
-  t_canvas*c =x->x_canvas;
-  t_canvas*c0=x->x_parent;
+  t_object*obj=index2obj(x->x_parent, x->x_index);
+  t_canvas*cnv=x->x_parent;
   int dx, dy;
   t_float zoom = 1.;
 
-  if(!c) return;
+  if(!obj) return;
 
   if(argc==0){
     canvasobjectposition_bang(x);
@@ -102,21 +123,21 @@ static void canvasobjectposition_list(t_canvasobjectposition *x, t_symbol*s, int
     return;
   }
 #if (defined PD_MAJOR_VERSION && defined PD_MINOR_VERSION) && (PD_MAJOR_VERSION > 0 || PD_MINOR_VERSION >= 47)
-  if(c0 && iemguts_check_atleast_pdversion(0,47,0)) {
-    zoom = c0->gl_zoom;
+  if(cnv && iemguts_check_atleast_pdversion(0,47,0)) {
+    zoom = cnv->gl_zoom;
   }
 #endif
 
-  dx = atom_getfloat(argv+0)*zoom - c->gl_obj.te_xpix;
-  dy = atom_getfloat(argv+1)*zoom - c->gl_obj.te_ypix;
+  dx = atom_getfloat(argv+0)*zoom - obj->te_xpix;
+  dy = atom_getfloat(argv+1)*zoom - obj->te_ypix;
 
 
-  if(c0&&glist_isvisible(c0))  {
-    gobj_displace((t_gobj*)c, c0, dx, dy);
-    canvas_fixlinesfor(c0, (t_text*)c);
+  if(cnv&&glist_isvisible(cnv))  {
+    gobj_displace(&obj->te_g, cnv, dx, dy);
+    canvas_fixlinesfor(cnv, obj);
   } else {
-    c->gl_obj.te_xpix+=dx;
-    c->gl_obj.te_ypix+=dy;
+    obj->te_xpix+=dx;
+    obj->te_ypix+=dy;
   }
 }
 
@@ -138,12 +159,18 @@ static void *canvasobjectposition_new(t_symbol*s, int argc, t_atom*argv)
     t_canvas *canvas=(t_canvas*)glist_getcanvas(glist);
     int index=-1;
     int depth=0;
-
+#ifdef __GNUC__
+# define CASE_FALLTHROUGH __attribute__ ((fallthrough))
+#else
+# define CASE_FALLTHROUGH
+#endif
     switch(argc) {
     case 2:
-      index=atom_getint(argv+1);
+      index=atom_getfloat(argv+1);
+      CASE_FALLTHROUGH;
     case 1:
-      depth=atom_getint(argv);
+      depth=atom_getfloat(argv);
+      CASE_FALLTHROUGH;
     default:
       break;
     }
@@ -156,7 +183,7 @@ static void *canvasobjectposition_new(t_symbol*s, int argc, t_atom*argv)
     }
 
     x->x_parent = canvas;
-    x->x_canvas=NULL;
+    x->x_index = index;
 
     x->x_posoutlet=outlet_new(&x->x_obj, &s_list);
     x->x_sizeoutlet=outlet_new(&x->x_obj, &s_list);
@@ -164,37 +191,9 @@ static void *canvasobjectposition_new(t_symbol*s, int argc, t_atom*argv)
 
     inlet_new(&x->x_obj, &x->x_obj.ob_pd, gensym("float"), gensym("object"));
 
-    if(index>=0)
-      canvasobjectposition_object(x, index);
-
     return (x);
   }
   return NULL;
-}
-
-
-static void canvasobjectposition_object(t_canvasobjectposition *x, t_float f)
-{
-  t_gobj*obj=NULL;
-  int index=(int)f;
-  int i=index;
-  t_glist*glist=x->x_parent;
-
-  if(x->x_parent==NULL) return;
-
-  if(index<0) return;
-
-  if(NULL==glist) return;
-
-  obj=glist->gl_list;
-  while(i-- && obj) {
-    obj=obj->g_next;
-  }
-
-  x->x_canvas=NULL;
-  if(obj) {
-    x->x_canvas=(t_canvas*)obj;
-  }
 }
 
 void canvasobjectposition_setup(void)
@@ -207,7 +206,8 @@ void canvasobjectposition_setup(void)
   class_addbang(canvasobjectposition_class, (t_method)canvasobjectposition_bang);
   class_addlist(canvasobjectposition_class, (t_method)canvasobjectposition_list);
 
-  class_addmethod(canvasobjectposition_class, (t_method)canvasobjectposition_object, gensym("object"), A_FLOAT, 0);
+  class_addmethod(canvasobjectposition_class, (t_method)canvasobjectposition_index, gensym("object"), A_FLOAT, 0);
+
 #if (defined PD_MAJOR_VERSION && defined PD_MINOR_VERSION) && (PD_MAJOR_VERSION <= 0 && PD_MINOR_VERSION < 47)
   if(iemguts_check_atleast_pdversion(0,47,0)) {
     int got_major=0, got_minor=0, got_bugfix=0;
