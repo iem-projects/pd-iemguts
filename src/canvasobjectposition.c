@@ -50,9 +50,8 @@ static t_object* index2obj(t_canvas*glist, int index)
 {
   t_gobj*gobj=NULL;
   int i=index;
-  if(glist==NULL) return NULL;
-  if(index<0) return NULL;
   if(NULL==glist) return NULL;
+  if(index<0) return NULL;
 
   gobj=glist->gl_list;
   while(i-- && gobj) {
