@@ -1,5 +1,4 @@
 #N canvas 1388 107 635 592 10;
-#X text 47 547 (c) 2008 IOhannes m zmoelnig;
 #X text 55 471 you can specify the depth of the parent-patch via a
 optional argument:;
 #X text 178 504 will work on the grandparent (parent-depth:2) of this
@@ -10,14 +9,14 @@ it's parent;
 abstraction/subpatch within it's containing canvas;
 #X msg 98 124 bang;
 #X obj 98 172 unpack;
-#X floatatom 137 194 5 0 0 0 - - -;
-#X floatatom 98 194 5 0 0 0 - - -;
+#X floatatom 137 194 5 0 0 0 - - -, f 5;
+#X floatatom 98 194 5 0 0 0 - - -, f 5;
 #X text 178 145 <--- you can move this object and click "bang" again
 ;
 #X msg 88 253 bang;
 #X obj 88 292 unpack;
-#X floatatom 127 314 5 0 0 0 - - -;
-#X floatatom 88 314 5 0 0 0 - - -;
+#X floatatom 127 314 5 0 0 0 - - -, f 5;
+#X floatatom 88 314 5 0 0 0 - - -, f 5;
 #X text 168 269 <--- you can move this object and click "bang" again
 ;
 #X text 39 218 you can also query the size of the containing canvas
@@ -50,13 +49,20 @@ save a patch \, before the "size" will actually change;
 mouse emulation);
 #X msg 100 418 \$1 440;
 #X obj 81 25 canvasposition;
-#X connect 5 0 17 0;
-#X connect 6 0 8 0;
-#X connect 6 1 7 0;
-#X connect 10 0 16 0;
-#X connect 11 0 13 0;
-#X connect 11 1 12 0;
-#X connect 16 0 11 0;
-#X connect 17 0 6 0;
-#X connect 20 0 23 0;
-#X connect 23 0 19 0;
+#X obj 52 528 print position;
+#X obj 150 528 print canvassize;
+#X obj 260 528 print info;
+#X text 47 547 (c) 2018 IOhannes m zmoelnig;
+#X connect 4 0 16 0;
+#X connect 5 0 7 0;
+#X connect 5 1 6 0;
+#X connect 9 0 15 0;
+#X connect 10 0 12 0;
+#X connect 10 1 11 0;
+#X connect 15 0 10 0;
+#X connect 16 0 5 0;
+#X connect 19 0 22 0;
+#X connect 20 0 24 0;
+#X connect 20 1 25 0;
+#X connect 20 2 26 0;
+#X connect 22 0 18 0;
