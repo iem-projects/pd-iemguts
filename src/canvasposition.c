@@ -5,7 +5,7 @@
  *
  * copyleft (c) IOhannes m zmölnig
  *
- *   2007:forum::für::umläute:2007
+ *   2007:forum::für::umläute:2018
  *
  *   institute of electronic music and acoustics (iem)
  *
@@ -41,7 +41,7 @@ typedef struct _canvasposition
   t_object  x_obj;
   t_canvas  *x_canvas;
 
-  t_outlet*xoutlet, *youtlet;
+  t_outlet*posoutlet, *sizeoutlet, *extraoutlet;
 } t_canvasposition;
 
 
@@ -69,14 +69,17 @@ static void canvasposition_bang(t_canvasposition *x)
   x1=c->gl_obj.te_xpix;
   y1=c->gl_obj.te_ypix;
 
-  SETFLOAT(alist, width);
-  SETFLOAT(alist+1, height);
-  outlet_list(x->youtlet, 0, 2, alist);
+  SETFLOAT(alist+0, zoom);
+  outlet_anything(x->extraoutlet, gensym("zoom"), 1, alist);
 
-  //  outlet_float(x->youtlet, y1);
-  SETFLOAT(alist, x1/zoom);
+  SETFLOAT(alist+0, width);
+  SETFLOAT(alist+1, height);
+  outlet_list(x->sizeoutlet, 0, 2, alist);
+
+  //  outlet_float(x->sizeoutlet, y1);
+  SETFLOAT(alist+0, x1/zoom);
   SETFLOAT(alist+1, y1/zoom);
-  outlet_list(x->xoutlet, 0, 2, alist);
+  outlet_list(x->posoutlet, 0, 2, alist);
 }
 
 static void canvasposition_list(t_canvasposition *x, t_symbol*s, int argc, t_atom*argv)
@@ -120,8 +123,9 @@ static void canvasposition_list(t_canvasposition *x, t_symbol*s, int argc, t_ato
 
 static void canvasposition_free(t_canvasposition *x)
 {
-  outlet_free(x->xoutlet);
-  outlet_free(x->youtlet);
+  outlet_free(x->posoutlet);
+  outlet_free(x->sizeoutlet);
+  outlet_free(x->extraoutlet);
 }
 
 static void *canvasposition_new(t_floatarg f)
@@ -139,8 +143,9 @@ static void *canvasposition_new(t_floatarg f)
 
   x->x_canvas = canvas;
 
-  x->xoutlet=outlet_new(&x->x_obj, &s_list);
-  x->youtlet=outlet_new(&x->x_obj, &s_list);
+  x->posoutlet=outlet_new(&x->x_obj, &s_list);
+  x->sizeoutlet=outlet_new(&x->x_obj, &s_list);
+  x->extraoutlet=outlet_new(&x->x_obj, 0);
 
   return (x);
 }
