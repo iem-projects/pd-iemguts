@@ -1,7 +1,7 @@
 variables:
   PDVERSION: 0.49-0
 
-# .git-ci/gitlab-iem.yml for Pd externals: v1.0
+# .git-ci/gitlab-iem.yml for Pd externals: v1.1
 
 ###################################################
 ### configuration templates (to be used for snapshot and release builds)
@@ -52,7 +52,7 @@ variables:
   variables:
     IEMCI_CONFIGURATIONS: mingw32
   before_script:
-    - wget -O Pd.zip http://msp.ucsd.edu/Software/pd-${PDVERSION}-i386.msw.zip
+    - wget -q -O Pd.zip http://msp.ucsd.edu/Software/pd-${PDVERSION}-i386.msw.zip
     - mkdir -p "${PROGRAMFILESX86}/pd"
     - unzip -q Pd.zip -d "${PROGRAMFILESX86}/pd"
     - mv -v "${PROGRAMFILESX86}/pd"/*/* "${PROGRAMFILESX86}/pd"
@@ -67,7 +67,7 @@ variables:
   variables:
     IEMCI_CONFIGURATIONS: mingw64
   before_script:
-    - wget -O Pd.zip http://msp.ucsd.edu/Software/pd-${PDVERSION}.msw.zip
+    - wget -q -O Pd.zip http://msp.ucsd.edu/Software/pd-${PDVERSION}.msw.zip
     - mkdir -p "${PROGRAMFILES}/pd"
     - unzip -q Pd.zip -d "${PROGRAMFILES}/pd"
     - mv -v "${PROGRAMFILES}/pd"/*/* "${PROGRAMFILES}/pd"
