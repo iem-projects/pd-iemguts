@@ -55,8 +55,8 @@ variables:
     - unzip -q Pd.zip -d "${PROGRAMFILESX86}/pd"
     - mv -v "${PROGRAMFILESX86}/pd"/*/* "${PROGRAMFILESX86}/pd"
   script:
-    - make extension=m_i386
-    - make install extension=m_i386 DESTDIR=$(pwd) pkglibdir=/
+    - make
+    - make install DESTDIR=$(pwd) pkglibdir=/
 
 .build:w64: &build_w64
   stage: build
@@ -70,8 +70,8 @@ variables:
     - unzip -q Pd.zip -d "${PROGRAMFILES}/pd"
     - mv -v "${PROGRAMFILES}/pd"/*/* "${PROGRAMFILES}/pd"
   script:
-    - make
-    - make install DESTDIR=$(pwd) pkglibdir=/
+    - make extension=m_amd64
+    - make install extension=m_amd64 DESTDIR=$(pwd) pkglibdir=/
 
 ###################################################
 ### the actual jobs: (linux,macos,windows)*(release,snapshot)
