@@ -1,3 +1,6 @@
+variables:
+  PDVERSION: 0.49-0
+
 ###################################################
 ### configuration templates (to be used for snapshot and release builds)
 .build:snapshot: &snapshot
@@ -41,7 +44,7 @@
   variables:
     IEMCI_CONFIGURATIONS: mingw32
   script:
-    - wget -O Pd.zip http://msp.ucsd.edu/Software/pd-0.48-1.msw.zip
+    - wget -O Pd.zip http://msp.ucsd.edu/Software/pd-${PDVERSION}-i386.msw.zip
     - mkdir -p "${PROGRAMFILESX86}/pd"
     - unzip -q Pd.zip -d "${PROGRAMFILESX86}/pd"
     - mv -v "${PROGRAMFILESX86}/pd"/*/* "${PROGRAMFILESX86}/pd"
@@ -55,7 +58,7 @@
   variables:
     IEMCI_CONFIGURATIONS: mingw64
   script:
-    - wget -O Pd.zip http://msp.ucsd.edu/Software/pd-0.48-1.windows.64bit.zip
+    - wget -O Pd.zip http://msp.ucsd.edu/Software/pd-${PDVERSION}.msw.zip
     - mkdir -p "${PROGRAMFILES}/pd"
     - unzip -q Pd.zip -d "${PROGRAMFILES}/pd"
     - mv -v "${PROGRAMFILES}/pd"/*/* "${PROGRAMFILES}/pd"
