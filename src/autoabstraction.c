@@ -34,7 +34,7 @@ static t_class *autoabstraction_class;
 static int s_state=0;
 
 /* this is the name of the filename that get's loaded as a default template for new abstractions */
-static char*s_templatefilename="autoabstraction.template";
+static const char*s_templatefilename="autoabstraction.template";
 /* if the loading above fails, we resort to a simple default abstraction that automatically opens up */
 /* LATER: make the font-size the same as the one used by Pd */
 static char*s_templatestring="#N canvas 0 0 450 300 10; #X vis 1;";
