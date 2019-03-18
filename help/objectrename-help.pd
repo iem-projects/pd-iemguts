@@ -1,0 +1,11 @@
+#N canvas 535 453 551 345 10;
+#X text 49 21 [objectrename] - renames an existing class;
+#X obj 18 122 objectrename dac~ _dac~;
+#X text 174 122 rename built-in [dac~] to [_dac~];
+#X obj 58 186 _dac~ 1 2 3 4;
+#X text 153 185 use the new name;
+#X obj 66 240 dac~;
+#X text 185 242 old name is gone... (and can be overridden with an
+abstraction);
+#X text 28 301 © 2019 \, IOhannes m zmölnig;
+#X text 335 306 updated for iemguts-0.3;
