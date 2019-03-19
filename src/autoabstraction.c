@@ -39,13 +39,6 @@ static const char*s_templatefilename="autoabstraction.template";
 /* LATER: make the font-size the same as the one used by Pd */
 static char*s_templatestring="#N canvas 0 0 450 300 10; #X vis 1;";
 
-#if (PD_MINOR_VERSION >= 40)
-# define AUTOABSTRACTION_ENABLED 1
-#endif
-
-#ifdef AUTOABSTRACTION_ENABLED
-
-
 # include "s_stuff.h"
 # include "g_canvas.h"
 # include <stdio.h>
@@ -135,7 +128,6 @@ static void autoabstraction_initialize(void)
   }
   s_state=1;
 }
-#endif /* AUTOABSTRACTION_ENABLED */
 
 static void autoabstraction_state(t_autoabstraction*x, t_floatarg f)
 {
@@ -151,11 +143,7 @@ static void*autoabstraction_new(t_symbol *s, int argc, t_atom *argv)
     s_templatefilename=atom_getsymbol(argv)->s_name;
   }
 
-#ifdef AUTOABSTRACTION_ENABLED
   autoabstraction_initialize();
-#endif /* AUTOABSTRACTION_ENABLED */
-
-
   return (x);
 }
 
@@ -166,17 +154,12 @@ void autoabstraction_setup(void)
 
   /* relies on t.grill's loader functionality, fully added in 0.40 */
   iemguts_boilerplate("automatic abstraction creator", 0);
-#ifdef AUTOABSTRACTION_ENABLED
   autoabstraction_initialize();
   if (major>0 || minor >=47) {
     sys_register_loader((loader_t)autoabstraction_loader);
   } else {
     sys_register_loader((loader_t)autoabstraction_loader_legacy);
   }
-#else
-  error("autoabstraction needs to be compiled against Pd 0.40 or higher,\n");
-  error("\tor a version that has sys_register_loader()");
-#endif
 
   autoabstraction_class = class_new(gensym("autoabstraction"), (t_newmethod)autoabstraction_new, 0, sizeof(t_autoabstraction), 0, A_GIMME, 0);
   class_addfloat(autoabstraction_class, (t_method)autoabstraction_state);
