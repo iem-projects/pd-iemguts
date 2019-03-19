@@ -78,7 +78,6 @@ static void autoabstraction_createpatch(t_canvas*canvas, char*classname) {
   }
 }
 
-
 /**
  * the loader
  *
@@ -106,11 +105,51 @@ static int autoabstraction_loader_legacy(t_canvas *canvas, char *classname)
   return 0;
 }
 
-static int autoabstraction_loader(t_canvas *canvas, char *classname, const char*path) {
-/* FIXXME: could this be done better? */
-  return autoabstraction_loader_legacy(canvas, classname);
+static t_pd *do_create_autoabstraction(t_symbol*s, int argc, t_atom *argv) {
+  t_pd*obj = 0;
+  t_symbol*x_s=gensym("#X");
+  t_pd *boundx = x_s->s_thing;
+  const char*dirname=".";
+  char name[MAXPDSTRING+1];
+#if 0
+  if (pd_setloadingabstraction(s)) {
+    error("%s: can't load autoabstraction within itself\n", s->s_name);
+    return 0;
+  }
+#endif
+
+  snprintf(name, MAXPDSTRING, "%s.pd", s->s_name);
+  name[MAXPDSTRING] = 0;
+
+  canvas_setargs(argc, argv);
+  binbuf_evalfile(gensym(name), gensym(dirname));
+  if (x_s->s_thing && boundx != x_s->s_thing) {
+    //canvas_popabstraction((t_canvas *)(x_s->s_thing));
+    t_canvas*cnv = (t_canvas *)(s__X.s_thing);
+    obj = &cnv->gl_pd;
+    gensym("#A")->s_thing = 0;
+    pd_bind(obj, gensym("#A"));
+    pd_popsym(obj);
+    cnv->gl_loading = 0;
+  } else
+    obj = pd_this->pd_newest;
+
+  canvas_setargs(0, 0);
+  return (obj);
 }
 
+static int autoabstraction_loader(t_canvas *canvas, char *classname, const char*path) {
+  if(path)
+    return 0;
+
+  autoabstraction_createpatch(canvas, classname);
+  class_set_extern_dir(gensym("."));
+  class_new(gensym(classname),
+      (t_newmethod)do_create_autoabstraction, 0,
+      0, 0, A_GIMME, 0);
+  class_set_extern_dir(&s_);
+  return 1;
+}
 
 static void autoabstraction_initialize(void)
 {
