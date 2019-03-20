@@ -40,7 +40,6 @@ static char*s_templatestring="#N canvas 0 0 450 300 10; #X vis 1;";
 
 # include "s_stuff.h"
 # include "g_canvas.h"
-#include "m_imp.h"
 
 # include <stdio.h>
 # include <string.h>
@@ -133,7 +132,7 @@ static t_pd *do_create_autoabstraction(t_symbol*s, int argc, t_atom *argv) {
     pd_popsym(obj);
     cnv->gl_loading = 0;
   } else
-    obj = pd_this->pd_newest;
+    obj = pd_newest();
 
   canvas_setargs(0, 0);
   return (obj);
