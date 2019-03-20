@@ -34,6 +34,11 @@
 # define BUILD_DATE "on " __DATE__ " at " __TIME__
 #endif
 
+#define _IEMGUTS_PDVERSION(X, Y, Z) \
+  ((X)*100000 + (Y)*100 + (Z))
+
+#define IEMGUTS_PDVERSION_ATLEAST(X, Y, Z) \
+  _IEMGUTS_PDVERSION(PD_MAJOR_VERSION, PD_MINOR_VERSION, PD_BUGFIX_VERSION) >= _IEMGUTS_PDVERSION(X, Y, Z)
 
 /*
  * check whether we run at least a given Pd-version
