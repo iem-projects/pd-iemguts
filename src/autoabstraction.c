@@ -24,7 +24,6 @@
 
 #include "iemguts.h"
 
-
 typedef struct _autoabstraction
 {
   t_object x_obj;
@@ -41,6 +40,8 @@ static char*s_templatestring="#N canvas 0 0 450 300 10; #X vis 1;";
 
 # include "s_stuff.h"
 # include "g_canvas.h"
+#include "m_imp.h"
+
 # include <stdio.h>
 # include <string.h>
 # include <unistd.h>
