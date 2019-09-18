@@ -38,7 +38,7 @@ typedef struct _objectrename
 
 typedef t_pd *(*t_newgimme)(t_symbol *s, int argc, t_atom *argv);
 
-void objectrename_doit(t_symbol*from,t_symbol*to) {
+static void objectrename_doit(t_symbol*from,t_symbol*to) {
   t_class*pom_class = pd_objectmaker;
   int i;
   for(i=0; i<pom_class->c_nmethod; i++) {

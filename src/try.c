@@ -41,7 +41,7 @@ typedef struct _try
 
 typedef t_pd *(*t_newgimme)(t_symbol *s, int argc, t_atom *argv);
 
-t_pd*try_this(int argc, t_atom*argv) {
+static t_pd*try_this(int argc, t_atom*argv) {
   t_symbol*s=NULL;
   if(!argc)return NULL;
 
