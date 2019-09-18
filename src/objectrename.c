@@ -1,10 +1,10 @@
 /******************************************************
  *
- * alias - implementation file
+ * objectrename - implementation file
  *
  * copyleft (c) IOhannes m zmölnig
  *
- *   2007:forum::für::umläute:2019
+ *   2019:forum::für::umläute:2019
  *
  *   institute of electronic music and acoustics (iem)
  *
