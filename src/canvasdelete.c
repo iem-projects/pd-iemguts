@@ -140,7 +140,7 @@ static int canvas_delete_docb(t_glist*glist, t_gobj*wantobj) {
 static t_gobj**canvasdelete_indices2glist(const t_glist*glist, unsigned int argc, t_atom*argv) {
   t_gobj**result = malloc(argc*sizeof(*result));
   t_gobj**resptr=result;
-  int i=0;
+  unsigned int i=0;
   for(i=0; i<argc; i++)result[i]=NULL;
   for(i=0; i<argc; i++) {
     int index=atom_getint(argv+i);
