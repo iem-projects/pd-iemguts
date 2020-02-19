@@ -1,6 +1,7 @@
+---
 variables:
   PDVERSION: 0.50-1
----
+
 include:
   - https://git.iem.at/pd/iem-ci/raw/artifactest/pd-lib-builder/gitlab-iem.yml
 
