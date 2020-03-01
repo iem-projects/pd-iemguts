@@ -139,6 +139,6 @@ void receivecanvas_setup(void)
   receivecanvas_class = class_new(gensym("receivecanvas"), (t_newmethod)receivecanvas_new,
                                (t_method)receivecanvas_free, sizeof(t_receivecanvas), CLASS_NOINLET, A_DEFFLOAT, 0);
 
-  receivecanvas_proxy_class = class_new(0, 0, 0, sizeof(t_receivecanvas_proxy), CLASS_NOINLET | CLASS_PD, 0);
+  receivecanvas_proxy_class = class_new(gensym("receivecanvas proxy"), 0, 0, sizeof(t_receivecanvas_proxy), CLASS_NOINLET | CLASS_PD, 0);
   class_addanything(receivecanvas_proxy_class, receivecanvas_proxy_anything);
 }
