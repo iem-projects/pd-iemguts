@@ -87,9 +87,11 @@ void closebang_setup(void)
   else
     error("[closebang] requires Pd>=0.47");
 
+#if 0
   orgfun = zgetfn(&canvas_class, gensym("menuclose"));
   if ((t_gotfn)closebang_menuclose != orgfun) {
     class_addmethod(canvas_class, (t_method)closebang_menuclose, gensym("menuclose"), A_DEFFLOAT, 0);
     class_addmethod(canvas_class, (t_method)orgfun, gensym("menuclose [closebang]"), A_DEFFLOAT, 0);
   }
+#endif
 }
