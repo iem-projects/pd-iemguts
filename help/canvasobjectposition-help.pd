@@ -5,8 +5,8 @@ optional argument:;
 patch;
 #X msg 98 124 bang;
 #X obj 98 172 unpack;
-#X floatatom 137 194 5 0 0 0 - - -, f 5;
-#X floatatom 98 194 5 0 0 0 - - -, f 5;
+#X floatatom 137 194 5 0 0 0 - - -;
+#X floatatom 98 194 5 0 0 0 - - -;
 #N canvas 5 51 648 414 getpos 0;
 #X obj 75 48 inlet;
 #X obj 75 189 outlet;
@@ -24,7 +24,7 @@ patch;
 #X connect 2 0 3 0;
 #X restore 108 332 pd setpos;
 #X obj 111 290 hsl 128 15 300 400 0 0 empty empty empty -2 -8 0 10
--262144 -1 -1 1700 1;
+-262144 -1 -1 0 1;
 #X obj 48 28 canvasobjectposition;
 #X text 207 25 get/set the position of an arbitrary object in the specified
 (parent) canvas.;
@@ -50,6 +50,17 @@ emulation);
 #X obj 200 620 print info;
 #X msg 113 573 350 210;
 #X msg 53 573 bang;
+#N canvas 748 407 553 344 META 0;
+#X text 12 25 LICENSE GPL v2;
+#X text 12 145 AUTHOR IOhannes m zmoelnig;
+#X text 12 165 HELP_PATCH_AUTHORS IOhannes m zmölnig;
+#X text 12 105 OUTLET_0 list;
+#X text 12 5 KEYWORDS introspection;
+#X text 11 65 INLET_0 bang \, list;
+#X text 12 45 DESCRIPTION gget/set the position of an arbitrary object
+in the specified (parent) canvas., f 90;
+#X text 11 83 INLET_1 float;
+#X restore 613 32 pd META;
 #X connect 2 0 6 0;
 #X connect 3 0 5 0;
 #X connect 3 1 4 0;
