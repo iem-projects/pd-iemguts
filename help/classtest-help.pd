@@ -22,7 +22,7 @@ will result in 'false'.;
 loaded);
 #X text 317 202 check for this abstraction (evaluates as 'false'!)
 ;
-#X text 558 292 (c)opyleft 2008 IOhannes m zmölnig @ iem;
+#X text 558 292 (c)opyleft 2008 IOhannes m zmÃ¶lnig @ iem;
 #X connect 2 0 3 0;
 #X connect 6 0 14 0;
 #X connect 7 0 6 0;
