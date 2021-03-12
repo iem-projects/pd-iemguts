@@ -33,18 +33,29 @@
 #X obj 59 397 pack f f f f f;
 #X text 103 347 <- there is a [canvasconnections] inside;
 #X obj 29 7 canvasconnections;
-#X text 144 7 query the connections of the containing canvas;
+#X text 143 7 query the connections of the containing canvas;
 #X text 95 66 get the number of inlets and outlets of the canvas;
 #X text 123 126 get objectID and and outletID of the object that is
 connected to the given inlet of the canvas;
 #X text 138 171 get objectID and and inletID of the object that is
 connected to the given outlet of the canvas;
-#X text 177 219;
+#X text 177 219 comment;
 #X text 196 246 Those work similar \, but give the all info about the
 given connection.;
 #X text 153 395 <- dummy object;
 #X obj 98 314 unpack f f f f;
 #X text 194 311 <- dummy object;
+#N canvas 344 318 494 344 META 0;
+#X text 12 25 LICENSE GPL v2;
+#X text 12 145 AUTHOR IOhannes m zmoelnig;
+#X text 12 165 HELP_PATCH_AUTHORS IOhannes m zmölnig;
+#X text 12 105 OUTLET_0 list;
+#X text 12 45 DESCRIPTION query the connections of the containing canvas
+, f 72;
+#X text 12 5 KEYWORDS introspection;
+#X text 11 65 INLET_0 inlets \, outlets \, inlet \, outlet \, outconnect
+\, inconnect;
+#X restore 473 12 pd META;
 #X connect 0 0 11 0;
 #X connect 1 0 11 0;
 #X connect 2 0 1 0;
