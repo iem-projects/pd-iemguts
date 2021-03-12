@@ -24,15 +24,21 @@ exploding intestines.
 
 installation::
 --------------
+
+~~~
 #2> make
 #3> make install
+~~~
 
 note: IEMguts depends on some internal headers of Pd.
 therefore you might have to specify the full path to your Pd-sources
 using the 'pdincludepath' make-variable should do the trick.
-something like:
+something like the following should do the trick:
+
+~~~
 #2> make pdincludepath=/home/me/src/pd-0.47-0/src
-should do the trick.
+~~~
+
 (if you happen to need to the path to the Pd-binaries as well, you
 can additionally use the 'pdbinpath' variable.)
 
@@ -49,4 +55,3 @@ copyleft 2007- by
 	IOhannes m zmölnig <zmoelnig [at] iem [dot] at>,
 	Institute of Electronic Music and Acoustics,
 	University of Music and Dramatic Arts, Graz, Austria
-
