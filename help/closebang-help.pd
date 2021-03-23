@@ -10,7 +10,7 @@ to be deleted \, so you can:;
 #X text 38 172 [closebang] works well for deleting an abstraction in
 a running patch.;
 #X text 38 201 It works less well \, when closing a top-level patch
-(but a best effort attemt is made);
+(but a best effort attempt is made);
 #X text 39 231 As of now (Pd==0.48) \, [closebang] doesn't fire if
 you just close Pd.;
 #N canvas 167 521 494 344 META 0;
