@@ -13,3 +13,12 @@ a running patch.;
 (but a best effort attemt is made);
 #X text 39 231 As of now (Pd==0.48) \, [closebang] doesn't fire if
 you just close Pd.;
+#N canvas 167 521 494 344 META 0;
+#X text 12 25 LICENSE GPL v2;
+#X text 12 145 AUTHOR IOhannes m zmoelnig;
+#X text 12 5 KEYWORDS control \, initialisation \, deinitialisation
+;
+#X text 12 45 DESCRIPTION emits a bang when an abstraction is deleted.
+, f 72;
+#X text 12 105 OUTLET_0 bang;
+#X restore 463 22 pd META;
