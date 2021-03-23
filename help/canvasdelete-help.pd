@@ -16,7 +16,7 @@ in the deleting process \, Pd will ungracefully crash. Use with care!
 #X text 28 21 When you load(!) the canvasdelete object/library \, it
 will also add a 'delete' method for canvases (aka: windows) to Pd.
 ;
-#X text 27 64 This allows to remove single objects by their index.
+#X text 27 64 This allows one to remove single objects by their index.
 Counting starts at 0 and follows the order of creation.;
 #X text 30 96 Nevertheless \, let's hope that one day Pd will have
 a "delete" method itself...;
