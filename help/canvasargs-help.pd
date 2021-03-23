@@ -31,7 +31,7 @@ to [canvasargs] will get the arguments with dollar-arguments unexpanded.
 reflect the original arguments. The raw arguments will always be correct.
 ;
 #X obj 71 564 canvasargs-test \$0 \$1 \$2.foo;
-#N canvas 398 337 494 344 META 1;
+#N canvas 398 337 494 344 META 0;
 #X text 12 25 LICENSE GPL v2;
 #X text 12 145 AUTHOR IOhannes m zmoelnig;
 #X text 12 165 HELP_PATCH_AUTHORS IOhannes m zmölnig;
