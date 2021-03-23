@@ -22,7 +22,7 @@ the patch. This is a good way to break patches!;
 #X connect 4 0 1 1;
 #X restore 29 338 pd subpatch;
 #X text 74 261 This even works for subpatches \, though only the 'pd'
-part can be modifed. This way you can have subpatches whose names start
+part can be modified. This way you can have subpatches whose names start
 with something different than 'pd'.;
 #X text 140 310 1 change the name;
 #X text 140 328 2 save a copy of this patch;

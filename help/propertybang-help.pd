@@ -18,8 +18,8 @@
 #X text 61 224 note: the [propertybang] is PER ABSTRACTION! having
 multiple [propertybang]s within one abstraction \, will trigger them
 all at the same time.;
-#X text 127 114 --> the [propertybang] will send out a bang \, everytime
-you right-clock on your abstraction instance and select "Properties"
+#X text 127 114 --> the [propertybang] will send out a bang \, every time
+you right-click on your abstraction instance and select "Properties"
 ;
 #X text 369 275 (c) IOhannes m zmoelnig @ iem \, 2010;
 #X connect 1 0 2 0;

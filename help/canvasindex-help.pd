@@ -5,7 +5,7 @@
 #X msg 88 118 bang;
 #X text 207 25 get the ID/index of an abstraction/subpatch within it's
 containing patch;
-#X text 95 71 this object allows you to dynamically find out indicies
+#X text 95 71 this object allows you to dynamically find out indices
 to connect with dynamic patching;
 #N canvas 6 61 450 300 object1 0;
 #X obj 75 48 inlet;

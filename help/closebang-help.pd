@@ -3,7 +3,7 @@
 #X text 108 39 emits a bang when an abstraction is deleted.;
 #X text 41 76 [closebang] notifies you when an abstraction is about
 to be deleted \, so you can:;
-#X text 52 112 - cleanup ressources;
+#X text 52 112 - cleanup resources;
 #X text 52 127 - keep track of instances (PUSH);
 #X text 52 143 - say goodbye;
 #X text 24 350 note: [closebang] requires Pd>=0.47;
