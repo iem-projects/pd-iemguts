@@ -57,7 +57,7 @@ emulation);
 #X text 12 105 OUTLET_0 list;
 #X text 12 5 KEYWORDS introspection;
 #X text 11 65 INLET_0 bang \, list;
-#X text 12 45 DESCRIPTION gget/set the position of an arbitrary object
+#X text 12 45 DESCRIPTION get/set the position of an arbitrary object
 in the specified (parent) canvas., f 90;
 #X text 11 83 INLET_1 float;
 #X restore 613 32 pd META;
