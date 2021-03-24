@@ -27,6 +27,15 @@ the same for a patch and all it's subpatches anyhow \; nevertheless
 #X connect 5 0 4 0;
 #X restore 99 248 pd canvasdollarzero 1;
 #X text 58 308 (c) 2008 IOhannes m zmoelnig \, Thomas Musil;
+#N canvas 748 407 553 344 META 0;
+#X text 12 25 LICENSE GPL v2;
+#X text 12 145 AUTHOR IOhannes m zmoelnig;
+#X text 12 165 HELP_PATCH_AUTHORS IOhannes m zmölnig;
+#X text 12 5 KEYWORDS introspection;
+#X text 12 45 DESCRIPTION get \$0 of a parent)canvas, f 86;
+#X text 11 65 INLET_0 bang;
+#X text 11 82 OUTLET_1 symbol;
+#X restore 533 22 pd META;
 #X connect 0 0 8 0;
 #X connect 3 0 4 0;
 #X connect 4 0 5 0;
