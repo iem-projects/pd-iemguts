@@ -16,5 +16,14 @@ patch by providing the parent depth as an argument.;
 is saved:;
 #X text 18 288 the 2nd outlet triggers BEFORE the actual patch is saved.
 ;
+#N canvas 417 570 494 344 META 0;
+#X text 12 25 LICENSE GPL v2;
+#X text 12 145 AUTHOR IOhannes m zmoelnig;
+#X text 12 85 OUTLET_0 bang;
+#X text 12 5 KEYWORDS control \, introspection;
+#X text 12 45 DESCRIPTION emits bangs when an abstraction is saved
+, f 72;
+#X text 12 105 OUTLET_1 bang;
+#X restore 405 13 pd META;
 #X connect 3 0 1 0;
 #X connect 5 0 6 0;
