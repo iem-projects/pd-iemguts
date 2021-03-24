@@ -18,8 +18,16 @@
 #X text 61 224 note: the [propertybang] is PER ABSTRACTION! having
 multiple [propertybang]s within one abstraction \, will trigger them
 all at the same time.;
-#X text 127 114 --> the [propertybang] will send out a bang \, every time
-you right-click on your abstraction instance and select "Properties"
+#X text 127 114 --> the [propertybang] will send out a bang \, every
+time you right-click on your abstraction instance and select "Properties"
 ;
 #X text 369 275 (c) IOhannes m zmoelnig @ iem \, 2010;
+#N canvas 167 521 494 344 META 0;
+#X text 12 25 LICENSE GPL v2;
+#X text 12 145 AUTHOR IOhannes m zmoelnig;
+#X text 12 105 OUTLET_0 bang;
+#X text 12 45 DESCRIPTION emits a bang if the user right-clicks the
+properties of an abstraction, f 72;
+#X text 12 5 KEYWORDS control \, introspection;
+#X restore 463 22 pd META;
 #X connect 1 0 2 0;
