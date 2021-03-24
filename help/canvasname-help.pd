@@ -1,29 +1,29 @@
 #N canvas 53 49 609 519 10;
 #X msg 40 132 bang;
-#X symbolatom 29 73 10 0 0 0 - - -, f 10;
+#X symbolatom 29 73 10 0 0 0 - - -;
 #X obj 29 184 canvasname-abs;
 #X obj 21 14 canvasname;
 #X msg 29 265 bang;
-#X symbolatom 67 310 10 0 0 0 - - -, f 10;
+#X symbolatom 67 310 10 0 0 0 - - -;
 #X text 100 14 query and modify the name of a canvas;
 #X obj 29 217 print canvasname;
 #X text 109 69 change the name of the canvas initially named 'canvasname-abs'.
 When the patch is saved \, the new name for the canvas is saved with
 the patch. This is a good way to break patches!;
-#N canvas 616 405 145 217 subpatch 0;
+#N canvas 616 405 391 277 subpatch 0;
 #X obj 28 25 inlet;
 #X obj 28 85 canvasname;
 #X obj 28 169 outlet;
 #X obj 95 122 outlet;
-#X symbolatom 91 46 10 0 0 0 - - -, f 10;
+#X symbolatom 91 46 10 0 0 0 - - -;
 #X connect 0 0 1 0;
 #X connect 1 0 2 0;
 #X connect 1 1 3 0;
 #X connect 4 0 1 1;
-#X restore 29 338 pd subpatch;
+#X restore 29 338 flurry subpatch;
 #X text 74 261 This even works for subpatches \, though only the 'pd'
-part can be modified. This way you can have subpatches whose names start
-with something different than 'pd'.;
+part can be modified. This way you can have subpatches whose names
+start with something different than 'pd'.;
 #X text 140 310 1 change the name;
 #X text 140 328 2 save a copy of this patch;
 #X text 140 347 3 reopen the copy to inspect the modification;
@@ -42,6 +42,17 @@ with something different than 'pd'.;
 #X text 30 472 Changing the displayed name (2nd inlet) will only update
 the window-title when the window is re-created. Also this is purely
 cosmetic (and won't get saved!);
+#N canvas 748 407 553 344 META 0;
+#X text 12 25 LICENSE GPL v2;
+#X text 12 145 AUTHOR IOhannes m zmoelnig;
+#X text 12 165 HELP_PATCH_AUTHORS IOhannes m zmölnig;
+#X text 12 5 KEYWORDS introspection;
+#X text 12 45 DESCRIPTION get/set the name of a canvas, f 86;
+#X text 11 65 INLET_0 bang \, symbol;
+#X text 11 82 INLET_1 symbol;
+#X text 12 105 OUTLET_0 symbol;
+#X text 12 122 OUTLET_1 symbol;
+#X restore 533 22 pd META;
 #X connect 0 0 2 0;
 #X connect 1 0 2 0;
 #X connect 2 0 7 0;
