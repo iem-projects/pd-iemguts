@@ -23,5 +23,14 @@ and an ordinary [send] \; so this object is merely convenient as you
 can dynamify a canvas without prior thought to it;
 #X text 58 295 note:;
 #X text 72 390 (c) 2008 IOhannes m zmoelnig;
+#N canvas 398 337 494 344 META 0;
+#X text 12 25 LICENSE GPL v2;
+#X text 12 145 AUTHOR IOhannes m zmoelnig;
+#X text 12 165 HELP_PATCH_AUTHORS IOhannes m zmölnig;
+#X text 12 5 KEYWORDS introspection;
+#X text 12 45 DESCRIPTION send messages to a (parent) canvas, f 72
+;
+#X text 12 105 INLET_0 msg...;
+#X restore 403 22 pd META;
 #X connect 3 0 2 0;
 #X connect 7 0 6 0;
