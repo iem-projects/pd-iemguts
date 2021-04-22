@@ -15,6 +15,7 @@ macOS:notarize:
     - ls -lha
     - hdiutil verify  "${IEM_CI_PROJECT_NAME}.dmg"
   artifacts:
+    when: always
     untracked: true
     paths:
       - "*"
