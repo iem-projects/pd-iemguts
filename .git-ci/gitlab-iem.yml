@@ -11,9 +11,8 @@ macOS:notarize:
     - .notarize:macos
   dependencies:
     - Darwin
-  after_script:
-    - ls -lha
-    - hdiutil verify  "${IEM_CI_PROJECT_NAME}.dmg"
+  needs:
+    - Darwin
   artifacts:
     when: always
     untracked: true
