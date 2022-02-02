@@ -74,7 +74,6 @@ static void *closebang_new(void)
 
 void closebang_setup(void)
 {
-  t_gotfn orgfun = 0;
   iemguts_boilerplate("[closebang]", 0);
 #if (PD_MINOR_VERSION < 47)
   verbose(0, "[closebang] has been compiled against an incompatible version of Pd, proceeding anyway...");
@@ -88,10 +87,12 @@ void closebang_setup(void)
     pd_error(0, "[closebang] requires Pd>=0.47");
 
 #if 0
-  orgfun = zgetfn(&canvas_class, gensym("menuclose"));
-  if ((t_gotfn)closebang_menuclose != orgfun) {
-    class_addmethod(canvas_class, (t_method)closebang_menuclose, gensym("menuclose"), A_DEFFLOAT, 0);
-    class_addmethod(canvas_class, (t_method)orgfun, gensym("menuclose [closebang]"), A_DEFFLOAT, 0);
+  if(1) {
+    t_gotfn orgfun = zgetfn(&canvas_class, gensym("menuclose"));
+    if ((t_gotfn)closebang_menuclose != orgfun) {
+      class_addmethod(canvas_class, (t_method)closebang_menuclose, gensym("menuclose"), A_DEFFLOAT, 0);
+      class_addmethod(canvas_class, (t_method)orgfun, gensym("menuclose [closebang]"), A_DEFFLOAT, 0);
+    }
   }
 #endif
 }
