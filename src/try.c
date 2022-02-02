@@ -67,8 +67,8 @@ static void *try_new(t_symbol*s, int argc, t_atom*argv)
   t_pd*x=NULL;
   int start=0, i=0;
   if(!pd_objectmaker) {
-    error("[try] could not find pd_objectmaker");
-    return NULL;
+    pd_error(x, "[try] could not find pd_objectmaker");
+    return x;
   }
 
   for(i=0; i<argc; i++) {

@@ -113,8 +113,8 @@ static t_pd *do_create_autoabstraction(t_symbol*s, int argc, t_atom *argv) {
   char name[MAXPDSTRING+1];
 #if 0
   if (pd_setloadingabstraction(s)) {
-    error("%s: can't load autoabstraction within itself\n", s->s_name);
-    return 0;
+    pd_error(obj, "%s: can't load autoabstraction within itself\n", s->s_name);
+    return obj;
   }
 #endif
 

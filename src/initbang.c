@@ -70,5 +70,5 @@ void initbang_setup(void)
   if(iemguts_check_atleast_pdversion(0,47,0))
     class_addmethod(initbang_class, (t_method)initbang_loadbang, gensym("loadbang"), A_DEFFLOAT, 0);
   else
-    error("[initbang] requires Pd>=0.47");
+    pd_error(0, "[initbang] requires Pd>=0.47");
 }

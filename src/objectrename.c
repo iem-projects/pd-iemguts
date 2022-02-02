@@ -48,15 +48,15 @@ static void objectrename_doit(t_symbol*from,t_symbol*to) {
       return;
     }
   }
-  error("unable to rename '%s' (not found)", from->s_name);
+  pd_error(0, "unable to rename '%s' (not found)", from->s_name);
 }
 
 static void *objectrename_new(t_symbol*from, t_symbol*to)
 {
   t_pd*x=0;
   if(!pd_objectmaker) {
-    error("[objectrename] could not find pd_objectmaker");
-    return NULL;
+    pd_error(x, "[objectrename] could not find pd_objectmaker");
+    return x;
   }
   objectrename_doit(from, to);
   x=pd_new(objectrename_class);

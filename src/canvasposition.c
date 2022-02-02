@@ -162,7 +162,7 @@ void canvasposition_setup(void)
   if(iemguts_check_atleast_pdversion(0,47,0)) {
     int got_major=0, got_minor=0, got_bugfix=0;
     sys_getversion(&got_major, &got_minor, &got_bugfix);
-    error("[canvasposition] disabled zoom support at compile-time");
+    pd_error(0, "[canvasposition] disabled zoom support at compile-time");
   }
 #endif
 }

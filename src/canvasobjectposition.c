@@ -150,7 +150,7 @@ static void canvasobjectposition_free(t_canvasobjectposition *x)
 static void *canvasobjectposition_new(t_symbol*s, int argc, t_atom*argv)
 {
   if(argc>2) {
-    error("syntax: canvasobjectposition <canvasdepth> [<objectindex>]");
+    pd_error(0, "syntax: canvasobjectposition <canvasdepth> [<objectindex>]");
     return NULL;
   } else {
     t_canvasobjectposition *x = (t_canvasobjectposition *)pd_new(canvasobjectposition_class);
@@ -211,7 +211,7 @@ void canvasobjectposition_setup(void)
   if(iemguts_check_atleast_pdversion(0,47,0)) {
     int got_major=0, got_minor=0, got_bugfix=0;
     sys_getversion(&got_major, &got_minor, &got_bugfix);
-    error("[canvasobjectposition] disabled zoom support at compile-time");
+    pd_error(0, "[canvasobjectposition] disabled zoom support at compile-time");
   }
 #endif
 }

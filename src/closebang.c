@@ -85,7 +85,7 @@ void closebang_setup(void)
   if(iemguts_check_atleast_pdversion(0,47,0))
     class_addmethod(closebang_class, (t_method)closebang_loadbang, gensym("loadbang"), A_DEFFLOAT, 0);
   else
-    error("[closebang] requires Pd>=0.47");
+    pd_error(0, "[closebang] requires Pd>=0.47");
 
 #if 0
   orgfun = zgetfn(&canvas_class, gensym("menuclose"));
