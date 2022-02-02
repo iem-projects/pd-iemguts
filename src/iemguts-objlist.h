@@ -2,9 +2,9 @@
  *
  * iemguts - implementation file
  *
- * copyleft (c) IOhannes m zm�lnig
+ * copyleft (c) IOhannes m zmÃ¶lnig
  *
- *   2008:forum::f�r::uml�ute:2015
+ *   2008:forum::fÃŒr::umlÃ€ute:2015
  *
  *   institute of electronic music and acoustics (iem)
  *
