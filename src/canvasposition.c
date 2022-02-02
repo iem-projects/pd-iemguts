@@ -87,6 +87,7 @@ static void canvasposition_list(t_canvasposition *x, t_symbol*s, int argc, t_ato
   t_canvas*c0=0;
   int dx, dy;
   t_float zoom = 1.;
+  (void)s;
 
   if(!c) return;
   c0=c->gl_owner;

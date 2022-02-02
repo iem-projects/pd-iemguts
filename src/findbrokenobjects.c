@@ -164,6 +164,7 @@ static void findbrokenobjects_free(t_findbrokenobjects *x)
 static void *findbrokenobjects_new(t_symbol*s, int argc, t_atom*argv)
 {
   t_findbrokenobjects *x = (t_findbrokenobjects *)pd_new(findbrokenobjects_class);
+  (void)s;
   x->x_parent=0;
   if(argc==1 && argv->a_type == A_FLOAT) {
     int depth=atom_getint(argv);

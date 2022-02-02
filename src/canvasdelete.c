@@ -98,7 +98,7 @@ static void *canvasdelete_new(t_floatarg f)
 
 static void canvasdelete_free(t_canvasdelete*x)
 {
-
+  (void)x;
 }
 
 static void canvasdelete_canvasmethods(void);
@@ -161,6 +161,7 @@ static void canvas_delete_cb(t_canvas*x, t_symbol*s, int argc, t_atom*argv)
   int dspstate= canvas_suspend_dsp();
   t_gobj**objs=canvasdelete_indices2glist(x, argc>0?argc:0, argv);
   int i;
+  (void)s;
   for(i=0; i<argc; i++) {
     canvas_delete_docb(x, objs[i]);
   }

@@ -109,6 +109,7 @@ static void canvasobjectposition_list(t_canvasobjectposition *x, t_symbol*s, int
   t_canvas*cnv=x->x_parent;
   int dx, dy;
   t_float zoom = 1.;
+  (void)s;
 
   if(!obj) return;
 
@@ -150,7 +151,7 @@ static void canvasobjectposition_free(t_canvasobjectposition *x)
 static void *canvasobjectposition_new(t_symbol*s, int argc, t_atom*argv)
 {
   if(argc>2) {
-    pd_error(0, "syntax: canvasobjectposition <canvasdepth> [<objectindex>]");
+    pd_error(0, "syntax: %s <canvasdepth> [<objectindex>]", s->s_name);
     return NULL;
   } else {
     t_canvasobjectposition *x = (t_canvasobjectposition *)pd_new(canvasobjectposition_class);

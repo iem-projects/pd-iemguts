@@ -67,7 +67,7 @@ static void *try_new(t_symbol*s, int argc, t_atom*argv)
   t_pd*x=NULL;
   int start=0, i=0;
   if(!pd_objectmaker) {
-    pd_error(x, "[try] could not find pd_objectmaker");
+    pd_error(x, "[%s] could not find pd_objectmaker", s->s_name);
     return x;
   }
 

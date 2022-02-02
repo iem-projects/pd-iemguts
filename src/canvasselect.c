@@ -120,6 +120,7 @@ static void canvasselect_selectall(t_canvasselect*x)
 
 static void canvasselect_select_cb(t_canvasselect*x, t_symbol*s, int argc, t_atom*argv)
 {
+  (void)s;
   if(argc) {
     while(argc--){
       canvasselect_select(x, atom_getint(argv++));
@@ -179,6 +180,7 @@ static void canvasselect_deselectall(t_canvasselect*x)
 
 static void canvasselect_deselect_cb(t_canvasselect*x, t_symbol*s, int argc, t_atom*argv)
 {
+  (void)s;
   if(argc) {
     while(argc--){
       canvasselect_deselect(x, atom_getint(argv++));

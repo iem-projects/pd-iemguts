@@ -64,6 +64,7 @@ static char*s_templatestring="#N canvas 0 0 450 300 10; #X vis 1;";
 static t_binbuf*s_bb=0;
 
 static void autoabstraction_createpatch(t_canvas*canvas, char*classname) {
+  (void)canvas;
   if(!s_state) {
     /* autoabstraction turned off... */
     return;
@@ -171,12 +172,14 @@ static void autoabstraction_initialize(void)
 static void autoabstraction_state(t_autoabstraction*x, t_floatarg f)
 {
   int state=(int)(f>=1.0);
+  (void)x;
   s_state=state;
 }
 
 static void*autoabstraction_new(t_symbol *s, int argc, t_atom *argv)
 {
   t_autoabstraction*x = (t_autoabstraction*)pd_new(autoabstraction_class);
+  (void)s;
 
   if(argc&&A_SYMBOL==argv->a_type) {
     s_templatefilename=atom_getsymbol(argv)->s_name;

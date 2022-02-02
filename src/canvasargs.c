@@ -76,9 +76,11 @@ static void canvasargs_set(t_canvasargs *x, int argc, t_atom*argv, int dollsyms)
 
 static void canvasargs_list(t_canvasargs *x, t_symbol*s, int argc, t_atom*argv)
 {
+  (void)s;
   canvasargs_set(x, argc, argv, 1);
 }
 static void canvasargs_setraw(t_canvasargs *x, t_symbol*s, int argc, t_atom*argv) {
+  (void)s;
   return canvasargs_set(x, argc, argv, 0);
 }
 

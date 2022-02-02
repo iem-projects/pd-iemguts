@@ -86,7 +86,8 @@ static void canvaslock_menu_open(t_glist *z) {
 static void canvaslock_click(t_canvas *z,
     t_floatarg xpos, t_floatarg ypos, t_floatarg shift, t_floatarg ctrl, t_floatarg alt)
 {
-    canvaslock_vis(z, 1);
+  (void)xpos; (void)ypos; (void)shift; (void)ctrl; (void)alt;
+  canvaslock_vis(z, 1);
 }
 
 
@@ -95,8 +96,7 @@ static void *canvaslock_donew(int locked) {
   t_canvaslock *x = (t_canvaslock *)pd_new(canvaslock_class);
   t_glist *glist=(t_glist *)canvas_getcurrent();
   t_canvas *canvas=(t_canvas*)glist_getcanvas(glist);
-  t_class *class = ((t_gobj*)canvas)->g_pd;
-  t_propertiesfn orgfun=NULL;
+  //t_class *class = ((t_gobj*)canvas)->g_pd;
 
   x->x_locked = locked;
 
