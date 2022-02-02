@@ -1,20 +1,3 @@
 ---
 include:
-  - https://git.iem.at/pd/iem-ci/raw/master/pd-lib-builder/gitlab-iem.yml
-
-variables:
-  IEM_CI_MACOS_BUILDFAT: 1
-
-macOS:notarize:
-  stage: deploy
-  extends:
-    - .notarize:macos
-  dependencies:
-    - Darwin
-  needs:
-    - Darwin
-  artifacts:
-    when: always
-    untracked: true
-    paths:
-      - "*"
+  - https://git.iem.at/pd/iem-ci/-/raw/main/pd-lib-builder/gitlab-iem.yml
