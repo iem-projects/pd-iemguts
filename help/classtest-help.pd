@@ -1,32 +1,50 @@
-#N canvas 0 0 957 437 10;
+#N canvas 0 0 840 639 10;
 #X obj 90 56 classtest;
 #X text 167 55 check the availability of object-classes;
-#X obj 154 292 classtest;
-#X floatatom 154 318 5 0 0 0 - - -;
-#X text 233 313 1..class exists;
-#X text 233 328 0..class does not exist;
-#X obj 154 226 symbol;
+#X obj 154 332 classtest;
+#X floatatom 154 358 5 0 0 0 - - - 0;
+#X text 233 353 1..class exists;
+#X text 233 368 0..class does not exist;
+#X obj 154 266 symbol;
 #X msg 154 106 f;
 #X text 197 107 check for [f] (should always evaluate to 'true');
 #X msg 170 138 niagara;
 #X text 239 164 check for [qwert];
 #X msg 184 167 qwert;
-#X text 70 364 note: "classes" are object that Pd knows about (internals
-\, or externals (with a classloader)). Currently "abstractions" are
-_not_ treated as full-featured classes \, therefore testing for abstractions
-will result in 'false'.;
-#X msg 188 203 classloader-help;
-#X symbolatom 154 259 0 0 0 0 - - -;
+#X symbolatom 154 299 0 0 0 0 - - - 0;
 #X text 374 165 (probably this will always evaluate as 'false');
 #X text 226 139 check for [niagara] (evaluates to 'true' if zexy is
 loaded);
-#X text 317 202 check for this abstraction (evaluates as 'false'!)
+#X obj 711 427 hilbert~;
+#X text 70 404 note: "classes" are object that Pd already knows about
+(internals \, or externals (with a classloader) that have been loaded).
+Since Pd-0.47 \, "abstractions" are treated as full-featured classes
+\, therefore testing for abstractions will result in 'true'. However
+\, top-level patches (such as this pne) still evaluate to 'false'.
 ;
-#X text 558 292 (c)opyleft 2008 IOhannes m zmölnig @ iem;
+#X msg 188 243 classtesthelp;
+#X text 318 242 top-level patch (evaluates as 'false'!);
+#X msg 188 213 hilbert~;
+#X text 318 212 abstraction that comes with Pd (evaluates to 'true')
+;
+#X text 681 362 Here we instantiate the [hilbert~] abstraction \, to
+make it known to Pd, f 20;
+#N canvas 398 337 494 344 META 0;
+#X text 12 155 LICENSE GPL v2;
+#X text 12 175 AUTHOR IOhannes m zmoelnig;
+#X text 12 195 HELP_PATCH_AUTHORS IOhannes m zmölnig;
+#X text 12 135 KEYWORDS introspection;
+#X text 13 45 DESCRIPTION check the availability of object-classes
+, f 72;
+#X text 12 75 INLET_1 symbol;
+#X text 12 96 OUTLET_1 boolean;
+#X restore 63 562 pd META;
+#X text 558 570 (c)opyleft 2022 IOhannes m zmölnig @ iem;
 #X connect 2 0 3 0;
-#X connect 6 0 14 0;
+#X connect 6 0 12 0;
 #X connect 7 0 6 0;
 #X connect 9 0 6 0;
 #X connect 11 0 6 0;
-#X connect 13 0 6 0;
-#X connect 14 0 2 0;
+#X connect 12 0 2 0;
+#X connect 17 0 6 0;
+#X connect 19 0 6 0;
