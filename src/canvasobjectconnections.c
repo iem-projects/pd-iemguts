@@ -5,7 +5,7 @@
  *
  * copyleft (c) IOhannes m zmölnig
  *
- *   2008:forum::für::umläute:2008
+ *   2022:forum::für::umläute:2022
  *
  *   institute of electronic music and acoustics (iem)
  *
