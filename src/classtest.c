@@ -17,10 +17,7 @@
 
 
 /*
- * this object provides a way to send messages to upstream canvases
- * by default it sends messages to the containing canvas, but you can give the
- * "depth" as argument;
- * e.g. [classtest 1] will send messages to the parent of the containing canvas
+ * this object provides a way to query Pd for existing classes
  */
 
 #include "iemguts.h"
