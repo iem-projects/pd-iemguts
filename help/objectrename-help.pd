@@ -9,3 +9,10 @@
 abstraction);
 #X text 28 301 © 2019 \, IOhannes m zmölnig;
 #X text 335 306 updated for iemguts-0.3;
+#N canvas 702 118 494 344 META 0;
+#X text 12 155 LICENSE GPL v2;
+#X text 12 175 AUTHOR IOhannes m zmoelnig;
+#X text 12 195 HELP_PATCH_AUTHORS IOhannes m zmölnig;
+#X text 12 135 KEYWORDS introspection;
+#X text 13 45 DESCRIPTION rename an existing class, f 72;
+#X restore 33 322 pd META;
