@@ -49,7 +49,8 @@ static void canvasposition_bang(t_canvasposition *x)
 {
   t_canvas*c=x->x_canvas;
   t_canvas*c0=0;
-  t_float x1=0., y1=0., width=0., height=0.;
+  t_float x0=0., y0=0., width=0., height=0.;
+  int x1, y1, x2, y2;
   t_float zoom = 1.;
   t_atom alist[2];
 
@@ -65,9 +66,15 @@ static void canvasposition_bang(t_canvasposition *x)
     }
 #endif
   }
+  gobj_getrect(&c->gl_obj.te_g, c0, &x1, &y1, &x2, &y2);
 
-  x1=c->gl_obj.te_xpix;
-  y1=c->gl_obj.te_ypix;
+  x0=c->gl_obj.te_xpix;
+  y0=c->gl_obj.te_ypix;
+
+
+  SETFLOAT(alist+0, x2-x1);
+  SETFLOAT(alist+1, y2-y1);
+  outlet_anything(x->extraoutlet, gensym("size"), 2, alist);
 
   SETFLOAT(alist+0, zoom);
   outlet_anything(x->extraoutlet, gensym("zoom"), 1, alist);
@@ -76,8 +83,8 @@ static void canvasposition_bang(t_canvasposition *x)
   SETFLOAT(alist+1, height);
   outlet_list(x->sizeoutlet, 0, 2, alist);
 
-  SETFLOAT(alist+0, x1/zoom);
-  SETFLOAT(alist+1, y1/zoom);
+  SETFLOAT(alist+0, x0/zoom);
+  SETFLOAT(alist+1, y0/zoom);
   outlet_list(x->posoutlet, 0, 2, alist);
 }
 
