@@ -55,6 +55,7 @@ static void canvasposition_bang(t_canvasposition *x)
   t_atom alist[2];
 
   if(!c) return;
+  x1 = x2 = y1 = y2 = 0;
 
   if((c0=c->gl_owner)) {
     width= (c0->gl_screenx2 - c0->gl_screenx1);
@@ -65,23 +66,27 @@ static void canvasposition_bang(t_canvasposition *x)
       zoom = c0->gl_zoom;
     }
 #endif
-  }
-  gobj_getrect(&c->gl_obj.te_g, c0, &x1, &y1, &x2, &y2);
 
+    gobj_getrect(&c->gl_obj.te_g, c0, &x1, &y1, &x2, &y2);
+  }
   x0=c->gl_obj.te_xpix;
   y0=c->gl_obj.te_ypix;
 
 
-  SETFLOAT(alist+0, x2-x1);
-  SETFLOAT(alist+1, y2-y1);
-  outlet_anything(x->extraoutlet, gensym("size"), 2, alist);
+  if(c0) {
+    SETFLOAT(alist+0, x2-x1);
+    SETFLOAT(alist+1, y2-y1);
+    outlet_anything(x->extraoutlet, gensym("size"), 2, alist);
+  }
 
   SETFLOAT(alist+0, zoom);
   outlet_anything(x->extraoutlet, gensym("zoom"), 1, alist);
 
-  SETFLOAT(alist+0, width);
-  SETFLOAT(alist+1, height);
-  outlet_list(x->sizeoutlet, 0, 2, alist);
+  if(c0) {
+    SETFLOAT(alist+0, width);
+    SETFLOAT(alist+1, height);
+    outlet_list(x->sizeoutlet, 0, 2, alist);
+  }
 
   SETFLOAT(alist+0, x0/zoom);
   SETFLOAT(alist+1, y0/zoom);
