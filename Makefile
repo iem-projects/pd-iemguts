@@ -20,7 +20,7 @@ iemguts-meta.pd
 
 datadirs =  examples
 
-cflags = -DVERSION="0.4.0"
+cflags = -DVERSION="0.4.1"
 
 DATE_FMT = %Y/%m/%d at %H:%M:%S UTC
 ifdef SOURCE_DATE_EPOCH
