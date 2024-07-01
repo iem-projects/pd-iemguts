@@ -1,32 +1,26 @@
-#N canvas 251 447 635 427 10;
-#X obj 99 229 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
--1;
+#N canvas 60 373 635 427 10;
+#X obj 99 229 bng 15 250 50 0 empty empty empty 17 7 0 10 #fcfcfc #000000 #000000;
 #X obj 81 25 canvasdollarzero;
 #X text 207 25 get \$0 of the (parent) canvas;
 #X msg 88 128 bang;
 #X obj 88 148 canvasdollarzero;
-#X symbolatom 88 168 10 0 0 0 - - -;
-#X text 57 85 this object is a shameless clone of iemlib's [parentdollarzero]
-with an added feature.;
-#X text 53 194 the feature is \, that you can query the \$0 of _any_
-parent canvas;
+#X symbolatom 88 168 10 0 0 0 - - - 0;
+#X text 57 85 this object is a shameless clone of iemlib's [parentdollarzero] with an added feature.;
+#X text 53 194 the feature is \, that you can query the \$0 of _any_ parent canvas;
 #N canvas 0 0 781 383 canvasdollarzero 0;
 #X obj 147 72 inlet;
-#X text 298 167 "1" indicates to read the parent patch's (depth:1)
-\$0;
+#X text 298 167 "1" indicates to read the parent patch's (depth:1) \$0;
 #X msg 147 126 bang;
-#X symbolatom 182 188 10 0 0 0 - - -;
+#X symbolatom 182 188 10 0 0 0 - - - 0;
 #X obj 147 213 outlet;
 #X obj 147 166 canvasdollarzero 1;
-#X text 125 275 ok \, this example is not very splendid \, as \$0 is
-the same for a patch and all it's subpatches anyhow \; nevertheless
-\, believe me that it also works with abstractions;
+#X text 125 275 ok \, this example is not very splendid \, as \$0 is the same for a patch and all it's subpatches anyhow \; nevertheless \, believe me that it also works with abstractions;
 #X connect 0 0 2 0;
 #X connect 2 0 5 0;
 #X connect 5 0 3 0;
 #X connect 5 0 4 0;
 #X restore 99 248 pd canvasdollarzero 1;
-#X text 58 308 (c) 2008 IOhannes m zmoelnig \, Thomas Musil;
+#X text 58 388 (c) 2008 IOhannes m zmoelnig \, Thomas Musil;
 #N canvas 748 407 553 344 META 0;
 #X text 12 25 LICENSE GPL v2;
 #X text 12 145 AUTHOR IOhannes m zmoelnig;
@@ -36,6 +30,9 @@ the same for a patch and all it's subpatches anyhow \; nevertheless
 #X text 11 65 INLET_0 bang;
 #X text 11 82 OUTLET_1 symbol;
 #X restore 533 22 pd META;
+#X symbolatom 99 271 10 0 0 0 - - - 0;
+#X text 63 311 note \, that the '\$0' is output as a symbol (even if it looks like a number). Typically you will use '\$0' as a part of a bigger symbol (e.g. '\$0.foo') \, so this doesn't matter.;
 #X connect 0 0 8 0;
 #X connect 3 0 4 0;
 #X connect 4 0 5 0;
+#X connect 8 0 11 0;
