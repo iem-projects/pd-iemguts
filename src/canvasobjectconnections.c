@@ -489,7 +489,8 @@ static void *canvasobjectconnections_donew(int depth, int index)
     depth--;
   }
 
-  x->x_parent = canvas->gl_owner;
+  if(canvas)
+    x->x_parent = canvas->gl_owner;
   x->x_index = index;
 
   x->x_out=outlet_new(&x->x_obj, 0);
