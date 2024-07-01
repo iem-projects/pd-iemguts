@@ -19,37 +19,26 @@
 #X restore 28 488 pd subpatch;
 #X text 103 487 <- there is a [canvasconnections] inside;
 #X text 95 206 get the number of inlets and outlets of the canvas;
-#X text 123 266 get objectID and and outletID of the object that is
-connected to the given inlet of the canvas;
-#X text 138 311 get objectID and and inletID of the object that is
-connected to the given outlet of the canvas;
-#X text 177 359 comment;
-#X text 196 386 Those work similar \, but give the all info about the
-given connection.;
 #N canvas 344 318 600 344 META 0;
 #X text 12 165 LICENSE GPL v2;
 #X text 12 185 AUTHOR IOhannes m zmoelnig;
 #X text 12 205 HELP_PATCH_AUTHORS IOhannes m zmölnig;
 #X text 12 105 OUTLET_0 list;
 #X text 12 145 KEYWORDS introspection;
-#X text 11 65 INLET_0 inlets \, outlets \, inlet \, outlet \, outconnect
-\, inconnect;
-#X text 12 45 DESCRIPTION query the connections of an arbitrary object
-in the specified (parent) canvas, f 90;
+#X text 11 65 INLET_0 inlets \, outlets \, inlet \, outlet \, outconnect \, inconnect;
+#X text 12 45 DESCRIPTION query the connections of an arbitrary object in the specified (parent) canvas, f 90;
 #X restore 879 40 pd META;
 #X obj 29 47 canvasobjectconnections;
 #N canvas 0 0 450 300 subpatchindex 0;
 #X obj 51 145 r \$0-subpatch-index;
 #X obj 51 191 outlet;
-#X text 42 41 get the index of the [pd object] \, and set the message
-accordingly;
+#X text 42 41 get the index of the [pd object] \, and set the message accordingly;
 #X msg 51 168 set object \$1 \, bang;
 #X connect 0 0 3 0;
 #X connect 3 0 1 0;
 #X restore 12 109 pd subpatchindex;
-#X msg 12 144 object 24;
-#X obj 603 188 cnv 15 200 140 empty empty empty 20 12 0 14 #e0e0e0
-#404040 0;
+#X msg 12 144 object 20;
+#X obj 603 188 cnv 15 200 140 empty empty empty 20 12 0 14 #e0e0e0 #404040 0;
 #X obj 658 293 pack f f f f f;
 #N canvas 720 574 450 300 object 0;
 #X obj 13 26 inlet;
@@ -128,17 +117,18 @@ accordingly;
 #N canvas 0 0 450 300 subpatchindex 0;
 #X obj 51 145 r \$0-subpatch-index;
 #X obj 51 191 outlet;
-#X text 42 41 get the index of the [pd object] \, and set the message
-accordingly;
+#X text 42 41 get the index of the [pd object] \, and set the message accordingly;
 #X msg 51 168 set object \$1;
 #X connect 0 0 3 0;
 #X connect 3 0 1 0;
 #X restore 645 422 pd subpatchindex;
-#X msg 645 457 object 24;
+#X msg 645 457 object 20;
 #X msg 617 206 bang;
 #X text 759 68 (c) 2022 IOhannes m zmoelnig;
-#X text 183 48 query the connections of an arbitrary object in the
-specified (parent) canvas, f 80;
+#X text 183 48 query the connections of an arbitrary object in the specified (parent) canvas, f 80;
+#X text 123 266 get objectIDs of all objects connected to the given inlet (prefixed with 'inlet' and the ID of the current inlet).;
+#X text 138 311 get objectIDs of all objects connected to the given outlet (prefixed with 'outlet' and the ID of the current outlet).;
+#X text 196 386 Those work similar \, but give all info about the given connection (in a format usable to restore the connections);
 #X connect 0 0 11 0;
 #X connect 1 0 11 0;
 #X connect 2 0 1 0;
@@ -150,13 +140,13 @@ specified (parent) canvas, f 80;
 #X connect 9 0 7 0;
 #X connect 10 0 6 0;
 #X connect 11 0 8 0;
-#X connect 20 0 21 0;
-#X connect 21 0 11 0;
-#X connect 24 1 23 1;
-#X connect 24 2 23 3;
-#X connect 25 0 24 2;
-#X connect 25 2 24 2;
-#X connect 26 0 27 0;
-#X connect 28 0 29 0;
-#X connect 29 0 26 0;
-#X connect 30 0 24 0;
+#X connect 16 0 17 0;
+#X connect 17 0 11 0;
+#X connect 20 1 19 1;
+#X connect 20 2 19 3;
+#X connect 21 0 20 2;
+#X connect 21 2 20 2;
+#X connect 22 0 23 0;
+#X connect 24 0 25 0;
+#X connect 25 0 22 0;
+#X connect 26 0 20 0;

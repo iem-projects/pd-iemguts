@@ -1,15 +1,15 @@
 #N canvas 141 112 570 510 10;
 #X msg 38 79 outlets;
 #X msg 71 188 outlet \$1;
-#X floatatom 71 166 5 0 0 0 - - -;
-#X floatatom 62 121 5 0 0 0 - - -;
+#X floatatom 71 166 5 0 0 0 - - - 0;
+#X floatatom 62 121 5 0 0 0 - - - 0;
 #X msg 28 57 inlets;
 #X msg 62 143 inlet \$1;
 #X msg 108 280 inconnect \$1;
 #X msg 97 240 outconnect \$1;
 #X obj 28 429 print canvasconnnection;
-#X floatatom 97 220 5 0 0 0 - - -;
-#X floatatom 108 260 5 0 0 0 - - -;
+#X floatatom 97 220 5 0 0 0 - - - 0;
+#X floatatom 108 260 5 0 0 0 - - - 0;
 #N canvas 720 574 450 300 subpatch 0;
 #X obj 13 26 inlet;
 #X obj 64 28 inlet;
@@ -35,13 +35,7 @@
 #X obj 29 7 canvasconnections;
 #X text 143 7 query the connections of the containing canvas;
 #X text 95 66 get the number of inlets and outlets of the canvas;
-#X text 123 126 get objectID and and outletID of the object that is
-connected to the given inlet of the canvas;
-#X text 138 171 get objectID and and inletID of the object that is
-connected to the given outlet of the canvas;
-#X text 177 219 comment;
-#X text 196 246 Those work similar \, but give the all info about the
-given connection.;
+#X text 196 246 Those work similar \, but give the all info about the given connection.;
 #X text 153 395 <- dummy object;
 #X obj 98 314 unpack f f f f;
 #X text 194 311 <- dummy object;
@@ -50,12 +44,12 @@ given connection.;
 #X text 12 145 AUTHOR IOhannes m zmoelnig;
 #X text 12 165 HELP_PATCH_AUTHORS IOhannes m zmölnig;
 #X text 12 105 OUTLET_0 list;
-#X text 12 45 DESCRIPTION query the connections of the containing canvas
-, f 72;
+#X text 12 45 DESCRIPTION query the connections of the containing canvas, f 72;
 #X text 12 5 KEYWORDS introspection;
-#X text 11 65 INLET_0 inlets \, outlets \, inlet \, outlet \, outconnect
-\, inconnect;
+#X text 11 65 INLET_0 inlets \, outlets \, inlet \, outlet \, outconnect \, inconnect;
 #X restore 473 12 pd META;
+#X text 123 126 get objectIDs of all objects connected to the given inlet (prefixed with 'inlet' and the ID of the current inlet).;
+#X text 143 166 get objectIDs of all objects connected to the given oulet (prefixed with 'oulet' and the ID of the current outlet).;
 #X connect 0 0 11 0;
 #X connect 1 0 11 0;
 #X connect 2 0 1 0;
@@ -69,4 +63,4 @@ given connection.;
 #X connect 11 0 8 0;
 #X connect 11 1 12 1;
 #X connect 11 2 12 3;
-#X connect 22 2 11 2;
+#X connect 19 2 11 2;
