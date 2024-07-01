@@ -1,43 +1,38 @@
-#N canvas 541 256 656 463 10;
+#N canvas 541 256 537 463 10;
 #X obj 24 47 initbang;
-#X text 100 41 emits a bang right after the abstraction got loaded
-(and *before* the parent patch continues to load);
-#X floatatom 64 206 5 0 0 0 - - -;
-#X obj 124 207 hradio 15 1 0 2 empty empty empty 0 -8 0 10 -262144
--1 -1 1;
-#X obj 403 199 hradio 15 1 0 4 empty empty empty 0 -8 0 10 -262144
--1 -1 0;
-#X obj 308 277 print B1;
-#X obj 308 299 print B2;
-#X obj 373 277 print B3;
-#X obj 373 299 print B4;
-#X floatatom 64 263 5 0 0 0 - - -;
-#X floatatom 124 263 5 0 0 0 - - -;
-#X text 76 88 this makes it possible to create abstractions with variable
-iolets (something that is not possible with [loadbang]).;
+#X text 100 41 emits a bang right after the abstraction got loaded (and *before* the parent patch continues to load);
+#X floatatom 64 206 5 0 0 0 - - - 0;
+#X obj 124 207 hradio 15 1 0 2 empty empty empty 0 -8 0 10 #fcfcfc #000000 #000000 0;
+#X obj 403 199 hradio 15 1 0 4 empty empty empty 0 -8 0 10 #fcfcfc #000000 #000000 0;
+#X obj 308 277 print B0;
+#X obj 308 299 print B1;
+#X obj 373 277 print B2;
+#X obj 373 299 print B3;
+#X floatatom 64 263 5 0 0 0 - - - 0;
+#X floatatom 124 263 5 0 0 0 - - - 0;
+#X text 76 88 this makes it possible to create abstractions with variable iolets (something that is not possible with [loadbang]).;
 #X obj 308 225 ib_demux 4 1;
 #X obj 64 241 ib_demux 2;
-#X floatatom 308 177 5 0 0 0 - - -;
+#X floatatom 308 177 5 0 0 0 - - - 0;
 #X msg 308 199 foo bar \$1;
-#X text 40 134 [ib_demux] is an abstraction. the number of outlets
-is given as the 1st argument! (2nd argument is the initially selected
-outlet);
-#X text 59 337 note: as of Pd-0.48 \, when used in [pd subpatches]
-\, [initbang] will *not* trigger reliably to create iolets (it will
-be too late).;
-#X text 59 387 note2: if you are running an older version of Pd (<<0.47)
-\, the [ib_demux] objects might not have outlets due to [initbang]
-not working properly.;
+#X text 40 134 [ib_demux] is an abstraction. the number of outlets is given as the 1st argument! (2nd argument is the initially selected outlet);
+#X text 59 337 note: as of Pd-0.48 \, when used in [pd subpatches] \, [initbang] will *not* trigger reliably to create iolets (it will be too late).;
+#X text 59 387 note2: if you are running an older version of Pd (<<0.47) \, the [ib_demux] objects might not have outlets due to [initbang] not working properly.;
 #N canvas 167 521 494 344 META 0;
 #X text 12 25 LICENSE GPL v2;
 #X text 12 145 AUTHOR IOhannes m zmoelnig;
 #X text 12 105 OUTLET_0 bang;
-#X text 12 45 DESCRIPTION emits a bang when an abstraction is created.
-, f 72;
+#X text 12 45 DESCRIPTION emits a bang when an abstraction is created., f 72;
 #X text 12 5 KEYWORDS control \, initialisation;
 #X restore 463 22 pd META;
 #X connect 2 0 13 0;
 #X connect 3 0 13 1;
 #X connect 4 0 12 1;
+#X connect 12 0 5 0;
+#X connect 12 1 6 0;
+#X connect 12 2 7 0;
+#X connect 12 3 8 0;
+#X connect 13 0 9 0;
+#X connect 13 1 10 0;
 #X connect 14 0 15 0;
 #X connect 15 0 12 0;
