@@ -121,6 +121,7 @@ static t_object* index2obj(t_canvas*glist, int index)
   while(i-- && gobj) {
     gobj=gobj->g_next;
   }
+  if(!gobj)return 0;
   return pd_checkobject(&gobj->g_pd);
 }
 
