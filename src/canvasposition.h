@@ -34,8 +34,8 @@ static void canvasposition_get(t_outlet*posout, t_outlet*sizeout, t_outlet*extra
 
 
   if(c0) {
-    SETFLOAT(alist+0, x2-x1);
-    SETFLOAT(alist+1, y2-y1);
+    SETFLOAT(alist+0, (x2-x1)/zoom);
+    SETFLOAT(alist+1, (y2-y1)/zoom);
     outlet_anything(extraout, gensym("size"), 2, alist);
   }
 
@@ -48,8 +48,8 @@ static void canvasposition_get(t_outlet*posout, t_outlet*sizeout, t_outlet*extra
     outlet_list(sizeout, 0, 2, alist);
   }
 
-  SETFLOAT(alist+0, x0/zoom);
-  SETFLOAT(alist+1, y0/zoom);
+  SETFLOAT(alist+0, x0);
+  SETFLOAT(alist+1, y0);
   outlet_list(posout, 0, 2, alist);
 }
 
