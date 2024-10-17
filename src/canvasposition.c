@@ -28,9 +28,11 @@
  */
 
 #include "iemguts.h"
+#include "canvasposition.h"
 
 #include "g_canvas.h"
 #include "m_imp.h"
+
 
 /* ------------------------- canvasposition ---------------------------- */
 
@@ -47,50 +49,7 @@ typedef struct _canvasposition
 
 static void canvasposition_bang(t_canvasposition *x)
 {
-  t_canvas*c=x->x_canvas;
-  t_canvas*c0=0;
-  t_float x0=0., y0=0., width=0., height=0.;
-  int x1, y1, x2, y2;
-  t_float zoom = 1.;
-  t_atom alist[2];
-
-  if(!c) return;
-  x1 = x2 = y1 = y2 = 0;
-
-  if((c0=c->gl_owner)) {
-    width= (c0->gl_screenx2 - c0->gl_screenx1);
-    height=(c0->gl_screeny2 - c0->gl_screeny1);
-
-#if (defined PD_MAJOR_VERSION && defined PD_MINOR_VERSION) && (PD_MAJOR_VERSION > 0 || PD_MINOR_VERSION >= 47)
-    if(iemguts_check_atleast_pdversion(0,47,0)) {
-      zoom = c0->gl_zoom;
-    }
-#endif
-
-    gobj_getrect(&c->gl_obj.te_g, c0, &x1, &y1, &x2, &y2);
-  }
-  x0=c->gl_obj.te_xpix;
-  y0=c->gl_obj.te_ypix;
-
-
-  if(c0) {
-    SETFLOAT(alist+0, x2-x1);
-    SETFLOAT(alist+1, y2-y1);
-    outlet_anything(x->extraoutlet, gensym("size"), 2, alist);
-  }
-
-  SETFLOAT(alist+0, zoom);
-  outlet_anything(x->extraoutlet, gensym("zoom"), 1, alist);
-
-  if(c0) {
-    SETFLOAT(alist+0, width);
-    SETFLOAT(alist+1, height);
-    outlet_list(x->sizeoutlet, 0, 2, alist);
-  }
-
-  SETFLOAT(alist+0, x0/zoom);
-  SETFLOAT(alist+1, y0/zoom);
-  outlet_list(x->posoutlet, 0, 2, alist);
+  canvasposition_get(x->posoutlet, x->sizeoutlet, x->extraoutlet, x->x_canvas);
 }
 
 static void canvasposition_list(t_canvasposition *x, t_symbol*s, int argc, t_atom*argv)
