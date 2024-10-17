@@ -80,8 +80,7 @@ static void canvasobjectposition_list(t_canvasobjectposition *x, t_symbol*s, int
 {
   t_object*obj=index2obj(x->x_parent, x->x_index);
   t_canvas*cnv=x->x_parent;
-  int dx, dy;
-  t_float zoom = 1.;
+  t_float newX, newY;
   (void)s;
 
   if(!obj) return;
@@ -95,23 +94,10 @@ static void canvasobjectposition_list(t_canvasobjectposition *x, t_symbol*s, int
     pd_error(x, "expected <x> <y> as new position");
     return;
   }
-#if (defined PD_MAJOR_VERSION && defined PD_MINOR_VERSION) && (PD_MAJOR_VERSION > 0 || PD_MINOR_VERSION >= 47)
-  if(cnv && iemguts_check_atleast_pdversion(0,47,0)) {
-    zoom = cnv->gl_zoom;
-  }
-#endif
 
-  dx = atom_getfloat(argv+0)*zoom - obj->te_xpix;
-  dy = atom_getfloat(argv+1)*zoom - obj->te_ypix;
-
-
-  if(cnv&&glist_isvisible(cnv))  {
-    gobj_displace(&obj->te_g, cnv, dx, dy);
-    canvas_fixlinesfor(cnv, obj);
-  } else {
-    obj->te_xpix+=dx;
-    obj->te_ypix+=dy;
-  }
+  newX = atom_getfloat(argv+0);
+  newY = atom_getfloat(argv+1);
+  canvasposition_set(cnv, obj, newX, newY);
 }
 
 static void canvasobjectposition_free(t_canvasobjectposition *x)
