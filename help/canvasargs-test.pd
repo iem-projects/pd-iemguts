@@ -2,5 +2,10 @@
 #X obj 80 128 inlet;
 #X obj 80 151 canvasargs;
 #X obj 80 174 outlet;
+#X msg 240 134 args;
+#X obj 240 157 pdcontrol;
+#X obj 240 180 print pdcontrol.args;
 #X connect 0 0 1 0;
 #X connect 1 0 2 0;
+#X connect 3 0 4 0;
+#X connect 4 0 5 0;

@@ -1,4 +1,4 @@
-#N canvas 315 241 645 613 10;
+#N canvas 315 241 929 613 10;
 #X text 39 77 usage:;
 #X obj 90 43 canvasargs;
 #X msg 121 481 list 10 20;
@@ -7,43 +7,33 @@
 #X text 81 114 send a _list_ of new arguments to the [canvasargs];
 #X text 82 130 save the parent patch;
 #X text 83 94 put the abstraction in your parent patch;
-#X text 74 150 --> the parent patch will save your abstraction with
-the arguments you sent to [canvasargs] instead of the original ones
-;
+#X text 74 150 --> the parent patch will save your abstraction with the arguments you sent to [canvasargs] instead of the original ones;
 #X text 174 44 manipulate the abstraction's arguments on saving;
-#X text 79 200 you can also get the arguments of the abstraction by
-sending a "bang" message to [canvasargs]. Since iemguts-0.3 the arguments
-are dollar-expanded. Prior versions would give you the raw arguments.
-;
-#X text 79 365 sending a "raw" message (available since iemguts-0.3)
-to [canvasargs] will get the arguments with dollar-arguments unexpanded.
-;
-#X msg 72 420 bang;
+#X text 79 200 you can also get the arguments of the abstraction by sending a "bang" message to [canvasargs]. Since iemguts-0.3 the arguments are dollar-expanded. Prior versions would give you the raw arguments.;
+#X text 79 265 sending a "raw" message (available since iemguts-0.3) to [canvasargs] will get the arguments with dollar-arguments unexpanded.;
+#X msg 71 420 bang;
 #X msg 88 440 raw;
 #X obj 71 587 print arguments;
 #X msg 153 529 list;
 #X text 192 526 clear the arguments;
 #X text 119 418 get arguments (dollar-expanded);
 #X text 119 440 get arguments (raw);
-#X text 380 577 (c) IOhannes m zmölnig @ iem \, 2018;
-#X text 84 274 NOTE: When changing the arguments (via a "list" message)
-\, the dollar-expanded variables (obtained via 'bang' will wrongly
-reflect the original arguments. The raw arguments will always be correct.
-;
 #X obj 71 564 canvasargs-test \$0 \$1 \$2.foo;
 #N canvas 398 337 494 344 META 0;
 #X text 12 25 LICENSE GPL v2;
 #X text 12 145 AUTHOR IOhannes m zmoelnig;
 #X text 12 165 HELP_PATCH_AUTHORS IOhannes m zmölnig;
-#X text 12 45 DESCRIPTION manipulate the abstraction's arguments on
-saving, f 72;
+#X text 12 45 DESCRIPTION manipulate the abstraction's arguments on saving, f 72;
 #X text 12 65 INLET_0 bang raw;
 #X text 12 105 OUTLET_0 list;
 #X text 12 5 KEYWORDS introspection;
 #X restore 543 22 pd META;
-#X connect 2 0 21 0;
-#X connect 3 0 21 0;
-#X connect 12 0 21 0;
-#X connect 13 0 21 0;
-#X connect 15 0 21 0;
-#X connect 21 0 14 0;
+#X text 524 104 When changing the arguments (via a "list" message) \, retrieving either "raw" or dollar-expanded (via "bang") arguments will immediately reflect the changed args. With iemguts<=0.4.3 \, the dollar-expanded arguments would contain the original (unchanged) args.;
+#X text 526 184 NOTE that you can also use [pdcontrol] to retrieve the (exapnded) arguments. However \, [pdcontrol] will not be made aware of any changed args!;
+#X text 380 577 (c) IOhannes m zmölnig @ iem \, 2018-2024;
+#X connect 2 0 19 0;
+#X connect 3 0 19 0;
+#X connect 12 0 19 0;
+#X connect 13 0 19 0;
+#X connect 15 0 19 0;
+#X connect 19 0 14 0;
