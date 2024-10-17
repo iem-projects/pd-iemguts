@@ -49,7 +49,8 @@ typedef struct _canvasposition
 
 static void canvasposition_bang(t_canvasposition *x)
 {
-  canvasposition_get(x->posoutlet, x->sizeoutlet, x->extraoutlet, x->x_canvas);
+  canvasposition_get(x->posoutlet, x->sizeoutlet, x->extraoutlet,
+                       x->x_canvas->gl_owner, &x->x_canvas->gl_obj);
 }
 
 static void canvasposition_list(t_canvasposition *x, t_symbol*s, int argc, t_atom*argv)
