@@ -92,7 +92,11 @@ static void canvasargs_doit(t_canvasargs *x, int expanddollargs)
 
   if(!x->x_canvas) return;
   b=x->x_canvas->gl_obj.te_binbuf;
-  if(b && !expanddollargs) {
+  if (!b) {
+    canvas_setcurrent(x->x_canvas);
+    canvas_getargs(&argc, &argv);
+    canvas_unsetcurrent(x->x_canvas);
+  } else if (!expanddollargs) {
     int i;
     b1 = binbuf_duplicate(b);
     argc=binbuf_getnatom(b1)-1;
@@ -110,9 +114,44 @@ static void canvasargs_doit(t_canvasargs *x, int expanddollargs)
       }
     }
   } else {
-    canvas_setcurrent(x->x_canvas);
-    canvas_getargs(&argc, &argv);
-    canvas_unsetcurrent(x->x_canvas);
+    /* expand dollarargs */
+    /* if there's no parent canvas, A_DOLLAR is expanded to 0, A_DOLLSYM to the literal */
+    int i, idx;
+    t_canvas*parent = x->x_canvas?x->x_canvas->gl_owner:0;
+    int pargc=0;
+    t_atom*pargv=0;
+
+    if(parent) {
+      canvas_setcurrent(parent);
+      canvas_getargs(&pargc, &pargv);
+    }
+
+    b1 = binbuf_duplicate(b);
+    argc=binbuf_getnatom(b1)-1;
+    argv=binbuf_getvec(b1)+1;
+    for(i=0; i<argc; i++) {
+      t_symbol*s;
+      switch(argv[i].a_type) {
+      default: break;
+      case A_DOLLAR:
+	idx = argv[i].a_w.w_index-1;
+	if((idx < 0) || (idx >= pargc)) {
+	  SETFLOAT(argv+i, 0);
+	} else {
+	  argv[i] = pargv[idx];
+	}
+	break;
+      case A_DOLLSYM:
+	s = binbuf_realizedollsym(argv[i].a_w.w_symbol, pargc, pargv, 0);
+	if(!s)
+	  s = argv[i].a_w.w_symbol;
+	SETSYMBOL(argv+i, s);
+        break;
+      }
+    }
+    if(parent) {
+      canvas_unsetcurrent(parent);
+    }
   }
 
   if(argv)
