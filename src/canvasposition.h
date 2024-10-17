@@ -53,4 +53,28 @@ static void canvasposition_get(t_outlet*posout, t_outlet*sizeout, t_outlet*extra
 }
 
 
+static void canvasposition_set(t_canvas*parent, t_object*obj, t_float newX, t_float newY)
+{
+  t_float zoom = 1.;
+  int dx, dy;
+  if(parent && iemguts_check_atleast_pdversion(0,47,0)) {
+    zoom = parent->gl_zoom;
+  }
+  dx = newX*zoom - obj->te_xpix;
+  dy = newY*zoom - obj->te_ypix;
+
+  if ((0==dx)&&(0==dy))
+    return; /* nothing to do */
+
+  if(parent && glist_isvisible(parent))  {
+    gobj_displace(&obj->te_g, parent, dx, dy);
+    canvas_fixlinesfor(parent, obj);
+  } else {
+    obj->te_xpix+=dx;
+    obj->te_ypix+=dy;
+  }
+}
+
+
+
 #endif /* canvasposition_h */

@@ -58,6 +58,7 @@ static void canvasposition_list(t_canvasposition *x, t_symbol*s, int argc, t_ato
 {
   t_canvas*c=x->x_canvas;
   t_canvas*c0=0;
+  t_float newX, newY;
   int dx, dy;
   t_float zoom = 1.;
   (void)s;
@@ -74,14 +75,19 @@ static void canvasposition_list(t_canvasposition *x, t_symbol*s, int argc, t_ato
     pd_error(x, "expected <x> <y> as new position");
     return;
   }
+  newX = atom_getfloat(argv+0);
+  newY = atom_getfloat(argv+1);
+#if 1
+  canvasposition_set(c0, &c->gl_obj, newX, newY);
+#else
 #if (defined PD_MAJOR_VERSION && defined PD_MINOR_VERSION) && (PD_MAJOR_VERSION > 0 || PD_MINOR_VERSION >= 47)
   if(c0 && iemguts_check_atleast_pdversion(0,47,0)) {
     zoom = c0->gl_zoom;
   }
 #endif
 
-  dx = atom_getfloat(argv+0)*zoom - c->gl_obj.te_xpix;
-  dy = atom_getfloat(argv+1)*zoom - c->gl_obj.te_ypix;
+  dx = newX*zoom - c->gl_obj.te_xpix;
+  dy = newY*zoom - c->gl_obj.te_ypix;
 
   if ((dx!=0)||(dy!=0)) {
     if(c0&&glist_isvisible(c0))  {
@@ -92,6 +98,7 @@ static void canvasposition_list(t_canvasposition *x, t_symbol*s, int argc, t_ato
       c->gl_obj.te_ypix+=dy;
     }
   }
+#endif
 }
 
 static void canvasposition_free(t_canvasposition *x)
