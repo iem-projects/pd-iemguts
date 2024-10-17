@@ -96,28 +96,15 @@ static void canvasargs_doit(t_canvasargs *x, int expanddollargs)
     canvas_setcurrent(x->x_canvas);
     canvas_getargs(&argc, &argv);
     canvas_unsetcurrent(x->x_canvas);
-  } else if (!expanddollargs) {
-    int i;
-    b1 = binbuf_duplicate(b);
-    argc=binbuf_getnatom(b1)-1;
-    argv=binbuf_getvec(b1)+1;
-    for(i=0; i<argc; i++) {
-      switch(argv[i].a_type) {
-      default: break;
-      case A_DOLLAR: case A_DOLLSYM: {
-        char buf[MAXPDSTRING];
-        atom_string(argv+i, buf, MAXPDSTRING-2);
-        buf[MAXPDSTRING-1]=0;
-        SETSYMBOL(argv+i, gensym(buf));
-        break;
-      }
-      }
-    }
   } else {
-    /* expand dollarargs */
-    /* if there's no parent canvas, A_DOLLAR is expanded to 0, A_DOLLSYM to the literal */
-    int i, idx;
-    t_canvas*parent = x->x_canvas?x->x_canvas->gl_owner:0;
+    /*
+     * expanding dollargs:
+     * if there's no parent canvas, A_DOLLAR is expanded to 0, A_DOLLSYM to the literal
+     * unexpanded dollargs:
+     *  with A_DOLLSYM, take the literal, with A_DOLLAR construct the '$%d' string
+     */
+    int i;
+    t_canvas*parent = x->x_canvas->gl_owner;
     int pargc=0;
     t_atom*pargv=0;
 
@@ -130,19 +117,29 @@ static void canvasargs_doit(t_canvasargs *x, int expanddollargs)
     argc=binbuf_getnatom(b1)-1;
     argv=binbuf_getvec(b1)+1;
     for(i=0; i<argc; i++) {
-      t_symbol*s;
+      t_symbol*s = 0;
       switch(argv[i].a_type) {
       default: break;
       case A_DOLLAR:
-	idx = argv[i].a_w.w_index-1;
-	if((idx < 0) || (idx >= pargc)) {
-	  SETFLOAT(argv+i, 0);
+	if(expanddollargs) {
+	  /* 0 if out-of-range, otherwise copy parent atom */
+	  int idx = argv[i].a_w.w_index-1;
+	  if((idx < 0) || (idx >= pargc)) {
+	    SETFLOAT(argv+i, 0);
+	  } else {
+	    argv[i] = pargv[idx];
+	  }
 	} else {
-	  argv[i] = pargv[idx];
+	  /* create the dollarg-string */
+	  char buf[MAXPDSTRING];
+	  atom_string(argv+i, buf, MAXPDSTRING-2);
+	  buf[MAXPDSTRING-1]=0;
+	  SETSYMBOL(argv+i, gensym(buf));
 	}
 	break;
       case A_DOLLSYM:
-	s = binbuf_realizedollsym(argv[i].a_w.w_symbol, pargc, pargv, 0);
+	if(expanddollargs)
+	  s = binbuf_realizedollsym(argv[i].a_w.w_symbol, pargc, pargv, 0);
 	if(!s)
 	  s = argv[i].a_w.w_symbol;
 	SETSYMBOL(argv+i, s);
