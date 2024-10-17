@@ -51,15 +51,18 @@ static void canvasposition_get(t_outlet*posout, t_outlet*sizeout, t_outlet*extra
     outlet_list(sizeout, 0, 2, alist);
   }
 
-  SETFLOAT(alist+0, x0);
-  SETFLOAT(alist+1, y0);
+  if(iemguts_check_atleast_pdversion(0,50,0)) {
+    zoom = 1.;
+  }
+  SETFLOAT(alist+0, x0/zoom);
+  SETFLOAT(alist+1, y0/zoom);
   outlet_list(posout, 0, 2, alist);
 }
 
 
 static void canvasposition_set(t_canvas*parent, t_object*obj, t_float newX, t_float newY)
 {
-  t_float zoom = canvasposition_getzoom(parent);
+  t_float zoom = iemguts_check_atleast_pdversion(0,50,0)?1.:canvasposition_getzoom(parent);
   int dx = newX*zoom - obj->te_xpix;
   int dy = newY*zoom - obj->te_ypix;
 
