@@ -58,7 +58,7 @@ static int iemguts_check_atleast_pdversion(int major, int minor, int bugfix) {
 #pragma pop_macro("cmpver_")
 }
 
-#define iemguts_verbose verbose
+#define iemguts_verbose(level,...) logpost(0, 3+(level), __VA_ARGS__)
 /**
  * print some boilerplate about when the external was compiled
  * and against which version of Pd
