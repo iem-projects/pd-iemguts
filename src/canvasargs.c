@@ -34,6 +34,8 @@
 #include "iemguts.h"
 #include "g_canvas.h"
 
+EXTERN int canvas_getdollarzero(void);
+
 
 /* ------------------------- canvasargs ---------------------------- */
 
@@ -124,7 +126,9 @@ static void canvasargs_doit(t_canvasargs *x, int expanddollargs)
 	if(expanddollargs) {
 	  /* 0 if out-of-range, otherwise copy parent atom */
 	  int idx = argv[i].a_w.w_index-1;
-	  if((idx < 0) || (idx >= pargc)) {
+	  if (idx == -1) {
+	    SETFLOAT(argv+i, canvas_getdollarzero());
+	  } else if((idx < 0) || (idx >= pargc)) {
 	    SETFLOAT(argv+i, 0);
 	  } else {
 	    argv[i] = pargv[idx];
