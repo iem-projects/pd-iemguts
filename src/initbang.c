@@ -62,7 +62,7 @@ void initbang_setup(void)
 {
   iemguts_boilerplate("[initbang]", 0);
 #if (PD_MINOR_VERSION < 47)
-  verbose(0, "[initbang] has been compiled against an incompatible version of Pd, proceeding anyway...");
+  iemguts_verbose(0, "[initbang] has been compiled against an incompatible version of Pd, proceeding anyway...");
 #endif
   initbang_class = class_new(gensym("initbang"), (t_newmethod)initbang_new, 0,
                              sizeof(t_initbang), CLASS_NOINLET, 0);

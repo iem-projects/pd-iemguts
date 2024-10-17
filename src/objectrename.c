@@ -43,7 +43,7 @@ static void objectrename_doit(t_symbol*from,t_symbol*to) {
   int i;
   for(i=0; i<pom_class->c_nmethod; i++) {
     if(from == pom_class->c_methods[i].me_name) {
-      verbose(1, "renaming '%s' to '%s'", from->s_name, to->s_name);
+      iemguts_verbose(1, "renaming '%s' to '%s'", from->s_name, to->s_name);
       pom_class->c_methods[i].me_name = to;
       return;
     }

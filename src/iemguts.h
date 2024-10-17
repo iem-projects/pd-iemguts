@@ -58,6 +58,7 @@ static int iemguts_check_atleast_pdversion(int major, int minor, int bugfix) {
 #pragma pop_macro("cmpver_")
 }
 
+#define iemguts_verbose verbose
 /**
  * print some boilerplate about when the external was compiled
  * and against which version of Pd
@@ -66,26 +67,26 @@ static void iemguts_boilerplate(const char*name, const char*copyright) {
   const int v=0;
   if(name && *name) {
 #ifdef VERSION
-    verbose(v, "%s " STRINGIFY(VERSION), name);
+    iemguts_verbose(v, "%s " STRINGIFY(VERSION), name);
 #else
-    verbose(v, "%s", name);
+    iemguts_verbose(v, "%s", name);
 #endif
     /* if copyright is NULL, assume default; if it's empty skip it */
     if(!copyright)
       copyright="IOhannes m zmölnig, IEM <zmoelnig@iem.at>";
     if(*copyright)
-      verbose(v, "\t© %s", copyright);
+      iemguts_verbose(v, "\t© %s", copyright);
 
-  verbose(v, "\tcompiled "BUILD_DATE);
+  iemguts_verbose(v, "\tcompiled "BUILD_DATE);
   if(*PD_TEST_VERSION)
-    verbose(v, "\t         against Pd version %d.%d-%d (%s)",
+    iemguts_verbose(v, "\t         against Pd version %d.%d-%d (%s)",
          PD_MAJOR_VERSION, PD_MINOR_VERSION, PD_BUGFIX_VERSION,
          PD_TEST_VERSION);
   else
-    verbose(v, "\t         against Pd version %d.%d-%d",
+    iemguts_verbose(v, "\t         against Pd version %d.%d-%d",
          PD_MAJOR_VERSION, PD_MINOR_VERSION, PD_BUGFIX_VERSION);
   if(!iemguts_check_atleast_pdversion(PD_MAJOR_VERSION, PD_MINOR_VERSION, PD_BUGFIX_VERSION))
-    verbose(v, "\tNOTE: you are running an older version of Pd!");
+    iemguts_verbose(v, "\tNOTE: you are running an older version of Pd!");
   }
 }
 #endif /* INCLUDE_IEMGUTS_H_ */

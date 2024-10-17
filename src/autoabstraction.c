@@ -75,7 +75,7 @@ static void autoabstraction_createpatch(t_canvas*canvas, char*classname) {
 
     binbuf_write(s_bb, name, "", 0);
   } else {
-    verbose(1, "[autoabstraction]: no template");
+    iemguts_verbose(1, "[autoabstraction]: no template");
   }
 }
 

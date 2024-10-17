@@ -76,7 +76,7 @@ void closebang_setup(void)
 {
   iemguts_boilerplate("[closebang]", 0);
 #if (PD_MINOR_VERSION < 47)
-  verbose(0, "[closebang] has been compiled against an incompatible version of Pd, proceeding anyway...");
+  iemguts_verbose(0, "[closebang] has been compiled against an incompatible version of Pd, proceeding anyway...");
 #endif
   closebang_class = class_new(gensym("closebang"), (t_newmethod)closebang_new, 0,
                              sizeof(t_closebang), CLASS_NOINLET, 0);
