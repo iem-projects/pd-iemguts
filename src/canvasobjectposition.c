@@ -28,6 +28,7 @@
  */
 
 #include "iemguts.h"
+#include "canvasposition.h"
 
 #include "g_canvas.h"
 #include "m_imp.h"
@@ -72,36 +73,7 @@ static void canvasobjectposition_index(t_canvasobjectposition *x, t_float findex
 static void canvasobjectposition_bang(t_canvasobjectposition *x)
 {
   t_object*obj=index2obj(x->x_parent, x->x_index);
-  t_canvas*cnv=x->x_parent;
-  t_float zoom=1.;
-  t_float x1=0, y1=0, width=0, height=0;
-  t_atom alist[2];
-
-  if(!obj) return;
-
-  x1=obj->te_xpix;
-  y1=obj->te_ypix;
-
-  if(cnv) {
-    width= (cnv->gl_screenx2 - cnv->gl_screenx1);
-    height=(cnv->gl_screeny2 - cnv->gl_screeny1);
-#if (defined PD_MAJOR_VERSION && defined PD_MINOR_VERSION) && (PD_MAJOR_VERSION > 0 || PD_MINOR_VERSION >= 47)
-    if(iemguts_check_atleast_pdversion(0,47,0)) {
-      zoom = cnv->gl_zoom;
-    }
-#endif
-  }
-
-  SETFLOAT(alist+0, zoom);
-  outlet_anything(x->x_extraoutlet, gensym("zoom"), 1, alist);
-
-  SETFLOAT(alist+0, width);
-  SETFLOAT(alist+1, height);
-  outlet_list(x->x_sizeoutlet, 0, 2, alist);
-
-  SETFLOAT(alist+0, x1);
-  SETFLOAT(alist+1, y1);
-  outlet_list(x->x_posoutlet, 0, 2, alist);
+  canvasposition_get(x->x_posoutlet, x->x_sizeoutlet, x->x_extraoutlet, x->x_parent, obj);
 }
 
 static void canvasobjectposition_list(t_canvasobjectposition *x, t_symbol*s, int argc, t_atom*argv)
