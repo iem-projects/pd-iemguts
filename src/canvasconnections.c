@@ -486,4 +486,9 @@ void canvasconnections_setup(void)
   class_addmethod(canvasconnections_class, (t_method)canvasconnections_inlets, gensym("inlets"), 0);
   class_addmethod(canvasconnections_class, (t_method)canvasconnections_inlet, gensym("inlet"), A_FLOAT, 0);
   class_addmethod(canvasconnections_class, (t_method)canvasconnections_inconnect, gensym("inconnect"), A_FLOAT, 0);
+
+  if(0) {
+    /* dummy to get rid of unused-function warnings */
+    intvec_post(0);
+  }
 }

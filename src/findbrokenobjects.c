@@ -211,8 +211,15 @@ void findbrokenobjects_setup(void)
   class_addbang  (findbrokenobjects_class, (t_method)findbrokenobjects_bang);
   class_addmethod(findbrokenobjects_class, (t_method)findbrokenobjects_verbose, gensym("verbose"), A_FLOAT, 0);
 
-  if(0)
+  if(0) {
+    /* dummy to get rid of unused-function warnings */
     fbo_persist();
+  }
+
+  if(0) {
+    /* dummy to get rid of unused-function warnings */
+    findbrokenobjects_doit(NULL);
+  }
 }
 static char fbo_file[] = "\
 canvas 0 0 300 200;\n\
