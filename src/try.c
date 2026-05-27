@@ -18,7 +18,7 @@
 
 /*
  * this object provides a way to create an object with a fallback
- * [try bla 13, blu 134] will first try to create an obect [bla 13] and if this fails use [blu 134] instead.
+ * [try bla 13, blu 134] will first try to create an object [bla 13] and if this fails use [blu 134] instead.
  *
  * currently this only works for objectclasses (no abstractions)
  * currently this doesn't work (well) with [list]

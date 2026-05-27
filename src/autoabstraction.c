@@ -32,7 +32,7 @@ static t_class *autoabstraction_class;
 
 static int s_state=0;
 
-/* this is the name of the filename that get's loaded as a default template for new abstractions */
+/* this is the name of the filename that gets loaded as a default template for new abstractions */
 static const char*s_templatefilename="autoabstraction.template";
 /* if the loading above fails, we resort to a simple default abstraction that automatically opens up */
 /* LATER: make the font-size the same as the one used by Pd */
@@ -55,7 +55,7 @@ static char*s_templatestring="#N canvas 0 0 450 300 10; #X vis 1;";
 # endif
 
 #if (PD_MINOR_VERSION < 42)
- /* definitions taken from s_loader.c, since they weren't in header orignally */
+ /* definitions taken from s_loader.c, since they weren't in header originally */
  typedef int (*loader_t)(t_canvas *canvas, char *classname);
  void sys_register_loader(loader_t loader);
  void class_set_extern_dir(t_symbol *s);
