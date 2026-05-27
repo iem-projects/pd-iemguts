@@ -35,6 +35,14 @@
 #include "iemguts.h"
 #include "g_canvas.h"
 
+#define OUTLET_FREE(olet)                       \
+  if (olet) outlet_free(olet);                  \
+  olet = NULL
+
+#define INLET_FREE(ilet)                       \
+  if (ilet) inlet_free(ilet);                  \
+  ilet = NULL
+
 
 /* ------------------------- canvasname ---------------------------- */
 
@@ -100,9 +108,9 @@ static void canvasname_displayname(t_canvasname *x, t_symbol*s)
 
 static void canvasname_free(t_canvasname *x)
 {
-  if(x->x_nameout  )outlet_free(x->x_nameout  );x->x_nameout=NULL  ;
-  if(x->x_displaynameout)outlet_free(x->x_displaynameout);x->x_displaynameout=NULL;
-  if(x->x_displaynamein )inlet_free (x->x_displaynamein );x->x_displaynamein=NULL;
+  OUTLET_FREE(x->x_nameout);
+  OUTLET_FREE(x->x_displaynameout);
+  INLET_FREE(x->x_displaynamein);
 }
 
 static void *canvasname_new(t_floatarg f)
