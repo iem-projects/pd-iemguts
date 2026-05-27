@@ -144,8 +144,8 @@ static void *canvasobjectposition_new(t_symbol*s, int argc, t_atom*argv)
     x->x_parent = canvas;
     x->x_index = index;
 
-    x->x_posoutlet=outlet_new(&x->x_obj, &s_list);
-    x->x_sizeoutlet=outlet_new(&x->x_obj, &s_list);
+    x->x_posoutlet=outlet_new(&x->x_obj, gensym("list"));
+    x->x_sizeoutlet=outlet_new(&x->x_obj, gensym("list"));
     x->x_extraoutlet=outlet_new(&x->x_obj, 0);
 
     inlet_new(&x->x_obj, &x->x_obj.ob_pd, gensym("float"), gensym("object"));

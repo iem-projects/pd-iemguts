@@ -198,7 +198,7 @@ static void fbo_persist(void) {
   binbuf_eval(b, &pd_canvasmaker, 0, 0);
   fbo_canvas = s__X.s_thing;
   vmess(s__X.s_thing, gensym("pop"), "i", 0);
-  glob_setfilename(0, &s_, &s_);
+  glob_setfilename(0, gensym(""), gensym(""));
   binbuf_free(b);
 }
 

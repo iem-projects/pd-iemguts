@@ -140,8 +140,8 @@ static void *canvasindex_new(t_floatarg f)
     x->x_canvas = canvas ? canvas->gl_owner : 0;
   }
 
-  x->xoutlet=outlet_new(&x->x_obj, &s_float);
-  x->youtlet=outlet_new(&x->x_obj, &s_float);
+  x->xoutlet=outlet_new(&x->x_obj, gensym("float"));
+  x->youtlet=outlet_new(&x->x_obj, gensym("float"));
 
   return (x);
 }

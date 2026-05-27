@@ -171,8 +171,8 @@ static void *savebangs_new(t_floatarg f)
     addObjectToCanvas((t_pd*)canvas, (t_pd*)x);
   }
 
-  x->x_post=outlet_new(&x->x_obj, &s_bang);
-  x->x_pre=outlet_new(&x->x_obj, &s_bang);
+  x->x_post=outlet_new(&x->x_obj, gensym("bang"));
+  x->x_pre=outlet_new(&x->x_obj, gensym("bang"));
 
   return (x);
 }

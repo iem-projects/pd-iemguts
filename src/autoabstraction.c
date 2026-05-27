@@ -148,7 +148,7 @@ static int autoabstraction_loader(t_canvas *canvas, char *classname, const char*
   class_new(gensym(classname),
       (t_newmethod)do_create_autoabstraction, 0,
       0, 0, A_GIMME, 0);
-  class_set_extern_dir(&s_);
+  class_set_extern_dir(gensym(""));
   return 1;
 }
 

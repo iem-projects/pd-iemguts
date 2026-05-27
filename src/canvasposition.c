@@ -100,8 +100,8 @@ static void *canvasposition_new(t_floatarg f)
 
   x->x_canvas = canvas;
 
-  x->posoutlet=outlet_new(&x->x_obj, &s_list);
-  x->sizeoutlet=outlet_new(&x->x_obj, &s_list);
+  x->posoutlet=outlet_new(&x->x_obj, gensym("list"));
+  x->sizeoutlet=outlet_new(&x->x_obj, gensym("list"));
   x->extraoutlet=outlet_new(&x->x_obj, 0);
 
   return (x);

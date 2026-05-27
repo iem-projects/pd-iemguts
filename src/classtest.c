@@ -97,7 +97,7 @@ static void *classtest_new(void)
 {
   t_classtest *x = (t_classtest *)pd_new(classtest_class);
 
-  x->x_out = outlet_new(&x->x_obj, &s_float);
+  x->x_out = outlet_new(&x->x_obj, gensym("float"));
   return (x);
 }
 

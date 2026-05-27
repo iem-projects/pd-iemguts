@@ -72,7 +72,7 @@ static void canvasselect_bang(t_canvasselect *x)
     }
   }
 
-  outlet_list(x->x_obj.ob_outlet, &s_list, nselected, atombuf);
+  outlet_list(x->x_obj.ob_outlet, gensym("list"), nselected, atombuf);
 }
 
 

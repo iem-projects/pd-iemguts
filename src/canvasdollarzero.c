@@ -59,7 +59,7 @@ static void *canvasdollarzero_new(t_floatarg f)
     x->s_dollzero = canvas_realizedollar(canvas, gensym("$0"));
   }
 
-  outlet_new(&x->x_obj, &s_symbol);
+  outlet_new(&x->x_obj, gensym("symbol"));
   return (x);
 }
 

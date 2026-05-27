@@ -121,8 +121,8 @@ static void *canvasname_new(t_floatarg f)
   x->x_canvas = canvas;
 
   x->x_displaynamein=inlet_new(&x->x_obj, &x->x_obj.ob_pd, gensym("symbol"), gensym("display"));
-  x->x_nameout=outlet_new(&x->x_obj, &s_symbol);
-  x->x_displaynameout=outlet_new(&x->x_obj, &s_symbol);
+  x->x_nameout=outlet_new(&x->x_obj, gensym("symbol"));
+  x->x_displaynameout=outlet_new(&x->x_obj, gensym("symbol"));
 
   return (x);
 }

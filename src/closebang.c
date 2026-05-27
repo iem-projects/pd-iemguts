@@ -68,7 +68,7 @@ static void closebang_menuclose(t_canvas *x, t_floatarg f) {
 static void *closebang_new(void)
 {
   t_closebang *x = (t_closebang *)pd_new(closebang_class);
-  outlet_new(&x->x_obj, &s_bang);
+  outlet_new(&x->x_obj, gensym("bang"));
   return (x);
 }
 

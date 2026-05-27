@@ -266,8 +266,8 @@ static void *oreceive_new(t_symbol *s, t_float priority)
 {
     t_oreceive *x = (t_oreceive *)pd_new(oreceive_class);
 
-    x->x_symin = inlet_new(&x->x_obj, &x->x_obj.ob_pd, &s_symbol, &s_symbol);
-    x->x_fltin = inlet_new(&x->x_obj, &x->x_obj.ob_pd, &s_float, &s_float);
+    x->x_symin = inlet_new(&x->x_obj, &x->x_obj.ob_pd, gensym("symbol"), gensym("symbol"));
+    x->x_fltin = inlet_new(&x->x_obj, &x->x_obj.ob_pd, gensym("float"), gensym("float"));
 
     x->x_sym = s;
     x->x_priority = priority;
@@ -290,7 +290,7 @@ void oreceive_setup(void)
     class_addcreator((t_newmethod)oreceive_new, gensym("r"), A_DEFSYM, A_DEFFLOAT, 0);
 #endif
     class_addsymbol(oreceive_class, oreceive_name);
-    class_addmethod(oreceive_class, (t_method)oreceive_priority, &s_float, A_FLOAT, 0);
+    class_addmethod(oreceive_class, (t_method)oreceive_priority, gensym("float"), A_FLOAT, 0);
 
     oreceive_proxy_class = class_new(gensym("oreceive proxy"), 0, 0, sizeof(t_oreceive_proxy), CLASS_NOINLET | CLASS_PD, 0);
     class_addanything(oreceive_proxy_class, oreceive_proxy_anything);

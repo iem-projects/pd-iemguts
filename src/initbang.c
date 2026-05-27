@@ -54,7 +54,7 @@ static void initbang_loadbang(t_initbang *x, t_float type) {
 static void *initbang_new(void)
 {
   t_initbang *x = (t_initbang *)pd_new(initbang_class);
-  outlet_new(&x->x_obj, &s_bang);
+  outlet_new(&x->x_obj, gensym("bang"));
   return (x);
 }
 

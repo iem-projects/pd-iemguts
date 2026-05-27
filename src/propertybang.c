@@ -73,7 +73,7 @@ static void *propertybang_new(void)
   t_class *class = ((t_gobj*)canvas)->g_pd;
   t_propertiesfn orgfun=NULL;
 
-  outlet_new(&x->x_obj, &s_bang);
+  outlet_new(&x->x_obj, gensym("bang"));
 
   orgfun=class_getpropertiesfn(class);
   if(orgfun!=propertybang_properties)

@@ -156,7 +156,7 @@ static void canvasargs_doit(t_canvasargs *x, int expanddollargs)
   }
 
   if(argv)
-    outlet_list(x->x_obj.ob_outlet, &s_list, argc, argv);
+    outlet_list(x->x_obj.ob_outlet, gensym("list"), argc, argv);
   if(b1)
     binbuf_free(b1);
 }
